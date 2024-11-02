@@ -1,3 +1,5 @@
+package Base
+
 import scala.collection.mutable
 trait Listener {
   def receiveUpdate(subject: Actor): Unit = return
