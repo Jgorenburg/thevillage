@@ -18,7 +18,8 @@ trait Story extends Subject[Story] with Listener {
   //    0: story done already
   //    1: start time
   //    2: repeatable story
-  var commonState: (Boolean, Int, Boolean)
+  //    3: duration (-1 if not timebound)
+  var commonState: (Boolean, Int, Boolean, Int)
   val importance: Importance.Importance
 
   def canBegin: Boolean = conditions.forall(f => f())

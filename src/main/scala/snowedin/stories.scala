@@ -5,7 +5,7 @@ import Base.Importance
 
 object Vibe extends Story {
   var conditions: List[() => Boolean] = List()
-  var commonState: (Boolean, Int, Boolean) = (false, 0, true)
+  var commonState = (false, 0, true, -1)
   var active: Boolean = true
   val importance = Importance.Vibe
 }
@@ -22,7 +22,7 @@ object Nap extends Story {
   )
   var active: Boolean = false
 
-  var commonState: (Boolean, Int, Boolean) = (false, -1, true)
+  var commonState = (false, -1, true, 10)
 
 // state:
 //     0: how many naps father has taken
