@@ -1,11 +1,24 @@
 package Base
 
+case class ActorCommonState(
+    var _1: Story,
+    var _2: Int
+) {}
+implicit def actorcommonState_to_tuple(
+    cs: ActorCommonState
+): (Story, Int) =
+  (cs._1, cs._2)
+
+implicit def tuple_to_actorcommonstate(
+    t: (Story, Int)
+): ActorCommonState = ActorCommonState(t._1, t._2)
+
 trait Actor extends Subject[Actor] with Listener {
   // common state is for things every actor has
   // common state:
   //    0: current activity
   //    1: activity start time
-  var commonState: (Story, Int)
+  var commonState: ActorCommonState
 
   var myEvents: Array[Any]
 
