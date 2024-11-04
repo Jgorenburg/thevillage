@@ -6,15 +6,6 @@ case class StoryCommonState(
     var _3: Boolean,
     var _4: Int
 ) {}
-implicit def storycommonState_to_tuple(
-    cs: StoryCommonState
-): (Boolean, Int, Boolean, Int) =
-  (cs._1, cs._2, cs._3, cs._4)
-
-implicit def tuple_to_storycommonstate(
-    t: (Boolean, Int, Boolean, Int)
-): StoryCommonState = StoryCommonState(t._1, t._2, t._3, t._4)
-
 object Importance extends Enumeration {
   type Importance = Value
   val Vibe, Base, Event, Interrupt, Critical, Instantaneous = Value
@@ -42,4 +33,14 @@ trait Story extends Subject[Story] with Listener {
 
   def canBegin: Boolean =
     universalConditions.forall(f => f()) && conditions.forall(f => f())
+
+  implicit def storycommonState_to_tuple(
+      cs: StoryCommonState
+  ): (Boolean, Int, Boolean, Int) =
+    (cs._1, cs._2, cs._3, cs._4)
+
+  implicit def tuple_to_storycommonstate(
+      t: (Boolean, Int, Boolean, Int)
+  ): StoryCommonState = StoryCommonState(t._1, t._2, t._3, t._4)
+
 }
