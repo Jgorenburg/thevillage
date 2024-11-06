@@ -1,5 +1,10 @@
 package Base
 
+// common state:
+//    1: story done already
+//    2: start time (-1 if not active)
+//    3: repeatable story
+//    4: duration (-1 if not timebound)
 case class StoryCommonState(
     var _1: Boolean,
     var _2: Int,
@@ -18,21 +23,58 @@ object Importance extends Enumeration {
 }
 
 trait Story extends Subject[Story] with Listener {
+  lazy val actors: List[Actor]
   var universalConditions: List[() => Boolean] =
     List(() => !active && (commonState._3 || !commonState._1))
   var conditions: List[() => Boolean]
   var active: Boolean
-  // state contains unique state, common state is for things every story has
   // common state:
-  //    0: story done already
-  //    1: start time (-1 if not active)
-  //    2: repeatable story
-  //    3: duration (-1 if not timebound)
+  //    1: story done already
+  //    2: start time (-1 if not active)
+  //    3: repeatable story
+  //    4: duration (-1 if not timebound)
   var commonState: StoryCommonState
   val importance: Importance.Importance
 
   def canBegin: Boolean =
     universalConditions.forall(f => f()) && conditions.forall(f => f())
+
+  def beginStory(tick: Int): Unit = {
+    active = true
+    commonState._2 = tick
+    actors.foreach(_.beginStory(this, tick))
+    storySpecificBeginning(tick)
+  }
+  def storySpecificBeginning(tick: Int): Unit
+
+  def tick(tick: Int): Boolean = {
+    progress(tick: Int)
+    actors.foreach(_.tick(tick))
+
+    if (commonState._4 != -1 && tick >= commonState._2 + commonState._4) {
+      endStory(tick)
+      return true
+    }
+    return false
+  }
+  def progress(tick: Int): Unit
+
+  def endStory(tick: Int): Unit = {
+    active = false
+    commonState._1 = true
+    storySpecificEnding(tick)
+    actors.foreach(_.endStory(tick))
+  }
+  def storySpecificEnding(tick: Int): Unit
+
+  def interruptStory(tick: Int): Unit = {
+    active = false
+    storySpecificInterrupt(tick)
+    actors.foreach(_.interruptStory(tick))
+  }
+  def storySpecificInterrupt(tick: Int): Unit
+
+  def reset(): Unit
 
   implicit def storycommonState_to_tuple(
       cs: StoryCommonState
@@ -43,4 +85,23 @@ trait Story extends Subject[Story] with Listener {
       t: (Boolean, Int, Boolean, Int)
   ): StoryCommonState = StoryCommonState(t._1, t._2, t._3, t._4)
 
+}
+
+object Vibe extends Story {
+  lazy val actors = List()
+  var conditions: List[() => Boolean] = List()
+  var commonState = (false, 0, true, -1)
+  var active: Boolean = true
+  val importance = Importance.Vibe
+  override def canBegin: Boolean = true
+
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def progress(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+  def reset(): Unit = {
+    active = true
+    commonState = (false, 0, true, -1)
+  }
 }

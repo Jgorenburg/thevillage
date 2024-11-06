@@ -1,5 +1,6 @@
 import scala.reflect.api.TypeTags
 import scala.collection.mutable
+import scala.collection.mutable.HashSet
 
 trait Actor extends Listener with Subject[Actor] {
   val actor = "actor"
@@ -101,3 +102,21 @@ salmon.addListener(salmon)
 
 salmon.notifySwitchboard()
 trout.notifySwitchboard()
+
+object A {
+  var a = 1
+
+  def statechange(x: Int): Boolean = {
+    println(x)
+    a += 1
+    if (a % 2 == 0) {
+      b.remove(x + 1)
+    }
+    return (a % 2 == 0)
+  }
+
+  val b = HashSet(1, 2, 3, 4)
+}
+
+A.b.filter(A.statechange(_))
+1 + 1
