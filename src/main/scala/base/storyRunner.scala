@@ -87,8 +87,6 @@ object StoryAssigner {
 
     StoryRunner.addStory(story)
 
-    println(story)
-
     if (story == Vibe) {
       return false
     }

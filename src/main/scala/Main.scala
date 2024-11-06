@@ -1,5 +1,6 @@
+import Snowedin.ControlRoom
 @main def hello(): Unit =
-  println("Hello world!")
-  println(msg)
+  ControlRoom.runGame()
+  println("salmon")
 
 def msg = "I was compiled by Scala 3. :)"
