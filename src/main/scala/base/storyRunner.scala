@@ -15,8 +15,8 @@ object StoryRunner extends Updater {
 
       // interrupt every story an actor for this story is currently engaged in
       story.actors
-        .filter(_.commonState._1 != Vibe)
-        .foreach(actor => interruptStory(actor.commonState._1))
+        .filter(_.commonState.curStory != Vibe)
+        .foreach(actor => interruptStory(actor.commonState.curStory))
     }
 
     story.beginStory(GameManager.tick)
@@ -85,12 +85,11 @@ object StoryAssigner {
       story = WaitingList.getNextStory()
     }
 
-    StoryRunner.addStory(story)
-
     if (story == Vibe) {
       return false
     }
 
+    StoryRunner.addStory(story)
     return true
   }
 

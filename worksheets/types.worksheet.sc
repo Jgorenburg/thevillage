@@ -19,6 +19,16 @@ def foo(bar: (Int) => Boolean, v: Int): Boolean = {
 
 print(foo((a: Int) => a == 1, 1))
 
+case class bob(var x: Int, var y: Int) {
+  def copy(): bob = new bob(x, y)
+
+}
+var a = bob(1, 2)
+var b = a.copy()
+
+a.x = 3
+b.x
+
 // def blop[A: ClassTag](a: A*): Unit =
 //   a match {
 //     case _: List[Int]    => print("Int")

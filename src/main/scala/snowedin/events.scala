@@ -59,7 +59,8 @@ object Nap extends Story {
 
 object NoticeBrokenDoor extends Story {
   lazy val actors = List(Father)
-  var conditions: List[() => Boolean] = List(() => Laundry.commonState._2 > 0)
+  var conditions: List[() => Boolean] =
+    List(() => Laundry.commonState.startTime > 0)
   var active: Boolean = false
   var commonState = (false, -1, false, 0)
   val importance: Importance.Importance = Importance.Instantaneous
@@ -108,17 +109,19 @@ object Construction extends Story {
   )
   var active: Boolean = false
   var commonState = (false, -1, true, 15)
-  var amountleft = commonState._4
+  var amountleft = commonState.duration
   val importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = { amountleft -= 1 }
   def storySpecificEnding(tick: Int): Unit = {}
-  def storySpecificInterrupt(tick: Int): Unit = { commonState._4 = amountleft }
+  def storySpecificInterrupt(tick: Int): Unit = {
+    commonState.duration = amountleft
+  }
 
   def reset(): Unit = {
     active = false
     commonState = (false, -1, true, 15)
-    amountleft = commonState._4
+    amountleft = commonState.duration
   }
 }

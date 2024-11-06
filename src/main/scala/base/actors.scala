@@ -1,25 +1,35 @@
 package Base
 
+import Base.Importance.interrupt
+
 case class ActorCommonState(
-    var _1: Story,
-    var _2: Int
-) {}
+    var curStory: Story,
+    var startTime: Int
+) {
+  def copy(): ActorCommonState = { new ActorCommonState(curStory, startTime) }
+}
 
 trait Actor extends Subject[Actor] with Listener {
   // common state is for things every actor has
   // common state:
   //    1: current activity
   //    2: activity start time
-  var commonState: ActorCommonState
+  var commonState: ActorCommonState = (Vibe, 0)
+  var interrupted: ActorCommonState = commonState.copy()
 
   lazy val myEvents: Array[Any]
 
-  def getCurStory(): Story = commonState._1
-  def getCurStoryImportance(): Importance.Importance = commonState._1.importance
+  def getCurStory(): Story = commonState.curStory
+  def getCurStoryImportance(): Importance.Importance =
+    commonState.curStory.importance
 
   def beginStory(story: Story, tick: Int): Unit = {
-    commonState._1 = story
-    commonState._2 = tick
+
+    if (story.importance == Importance.Instantaneous) {
+      interrupted = commonState.copy()
+    }
+    commonState.curStory = story
+    commonState.startTime = tick
     actorSpecificBeginning(tick)
   }
   def actorSpecificBeginning(tick: Int): Unit
@@ -28,8 +38,12 @@ trait Actor extends Subject[Actor] with Listener {
 
   def endStory(tick: Int): Unit = {
     actorSpecificEnding(tick)
-    commonState._1 = Vibe
-    commonState._2 = tick
+    if (commonState.curStory.importance == Importance.Instantaneous) {
+      commonState = interrupted.copy()
+    } else {
+      commonState.curStory = Vibe
+      commonState.startTime = tick
+    }
   }
   def actorSpecificEnding(tick: Int): Unit
 
@@ -37,8 +51,8 @@ trait Actor extends Subject[Actor] with Listener {
     actorSpecificInterrupt(tick)
 
     // these are probably unneeded
-    commonState._1 = Vibe
-    commonState._2 = tick
+    commonState.curStory = Vibe
+    commonState.startTime = tick
   }
 
   def actorSpecificInterrupt(tick: Int): Unit
@@ -48,7 +62,7 @@ trait Actor extends Subject[Actor] with Listener {
   implicit def actorcommonState_to_tuple(
       cs: ActorCommonState
   ): (Story, Int) =
-    (cs._1, cs._2)
+    (cs.curStory, cs.startTime)
 
   implicit def tuple_to_actorcommonstate(
       t: (Story, Int)

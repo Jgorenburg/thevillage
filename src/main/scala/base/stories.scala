@@ -6,10 +6,10 @@ package Base
 //    3: repeatable story
 //    4: duration (-1 if not timebound)
 case class StoryCommonState(
-    var _1: Boolean,
-    var _2: Int,
-    var _3: Boolean,
-    var _4: Int
+    var completed: Boolean,
+    var startTime: Int,
+    var repeatable: Boolean,
+    var duration: Int
 ) {}
 object Importance extends Enumeration {
   type Importance = Value
@@ -25,7 +25,7 @@ object Importance extends Enumeration {
 trait Story extends Subject[Story] with Listener {
   lazy val actors: List[Actor]
   var universalConditions: List[() => Boolean] =
-    List(() => !active && (commonState._3 || !commonState._1))
+    List(() => !active && (commonState.repeatable || !commonState.completed))
   var conditions: List[() => Boolean]
   var active: Boolean
   // common state:
@@ -41,7 +41,7 @@ trait Story extends Subject[Story] with Listener {
 
   def beginStory(tick: Int): Unit = {
     active = true
-    commonState._2 = tick
+    commonState.startTime = tick
     actors.foreach(_.beginStory(this, tick))
     storySpecificBeginning(tick)
   }
@@ -51,7 +51,9 @@ trait Story extends Subject[Story] with Listener {
     progress(tick: Int)
     actors.foreach(_.tick(tick))
 
-    if (commonState._4 != -1 && tick >= commonState._2 + commonState._4) {
+    if (
+      commonState.duration != -1 && tick >= commonState.startTime + commonState.duration
+    ) {
       endStory(tick)
       return true
     }
@@ -61,7 +63,7 @@ trait Story extends Subject[Story] with Listener {
 
   def endStory(tick: Int): Unit = {
     active = false
-    commonState._1 = true
+    commonState.completed = true
     storySpecificEnding(tick)
     actors.foreach(_.endStory(tick))
   }
@@ -79,7 +81,7 @@ trait Story extends Subject[Story] with Listener {
   implicit def storycommonState_to_tuple(
       cs: StoryCommonState
   ): (Boolean, Int, Boolean, Int) =
-    (cs._1, cs._2, cs._3, cs._4)
+    (cs.completed, cs.startTime, cs.repeatable, cs.duration)
 
   implicit def tuple_to_storycommonstate(
       t: (Boolean, Int, Boolean, Int)

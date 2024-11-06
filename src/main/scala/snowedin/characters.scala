@@ -3,8 +3,6 @@ package Snowedin
 import Base.{Actor, Story, Vibe}
 
 object Father extends Actor {
-  var commonState = (Vibe, 0)
-
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
   var noticedBrokenDoor = false
