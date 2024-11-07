@@ -18,14 +18,18 @@ object ControlRoom {
       Construction,
       Cleaning,
       Art,
-      RearrangeHousehold
+      RearrangeHousehold,
+      Music,
+      Chat,
+      CookLunch,
+      CookDinner
     )
   val characters: List[Actor] = List(Father, Mother)
   val objects: List[Actor] =
     List(Couch, Worktable, Easle)
 
   def runGame(
-      gameLen: Int = 30,
+      gameLen: Int = 100,
       logging: Boolean = false,
       loggerFile: String = "unnamed"
   ) = {

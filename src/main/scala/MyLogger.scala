@@ -25,7 +25,7 @@ object MyLogger {
   def addToLine(frag: String) = line += frag + ";"
 
   def addActiveStories(stories: HashSet[Story]) = addToLine(
-    stories.map(_.getClass.getSimpleName.stripSuffix("$")).mkString(",")
+    stories.map(_.getClass.getSimpleName.stripSuffix("$")).mkString(", ")
   )
 
   def printLine() = {

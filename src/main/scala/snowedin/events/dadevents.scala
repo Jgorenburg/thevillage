@@ -37,10 +37,17 @@ object Nap extends Story {
   lazy val actors = HashSet(Father, Couch)
 
   var conditions: List[() => Boolean] = List(
+    () => sleepy(),
     () => Couch.curCapacity == 2,
     () => Importance.interrupt(Father.getCurStoryImportance(), importance),
     () => Importance.interrupt(Couch.getCurStoryImportance(), importance)
   )
+
+  val napGap = 20
+  var napEnd = 0
+  def sleepy(): Boolean = {
+    return GameManager.tick - napGap >= napEnd
+  }
   var active: Boolean = false
 
   var commonState = (false, -1, true, 10)
@@ -54,13 +61,16 @@ object Nap extends Story {
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    napEnd = tick
+  }
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset() = {
     active = false
     commonState = (false, -1, true, 10)
     state = Array(0, -1)
+    napEnd = 0
   }
 }
 

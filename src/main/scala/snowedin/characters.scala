@@ -3,9 +3,12 @@ package Snowedin
 import Base.{Actor, Story, Vibe}
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
+import Snowedin.Tools.Tamborine
 
 object Mother extends Actor {
   var noticedBrokenDoor = false
+
+  var tools: HashSet[Tools.Tools] = HashSet()
 
   lazy val myEvents: Array[Any] = Array(Vibe, Cleaning)
   def actorSpecificBeginning(tick: Int): Unit = {
@@ -14,15 +17,22 @@ object Mother extends Actor {
       case _: Story         => // stories without relevant beginnings for mother
   }
   def tick(tick: Int): Unit = {}
-  def actorSpecificEnding(tick: Int): Unit = {}
+  def actorSpecificEnding(tick: Int): Unit = {
+    commonState.curStory match
+      case _: Story =>
+  }
   def actorSpecificInterrupt(tick: Int): Unit = {}
 
   def reset() = {
     commonState = (Vibe, 0)
     noticedBrokenDoor = false
+    tools = HashSet()
   }
 
-  def log() = commonState.toString() + s", Aware of Door: ${noticedBrokenDoor}"
+  def log() = commonState.toString() +
+    ", Importance: " + commonState.curStory.importance +
+    ", Tools: " + tools.mkString(", ")
+    + s", Aware of Door: ${noticedBrokenDoor}"
 }
 
 object Father extends Actor {
@@ -66,6 +76,8 @@ object Father extends Actor {
   }
 
   def log() = commonState.toString() +
-    " Tools: " + tools.mkString(", ") + s" Aware of Door: ${noticedBrokenDoor}"
+    ", Importance: " + commonState.curStory.importance +
+    ", Tools: " + tools.mkString(", ")
+    + s", Aware of Door: ${noticedBrokenDoor}"
 
 }

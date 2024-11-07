@@ -15,6 +15,7 @@ object GameManager {
   var objects: List[Actor] = List()
 
   var tick: Int = 0
+  var ending: Int = 0
 
   def setup(
       ups: List[Updater],
@@ -29,7 +30,8 @@ object GameManager {
   }
 
   def runGame(endTick: Int, logging: Boolean = false): Unit = {
-    while (tick < endTick) {
+    ending = endTick
+    while (tick < ending) {
       step()
       if (logging) { log() }
     }

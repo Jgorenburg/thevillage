@@ -34,7 +34,7 @@ object Worktable extends Actor {
 
 object Tools extends Enumeration {
   type Tools = Value
-  val Screwdriver = Value
+  val Screwdriver, Tamborine = Value
 }
 
 object Couch extends Actor {

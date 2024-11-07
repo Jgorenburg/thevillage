@@ -3,6 +3,7 @@ package Snowedin
 import Base.Importance
 import scala.collection.mutable.HashSet
 import Base.Story
+import Snowedin.Tools.Tamborine
 
 object Cleaning extends Story {
   lazy val actors = HashSet(Mother)
@@ -21,6 +22,29 @@ object Cleaning extends Story {
   def reset() = {
     active = false
     commonState = (false, -1, false, 7)
+  }
+}
+
+object Music extends Story {
+  lazy val actors = HashSet(Mother)
+  var conditions: List[() => Boolean] =
+    List(
+      () => Mother.tools.contains(Tamborine),
+      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+    )
+  var active: Boolean = false
+  var commonState = (false, -1, false, 4)
+  var importance: Importance.Importance = Importance.Event
+
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def progress(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {}
+
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+  def reset() = {
+    active = false
+    commonState = (false, -1, false, 4)
   }
 }
 
@@ -64,7 +88,12 @@ object RearrangeHousehold extends Story {
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = { amountleft -= 1 }
+  def progress(tick: Int): Unit = {
+    amountleft -= 1
+    if (amountleft < commonState.duration / 2) {
+      Mother.tools.add(Tamborine)
+    }
+  }
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {
