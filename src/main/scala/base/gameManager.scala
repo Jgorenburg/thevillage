@@ -1,5 +1,7 @@
 package Base
 
+import MyLogger.MyLogger
+
 trait Updater {
   def tick(): Unit
   def reset(): Unit
@@ -26,9 +28,10 @@ object GameManager {
     objects = objs
   }
 
-  def runGame(endTick: Int): Unit = {
+  def runGame(endTick: Int, logging: Boolean = false): Unit = {
     while (tick < endTick) {
       step()
+      if (logging) { log() }
     }
   }
 
@@ -43,5 +46,11 @@ object GameManager {
     stories.foreach(_.reset())
     characters.foreach(_.reset())
     objects.foreach(_.reset())
+  }
+
+  def log(): Unit = {
+    MyLogger.addActiveStories(StoryRunner.stories)
+    (characters ::: objects).foreach(c => MyLogger.addToLine(c.log()))
+    MyLogger.printLine()
   }
 }

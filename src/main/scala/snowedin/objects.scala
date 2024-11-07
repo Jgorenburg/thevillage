@@ -25,6 +25,9 @@ object Worktable extends Actor {
     commonState = (Vibe, 0)
     tools = Array.fill(Tools.maxId)(true)
   }
+
+  def log() = commonState.toString() +
+    " Tools: " + tools.mkString(", ")
 }
 
 object Couch extends Actor {
@@ -58,4 +61,8 @@ object Couch extends Actor {
     commonState = (Vibe, 0)
     curCapacity = maxCapacity
   }
+
+  def log() = commonState.toString() +
+    s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity}"
+
 }

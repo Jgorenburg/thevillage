@@ -5,6 +5,7 @@ import Base.StoryRunner
 import Base.Updater
 import Base.Story
 import Base.Actor
+import MyLogger.MyLogger
 
 object ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
@@ -16,8 +17,16 @@ object ControlRoom {
     List(Couch)
     // List(Couch, Worktable)
 
-  def runGame(gameLen: Int = 30) = {
+  def runGame(
+      gameLen: Int = 30,
+      logging: Boolean = false,
+      loggerFile: String = "unnamed"
+  ) = {
     GameManager.setup(updaters, stories, characters, objects)
-    GameManager.runGame(gameLen)
+    if (logging) {
+      MyLogger.setFile(loggerFile)
+      MyLogger.printHeader(GameManager.characters ::: GameManager.objects)
+    }
+    GameManager.runGame(gameLen, logging)
   }
 }

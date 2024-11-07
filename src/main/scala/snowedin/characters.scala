@@ -32,6 +32,10 @@ object Father extends Actor {
     noticedBrokenDoor = false
     tools = Array.fill(Tools.maxId)(false)
   }
+
+  def log() = commonState.toString() +
+    " Tools: " + tools.mkString(", ") + s" Aware of Door: ${noticedBrokenDoor}"
+
 }
 
 object Tools extends Enumeration {

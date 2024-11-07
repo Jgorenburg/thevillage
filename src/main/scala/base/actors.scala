@@ -2,11 +2,13 @@ package Base
 
 import Base.Importance.interrupt
 
-case class ActorCommonState(
+case class curStory(
     var curStory: Story,
     var startTime: Int
 ) {
-  def copy(): ActorCommonState = { new ActorCommonState(curStory, startTime) }
+  def copy(): curStory = { new curStory(curStory, startTime) }
+  override def toString(): String =
+    s"Current Story: ${curStory.getClass.getSimpleName.stripSuffix("$")}  Start Time: ${startTime}"
 }
 
 trait Actor extends Subject[Actor] with Listener {
@@ -14,8 +16,8 @@ trait Actor extends Subject[Actor] with Listener {
   // common state:
   //    1: current activity
   //    2: activity start time
-  var commonState: ActorCommonState = (Vibe, 0)
-  var interrupted: ActorCommonState = commonState.copy()
+  var commonState: curStory = (Vibe, 0)
+  var interrupted: curStory = commonState.copy()
 
   lazy val myEvents: Array[Any]
 
@@ -59,13 +61,15 @@ trait Actor extends Subject[Actor] with Listener {
 
   def reset(): Unit
 
+  def log(): String
+
   implicit def actorcommonState_to_tuple(
-      cs: ActorCommonState
+      cs: curStory
   ): (Story, Int) =
     (cs.curStory, cs.startTime)
 
   implicit def tuple_to_actorcommonstate(
       t: (Story, Int)
-  ): ActorCommonState = ActorCommonState(t._1, t._2)
+  ): curStory = curStory(t._1, t._2)
 
 }
