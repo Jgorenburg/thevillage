@@ -26,12 +26,12 @@ trait Actor extends Subject[Actor] with Listener {
     commonState.curStory.importance
 
   def beginStory(story: Story, tick: Int): Unit = {
+    interrupted = commonState.copy()
+    interrupted.curStory.interruptStory(tick)
 
-    if (story.importance == Importance.Instantaneous) {
-      interrupted = commonState.copy()
-    }
     commonState.curStory = story
     commonState.startTime = tick
+
     actorSpecificBeginning(tick)
   }
   def actorSpecificBeginning(tick: Int): Unit
@@ -52,7 +52,6 @@ trait Actor extends Subject[Actor] with Listener {
   def interruptStory(tick: Int): Unit = {
     actorSpecificInterrupt(tick)
 
-    // these are probably unneeded
     commonState.curStory = Vibe
     commonState.startTime = tick
   }

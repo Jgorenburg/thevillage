@@ -1,5 +1,7 @@
 package Base
 
+import scala.collection.mutable.HashSet
+
 // common state:
 //    1: story done already
 //    2: start time (-1 if not active)
@@ -23,7 +25,7 @@ object Importance extends Enumeration {
 }
 
 trait Story extends Subject[Story] with Listener {
-  lazy val actors: List[Actor]
+  lazy val actors: HashSet[Actor]
   var universalConditions: List[() => Boolean] =
     List(() => !active && (commonState.repeatable || !commonState.completed))
   var conditions: List[() => Boolean]
@@ -70,6 +72,7 @@ trait Story extends Subject[Story] with Listener {
   def storySpecificEnding(tick: Int): Unit
 
   def interruptStory(tick: Int): Unit = {
+    if (!active) return
     active = false
     storySpecificInterrupt(tick)
     actors.foreach(_.interruptStory(tick))
@@ -90,7 +93,7 @@ trait Story extends Subject[Story] with Listener {
 }
 
 object Vibe extends Story {
-  lazy val actors = List()
+  lazy val actors = HashSet()
   var conditions: List[() => Boolean] = List()
   var commonState = (false, 0, true, -1)
   var active: Boolean = true
