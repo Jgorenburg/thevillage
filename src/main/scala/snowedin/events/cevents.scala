@@ -31,7 +31,7 @@ object NoticeBrokenDoor extends Story {
   }
   var active: Boolean = false
   var commonState = (false, -1, true, 0)
-  val importance: Importance.Importance = Importance.Instantaneous
+  var importance: Importance.Importance = Importance.Instantaneous
 
   // Instantaneous stories immedietely end
   def storySpecificBeginning(tick: Int): Unit = endStory(tick)

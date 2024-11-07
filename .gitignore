@@ -31,3 +31,4 @@ metals.sbt
 .idea_modules
 worksheets/
 logs/
+src/main/scala/Main.scala

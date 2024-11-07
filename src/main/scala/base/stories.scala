@@ -36,7 +36,7 @@ trait Story extends Subject[Story] with Listener {
   //    3: repeatable story
   //    4: duration (-1 if not timebound)
   var commonState: StoryCommonState
-  val importance: Importance.Importance
+  var importance: Importance.Importance
 
   def canBegin: Boolean =
     universalConditions.forall(f => f()) && conditions.forall(f => f())

@@ -6,6 +6,7 @@ import scala.util.Random
 import Base.Actor
 import Base.GameManager
 import scala.collection.mutable.HashSet
+import Snowedin.Tools.Screwdriver
 
 // Father only
 object Laundry extends Story {
@@ -17,7 +18,7 @@ object Laundry extends Story {
     )
   var active: Boolean = false
   var commonState = (false, -1, false, 7)
-  val importance: Importance.Importance = Importance.Event
+  var importance: Importance.Importance = Importance.Event
 
   // Father will collect laundry, then go to laundry machine
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -49,7 +50,7 @@ object Nap extends Story {
 //     1: when the nap started
   var state: Array[Any] = Array(0, -1)
 
-  val importance: Importance.Importance = Importance.Base
+  var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = {}
@@ -67,13 +68,13 @@ object FixDoor extends Story {
   lazy val actors = HashSet(Father)
   var conditions: List[() => Boolean] = List(
     () => Father.noticedBrokenDoor,
-    () => Father.tools(Tools.Screwdriver.id),
+    () => Father.tools.contains(Screwdriver),
     () => Importance.interrupt(Father.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
   var commonState = (false, -1, false, 3)
 
-  val importance: Importance.Importance = Importance.Event
+  var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = {}
@@ -96,7 +97,7 @@ object Construction extends Story {
   var active: Boolean = false
   var commonState = (false, -1, true, 15)
   var amountleft = commonState.duration
-  val importance: Importance.Importance = Importance.Base
+  var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = { amountleft -= 1 }

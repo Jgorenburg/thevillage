@@ -1,6 +1,8 @@
 package Snowedin
 
 import Base.{Actor, Story, Vibe}
+import scala.collection.mutable.HashSet
+import Snowedin.Tools.Screwdriver
 
 object Mother extends Actor {
   var noticedBrokenDoor = false
@@ -27,7 +29,7 @@ object Father extends Actor {
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
   var noticedBrokenDoor = false
-  var tools: Array[Boolean] = Array.fill(Tools.maxId)(false)
+  var tools: HashSet[Tools.Tools] = HashSet()
 
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
@@ -39,6 +41,15 @@ object Father extends Actor {
       case _: Story => // stories without relevant progress for father
   }
   def actorSpecificEnding(tick: Int): Unit = {
+    if (
+      noticedBrokenDoor &&
+      !tools.contains(Screwdriver) &&
+      commonState.curStory.actors.contains(Worktable) &&
+      Worktable.tools.contains(Screwdriver)
+    ) {
+      tools.add(Screwdriver)
+      Worktable.tools.remove(Screwdriver)
+    }
     commonState._1 match
       case _: Story => // stories without relevant endings for father
   }
@@ -51,7 +62,7 @@ object Father extends Actor {
   def reset() = {
     commonState = (Vibe, 0)
     noticedBrokenDoor = false
-    tools = Array.fill(Tools.maxId)(false)
+    tools = HashSet()
   }
 
   def log() = commonState.toString() +
