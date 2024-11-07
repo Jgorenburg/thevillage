@@ -37,8 +37,3 @@ object Father extends Actor {
     " Tools: " + tools.mkString(", ") + s" Aware of Door: ${noticedBrokenDoor}"
 
 }
-
-object Tools extends Enumeration {
-  type Tools = Value
-  val Screwdriver = Value
-}

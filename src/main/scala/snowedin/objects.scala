@@ -30,6 +30,11 @@ object Worktable extends Actor {
     " Tools: " + tools.mkString(", ")
 }
 
+object Tools extends Enumeration {
+  type Tools = Value
+  val Screwdriver = Value
+}
+
 object Couch extends Actor {
   val maxCapacity = 2
   var curCapacity = maxCapacity

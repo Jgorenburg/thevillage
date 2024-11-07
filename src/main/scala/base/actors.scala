@@ -8,7 +8,7 @@ case class curStory(
 ) {
   def copy(): curStory = { new curStory(curStory, startTime) }
   override def toString(): String =
-    s"Current Story: ${curStory.getClass.getSimpleName.stripSuffix("$")}  Start Time: ${startTime}"
+    s"Current Story: ${curStory.getClass.getSimpleName.stripSuffix("$")}, Start Time: ${startTime}"
 }
 
 trait Actor extends Subject[Actor] with Listener {
