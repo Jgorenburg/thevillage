@@ -2,6 +2,27 @@ package Snowedin
 
 import Base.{Actor, Story, Vibe}
 
+object Mother extends Actor {
+  var noticedBrokenDoor = false
+
+  lazy val myEvents: Array[Any] = Array(Vibe, Cleaning)
+  def actorSpecificBeginning(tick: Int): Unit = {
+    commonState._1 match
+      case NoticeBrokenDoor => noticedBrokenDoor = true
+      case _: Story         => // stories without relevant beginnings for mother
+  }
+  def tick(tick: Int): Unit = {}
+  def actorSpecificEnding(tick: Int): Unit = {}
+  def actorSpecificInterrupt(tick: Int): Unit = {}
+
+  def reset() = {
+    commonState = (Vibe, 0)
+    noticedBrokenDoor = false
+  }
+
+  def log() = commonState.toString() + s", Aware of Door: ${noticedBrokenDoor}"
+}
+
 object Father extends Actor {
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
@@ -11,7 +32,7 @@ object Father extends Actor {
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
       case NoticeBrokenDoor => noticedBrokenDoor = true
-      case _: Story         => // tories without relevant beginnings for father
+      case _: Story         => // stories without relevant beginnings for father
   }
   def tick(tick: Int): Unit = {
     commonState._1 match

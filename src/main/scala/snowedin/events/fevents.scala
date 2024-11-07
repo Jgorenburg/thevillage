@@ -4,11 +4,17 @@ import Base.Story
 import Base.Importance
 import scala.util.Random
 import Base.Actor
+import Base.GameManager
+import scala.collection.mutable.HashSet
 
+// Father only
 object Laundry extends Story {
-  lazy val actors: List[Actor] = List(Father)
+  lazy val actors = HashSet(Father)
   var conditions: List[() => Boolean] =
-    List(() => Importance.interrupt(Father.getCurStoryImportance(), importance))
+    List(
+      () => GameManager.tick > 3,
+      () => Importance.interrupt(Father.getCurStoryImportance(), importance)
+    )
   var active: Boolean = false
   var commonState = (false, -1, false, 7)
   val importance: Importance.Importance = Importance.Event
@@ -27,7 +33,7 @@ object Laundry extends Story {
 }
 
 object Nap extends Story {
-  lazy val actors = List(Father, Couch)
+  lazy val actors = HashSet(Father, Couch)
 
   var conditions: List[() => Boolean] = List(
     () => Couch.curCapacity == 2,
@@ -57,28 +63,8 @@ object Nap extends Story {
   }
 }
 
-object NoticeBrokenDoor extends Story {
-  lazy val actors = List(Father)
-  var conditions: List[() => Boolean] =
-    List(() => Laundry.commonState.startTime > 0)
-  var active: Boolean = false
-  var commonState = (false, -1, false, 0)
-  val importance: Importance.Importance = Importance.Instantaneous
-
-  // Instantaneous stories immedietely end
-  def storySpecificBeginning(tick: Int): Unit = endStory(tick)
-  def progress(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
-  def storySpecificInterrupt(tick: Int): Unit = {}
-
-  def reset(): Unit = {
-    active = false
-    commonState = (false, -1, false, 0)
-  }
-}
-
 object FixDoor extends Story {
-  lazy val actors = List(Father)
+  lazy val actors = HashSet(Father)
   var conditions: List[() => Boolean] = List(
     () => Father.noticedBrokenDoor,
     () => Father.tools(Tools.Screwdriver.id),
@@ -102,7 +88,7 @@ object FixDoor extends Story {
 }
 
 object Construction extends Story {
-  lazy val actors = List(Father, Worktable)
+  lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] = List(
     () => Importance.interrupt(Father.getCurStoryImportance(), importance),
     () => Importance.interrupt(Worktable.getCurStoryImportance(), importance)

@@ -10,9 +10,9 @@ import MyLogger.MyLogger
 object ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
   val stories: List[Story] =
-    List(Laundry, Nap, NoticeBrokenDoor)
+    List(Laundry, Nap, NoticeBrokenDoor, Cleaning)
     // List(Laundry, Nap, NoticeBrokenDoor, FixDoor, Construction)
-  val characters: List[Actor] = List(Father)
+  val characters: List[Actor] = List(Father, Mother)
   val objects: List[Actor] =
     List(Couch)
     // List(Couch, Worktable)
