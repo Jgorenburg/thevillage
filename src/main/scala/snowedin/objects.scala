@@ -37,6 +37,7 @@ object Worktable extends Actor {
 
 object Couch extends Actor with Spaces {
   val maxCapacity = 2
+  var curCapacity = maxCapacity
 
   lazy val myEvents: Array[Any] = Array(Nap)
 
@@ -83,6 +84,7 @@ object Couch extends Actor with Spaces {
 
 object Sofachair extends Actor with Spaces {
   val maxCapacity = 1
+  var curCapacity = maxCapacity
 
   lazy val myEvents: Array[Any] = Array(Snack)
 
@@ -126,6 +128,7 @@ object Sofachair extends Actor with Spaces {
 
 object Table extends Actor with Spaces {
   val maxCapacity = 4
+  var curCapacity = maxCapacity
 
   lazy val myEvents: Array[Any] = Array(Snack)
 
@@ -162,6 +165,7 @@ object Table extends Actor with Spaces {
 
 object Easle extends Actor with Spaces {
   val maxCapacity = 1
+  var curCapacity = maxCapacity
 
   lazy val myEvents: Array[Any] = Array(Art)
 

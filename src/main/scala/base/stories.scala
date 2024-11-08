@@ -33,8 +33,9 @@ trait Pausable {
   self: Story =>
 
   var amountleft: Int = -1
+  var restartTime: Int = 1
   def proceed() = amountleft -= 1
-  def pause() = self.commonState.duration = amountleft
+  def pause() = self.commonState.duration = amountleft + restartTime
   def beginAnew() = amountleft = commonState.duration
 }
 
@@ -43,6 +44,22 @@ trait Occupy {
   self: Story =>
 
   val size: Int
+}
+
+// for repeatable stories that should have some wait before repeating
+trait Delay {
+  self: Story =>
+
+  var delay: Int
+  var endTime: Int = 0
+  var repeatsLeft: Double = Double.PositiveInfinity
+
+  def setEndTime(time: Int) = {
+    endTime = time
+    repeatsLeft -= 1
+  }
+  def readyToRepeat(): Boolean =
+    !commonState.completed || (repeatsLeft > 0 && GameManager.tick - delay >= endTime)
 }
 
 trait Story extends Subject[Story] with Listener {

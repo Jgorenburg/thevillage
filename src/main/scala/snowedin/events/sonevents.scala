@@ -8,33 +8,41 @@ import Snowedin.Tools.Knife
 import Base.Occupy
 import Base.GameManager
 import Base.StoryCommonState
+import Base.Delay
 
-object Knit extends Story with Pausable {
+object Knit extends Story with Pausable with Delay {
   var active: Boolean = false
+  var delay = 29
   lazy val actors = HashSet(Son)
   val startState = (false, -1, true, 17)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
-    List(() => Importance.interrupt(Son.getCurStoryImportance(), importance))
+    List(
+      () => readyToRepeat(),
+      () => Importance.interrupt(Son.getCurStoryImportance(), importance)
+    )
   var importance: Base.Importance.Importance = Importance.Base
   def progress(tick: Int): Unit = proceed()
   def reset(): Unit = {
     commonState = startState
     active = false
     beginAnew()
+    endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = beginAnew()
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
 
-object Woodworking extends Story with Pausable {
+object Woodworking extends Story with Pausable with Delay {
   var active: Boolean = false
+  var delay = 13
   lazy val actors = HashSet(Son, Worktable)
-  val startState = (false, -1, false, 31)
+  val startState = (false, -1, true, 31)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
+      () => readyToRepeat(),
       () => Worktable.tools.contains(Knife) || Son.tools.contains(Knife),
       () =>
         actors.forall(actor =>
@@ -47,6 +55,7 @@ object Woodworking extends Story with Pausable {
     commonState = startState
     active = false
     beginAnew()
+    endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = {
     beginAnew()
@@ -56,13 +65,14 @@ object Woodworking extends Story with Pausable {
   def storySpecificEnding(tick: Int): Unit = {
     Son.tools.remove(Knife)
     Worktable.tools.add(Knife)
+    setEndTime(tick)
   }
   def storySpecificInterrupt(tick: Int): Unit = {
     pause()
   }
 }
 
-object Snack extends Story with Occupy {
+object Snack extends Story with Occupy with Delay {
   val size = 1
   var active: Boolean = false
   lazy val actors = HashSet(Son)
@@ -71,11 +81,15 @@ object Snack extends Story with Occupy {
   var conditions: List[() => Boolean] =
     List(
       () => GameManager.tick - 20 > Son.lastAte,
+      () => readyToRepeat(),
       () => Importance.interrupt(Son.getCurStoryImportance(), importance),
       () => locationIsFree()
     )
 
-    // priority order: Table > Sofachair > Couch
+  var delay = 0
+  repeatsLeft = 2
+
+  // priority order: Table > Sofachair > Couch
   def locationIsFree(): Boolean = {
     actors --= List(Table, Sofachair, Couch)
     if (
@@ -112,9 +126,11 @@ object Snack extends Story with Occupy {
   def reset(): Unit = {
     commonState = startState
     active = false
+    repeatsLeft = 2
+    endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
 

@@ -7,9 +7,10 @@ import Base.GameManager
 import Base.Spaces
 import Base.Pausable
 import Base.Occupy
+import Base.Delay
 
 // Father and Mother
-object Chat extends Story {
+object Chat extends Story with Delay {
   var active: Boolean = false
   lazy val actors = HashSet(Mother, Father)
   val startState = (false, -1, true, 3)
@@ -17,30 +18,27 @@ object Chat extends Story {
 
   var conditions: List[() => Boolean] =
     List(
-      () => noRecentChats(),
+      () => readyToRepeat(),
       () =>
         actors.forall(actor =>
           Importance.interrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
-  val chatGap = 15
-  var chatEnd = 0 - chatGap
-  def noRecentChats(): Boolean = {
-    return GameManager.tick - chatGap >= chatEnd
-  }
+  val delay = 15
+
   var importance = Importance.Event
   def progress(tick: Int): Unit = {}
   def reset(): Unit = {
     active = false
     commonState = startState
-    chatEnd = 0 - chatGap
+    endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = {
     Father.noticedBrokenDoor |= Mother.noticedBrokenDoor
   }
   def storySpecificEnding(tick: Int): Unit = {
-    chatEnd = tick
+    setEndTime(tick)
   }
   def storySpecificInterrupt(tick: Int): Unit = {}
 

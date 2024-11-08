@@ -9,6 +9,7 @@ import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
 import Base.Pausable
 import Base.Occupy
+import Base.Delay
 
 // Father only
 object Laundry extends Story {
@@ -37,46 +38,36 @@ object Laundry extends Story {
   }
 }
 
-object Nap extends Story with Occupy {
+object Nap extends Story with Occupy with Delay {
   lazy val actors = HashSet(Father, Couch)
   val size = 2
 
   var conditions: List[() => Boolean] = List(
-    () => sleepy(),
+    () => readyToRepeat(),
     () => Couch.curCapacity == 2,
     () => Importance.interrupt(Father.getCurStoryImportance(), importance),
     () => Importance.interrupt(Couch.getCurStoryImportance(), importance)
   )
 
-  val napGap = 20
-  var napEnd = 0
-  def sleepy(): Boolean = {
-    return GameManager.tick - napGap >= napEnd
-  }
+  val delay = 11
   var active: Boolean = false
 
   val startState = (false, -1, true, 10)
   var commonState = startState.copy()
-
-// state:
-//     0: how many naps father has taken
-//     1: when the nap started
-  var state: Array[Any] = Array(0, -1)
 
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {
-    napEnd = tick
+    setEndTime(tick)
   }
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset() = {
     active = false
     commonState = startState
-    state = Array(0, -1)
-    napEnd = 0
+    endTime = 0
   }
 }
 
@@ -105,9 +96,10 @@ object FixDoor extends Story {
 
 }
 
-object Construction extends Story with Pausable {
+object Construction extends Story with Pausable with Delay {
   lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] = List(
+    () => readyToRepeat(),
     () => Importance.interrupt(Father.getCurStoryImportance(), importance),
     () => Importance.interrupt(Worktable.getCurStoryImportance(), importance)
   )
@@ -115,16 +107,22 @@ object Construction extends Story with Pausable {
   val startState = (false, -1, true, 15)
   var commonState = startState.copy()
 
+  val delay = 9
+
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = { beginAnew() }
   def progress(tick: Int): Unit = { proceed() }
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    setEndTime(tick)
+    beginAnew()
+  }
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
 
   def reset(): Unit = {
     active = false
     commonState = startState
     beginAnew()
+    endTime = 0
   }
 }

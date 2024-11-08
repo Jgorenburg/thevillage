@@ -19,7 +19,7 @@ trait Spaces {
   self: Actor =>
 
   val maxCapacity: Int
-  var curCapacity: Int = maxCapacity
+  var curCapacity: Int
 
   val occupiers: HashMap[Occupy, Int] = HashMap()
 
@@ -41,6 +41,7 @@ trait Spaces {
     curCapacity = maxCapacity
     occupiers.clear()
   }
+
 }
 
 trait Actor extends Subject[Actor] with Listener {
