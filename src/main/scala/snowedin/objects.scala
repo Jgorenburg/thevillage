@@ -14,16 +14,16 @@ object Worktable extends Actor {
   def actorSpecificBeginning(tick: Int): Unit = {}
   def tick(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant endings for father
+      case _: Story =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant endings for father
+      case _: Story =>
   }
 
   def reset(): Unit = {
@@ -39,7 +39,7 @@ object Couch extends Actor with Spaces {
   val maxCapacity = 2
   var curCapacity = maxCapacity
 
-  lazy val myEvents: Array[Any] = Array(Nap)
+  lazy val myEvents: Array[Any] = Array(Nap, Read, Movie, JoinMovie)
 
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState.curStory match
@@ -52,24 +52,23 @@ object Couch extends Actor with Spaces {
           Movie.needToSeat = 0
           occupy(Movie)
         }
-      case _: Story => // tories without relevant beginnings for father
+      case story: Occupy => occupy(story)
+      case _: Story      =>
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match
-      case Nap      => leave(Nap.size)
-      case Movie    => leave(Movie)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
     commonState.curStory match
-      case Nap      => leave(Nap)
-      case Movie    => leave(Movie)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def reset(): Unit = {
@@ -86,7 +85,7 @@ object Sofachair extends Actor with Spaces {
   val maxCapacity = 1
   var curCapacity = maxCapacity
 
-  lazy val myEvents: Array[Any] = Array(Snack)
+  lazy val myEvents: Array[Any] = Array(Snack, Read, JoinMovie, Movie)
 
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState.curStory match
@@ -98,22 +97,25 @@ object Sofachair extends Actor with Spaces {
           occupy(Movie)
         }
       }
-      case _: Story => // tories without relevant beginnings for father
+      case story: Occupy => {
+        occupy(story)
+      }
+      case _: Story =>
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match
       case story: Occupy => leave(story)
-      case _: Story      => // stories without relevant endings for father
+      case _: Story      =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
     commonState.curStory match
       case story: Occupy => leave(story)
-      case _: Story      => // stories without relevant endings for father
+      case _: Story      =>
   }
 
   def reset(): Unit = {
@@ -127,6 +129,10 @@ object Sofachair extends Actor with Spaces {
 }
 
 object Table extends Actor with Spaces {
+
+  var readyToClear: Boolean = false
+  var readyForLunch: Boolean = false
+  var readyForDinner: Boolean = false
   val maxCapacity = 4
   var curCapacity = maxCapacity
 
@@ -134,23 +140,23 @@ object Table extends Actor with Spaces {
 
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState.curStory match
-      case Snack    => occupy(Snack)
-      case _: Story => // tories without relevant beginnings for father
+      case story: Occupy => occupy(story)
+      case _: Story      =>
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match
-      case Snack    => leave(Snack)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
     commonState.curStory match
-      case Snack    => leave(Snack)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def reset(): Unit = {
@@ -171,23 +177,23 @@ object Easle extends Actor with Spaces {
 
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState.curStory match
-      case Art      => occupy(Art.size)
-      case _: Story => // tories without relevant beginnings for father
+      case story: Occupy => occupy(story)
+      case _: Story      =>
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match
-      case Art      => leave(Art.size)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
     commonState.curStory match
-      case Art      => leave(Art.size)
-      case _: Story => // stories without relevant endings for father
+      case story: Occupy => leave(story)
+      case _: Story      =>
   }
 
   def reset(): Unit = {
@@ -230,4 +236,54 @@ object Stove extends Actor {
 
   def log() = commonState.toString() +
     s" Unattended: ${unattended}, Left At: ${leftAlone}"
+}
+
+object Dishwasher extends Actor {
+  var dirty = true
+  var readyToWash = false
+  var running = false
+  var clean = false
+  var unloaded = false
+  def actorSpecificBeginning(tick: Int): Unit = {}
+  def actorSpecificEnding(tick: Int): Unit = {
+    commonState.curStory match
+      case CleanTable => readyToWash = true
+      case StartDishwasher => {
+        running = true
+        dirty = false
+      }
+      case RunDishwasher => clean = true
+      case UnloadDishwasher => {
+        unloaded = true
+        dirty = true
+      }
+      case _: Story =>
+  }
+  def actorSpecificInterrupt(tick: Int): Unit = {}
+  def log(): String = {
+    var frag = commonState.toString() + ", State: "
+    if (unloaded) {
+      frag += "Unloaded"
+    } else if (clean) {
+      frag += "Clean"
+    } else if (running) {
+      frag += "Running"
+    } else if (readyToWash) {
+      frag += "Loaded"
+    } else {
+      frag += "Untouched"
+    }
+    return frag
+  }
+  lazy val myEvents: Array[Any] =
+    Array(CleanTable, StartDishwasher, RunDishwasher, UnloadDishwasher)
+  def reset(): Unit = {
+    readyToWash = false
+    running = false
+    clean = false
+    unloaded = false
+    commonState = (Vibe, 0)
+  }
+  def tick(tick: Int): Unit = {}
+
 }

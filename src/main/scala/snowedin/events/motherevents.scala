@@ -18,7 +18,6 @@ object Cleaning extends Story {
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -42,7 +41,6 @@ object Music extends Story {
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -53,30 +51,28 @@ object Music extends Story {
   }
 }
 
-object Art extends Story with Occupy with Delay {
+object Art extends Story with Occupy {
   val size = 1
   lazy val actors = HashSet(Mother, Easle)
   var conditions: List[() => Boolean] =
     List(
-      () => readyToRepeat(),
       () => Easle.curCapacity >= size,
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  var delay = 19
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {
+  override def progress(tick: Int): Boolean = {
     if (tick - commonState.startTime > 5) {
       importance = Importance.Vibe
     }
+    return false
   }
   def storySpecificEnding(tick: Int): Unit = {
     importance = Importance.Base
-    setEndTime(tick)
   }
 
   def storySpecificInterrupt(tick: Int): Unit = {
@@ -87,7 +83,6 @@ object Art extends Story with Occupy with Delay {
     active = false
     commonState = startState
     importance = Importance.Base
-    endTime = 0
   }
 }
 
@@ -105,14 +100,18 @@ object RearrangeHousehold extends Story with Pausable with Delay {
 
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = beginAnew()
-  def progress(tick: Int): Unit = {
+  def storySpecificBeginning(tick: Int): Unit = begin()
+  override def progress(tick: Int): Boolean = {
     proceed()
     if (amountleft < commonState.duration / 2) {
       Mother.tools.add(Tambourine)
     }
+    return false
   }
-  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
+  def storySpecificEnding(tick: Int): Unit = {
+    setEndTime(tick)
+    beginAnew()
+  }
 
   def storySpecificInterrupt(tick: Int): Unit = {
     restartTime = 3

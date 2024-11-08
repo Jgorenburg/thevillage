@@ -5,6 +5,26 @@ import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
 import Snowedin.Tools.Tambourine
 
+object Daughter extends Actor {
+  // var tools: HashSet[Tools.Tools] = HashSet()
+
+  def actorSpecificBeginning(tick: Int): Unit = {}
+  def actorSpecificEnding(tick: Int): Unit = {}
+  def actorSpecificInterrupt(tick: Int): Unit = {}
+  def log(): String = commonState.toString() +
+    ", Importance: " + commonState.curStory.importance
+  // ", Tools: " + tools.mkString(", ") +
+  lazy val myEvents: Array[Any] = Array()
+  def reset(): Unit = {
+    // tools = HashSet()
+    commonState = (Vibe, 0)
+  }
+  def tick(tick: Int): Unit = {
+    commonState.curStory match
+      case _: Story =>
+  }
+}
+
 object Son extends Actor {
   var tools: HashSet[Tools.Tools] = HashSet()
   var lastAte = 0
@@ -72,7 +92,7 @@ object Father extends Actor {
   }
   def tick(tick: Int): Unit = {
     commonState._1 match
-      case _: Story => // stories without relevant progress for father
+      case _: Story =>
   }
   def actorSpecificEnding(tick: Int): Unit = {
     if (
@@ -85,7 +105,7 @@ object Father extends Actor {
       Worktable.tools.remove(Screwdriver)
     }
     commonState._1 match
-      case _: Story => // stories without relevant endings for father
+      case _: Story =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {

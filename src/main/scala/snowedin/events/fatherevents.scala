@@ -27,7 +27,6 @@ object Laundry extends Story {
 
   // Father will collect laundry, then go to laundry machine
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -58,7 +57,6 @@ object Nap extends Story with Occupy with Delay {
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
   }
@@ -85,7 +83,6 @@ object FixDoor extends Story {
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 
@@ -111,8 +108,11 @@ object Construction extends Story with Pausable with Delay {
 
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = { beginAnew() }
-  def progress(tick: Int): Unit = { proceed() }
+  def storySpecificBeginning(tick: Int): Unit = { begin() }
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
     beginAnew()

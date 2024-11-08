@@ -34,16 +34,20 @@ trait Pausable {
 
   var amountleft: Int = -1
   var restartTime: Int = 1
+  def begin() = { if (amountleft == -1) { amountleft = commonState.duration } }
   def proceed() = amountleft -= 1
   def pause() = self.commonState.duration = amountleft + restartTime
-  def beginAnew() = amountleft = commonState.duration
+  def beginAnew() = {
+    commonState.duration = startState.duration
+    amountleft = commonState.duration
+  }
 }
 
 // for stories which occupy part or all of an object
 trait Occupy {
   self: Story =>
 
-  val size: Int
+  var size: Int
 }
 
 // for repeatable stories that should have some wait before repeating
@@ -89,10 +93,11 @@ trait Story extends Subject[Story] with Listener {
   def storySpecificBeginning(tick: Int): Unit
 
   def tick(tick: Int): Boolean = {
-    progress(tick: Int)
+    var shouldEnd = progress(tick: Int)
     actors.foreach(_.tick(tick))
 
     if (
+      shouldEnd ||
       commonState.duration != -1 && tick >= commonState.startTime + commonState.duration
     ) {
       endStory(tick)
@@ -100,7 +105,7 @@ trait Story extends Subject[Story] with Listener {
     }
     return false
   }
-  def progress(tick: Int): Unit
+  def progress(tick: Int): Boolean = false
 
   def endStory(tick: Int): Unit = {
     active = false
@@ -141,7 +146,6 @@ object Vibe extends Story {
   override def canBegin: Boolean = true
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 

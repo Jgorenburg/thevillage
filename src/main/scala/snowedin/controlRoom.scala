@@ -24,14 +24,25 @@ object ControlRoom {
       CookLunch,
       CookDinner,
       Movie,
+      JoinMovie,
       Knit,
       Woodworking,
       GiveScarf,
-      Snack
+      Snack,
+      StartFire,
+      Watercolor,
+      Read,
+      Lunch,
+      Dinner,
+      CleanTable,
+      StartDishwasher,
+      RunDishwasher,
+      UnloadDishwasher,
+      Gossip
     )
-  val characters: List[Actor] = List(Father, Mother, Son)
+  val characters: List[Actor] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =
-    List(Couch, Sofachair, Table, Worktable, Easle, Stove)
+    List(Couch, Sofachair, Table, Worktable, Easle, Stove, Dishwasher)
 
   def runGame(
       gameLen: Int = 120,

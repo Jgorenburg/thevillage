@@ -8,6 +8,7 @@ import Base.Spaces
 import Base.Pausable
 import Base.Occupy
 import Base.Delay
+import Base.StoryRunner
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -28,7 +29,6 @@ object Chat extends Story with Delay {
   val delay = 15
 
   var importance = Importance.Event
-  def progress(tick: Int): Unit = {}
   def reset(): Unit = {
     active = false
     commonState = startState
@@ -80,7 +80,6 @@ object NoticeBrokenDoor extends Story {
 
   // Instantaneous stories immedietely end
   def storySpecificBeginning(tick: Int): Unit = endStory(tick)
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 
@@ -95,7 +94,7 @@ object CookLunch extends Story {
   var conditions: List[() => Boolean] =
     List(
       // halfway through the day
-      () => GameManager.tick >= GameManager.ending / 2,
+      () => GameManager.tick >= GameManager.ending * 3 / 8,
       () => fatherAvailible() || motherAvailible()
     )
 
@@ -128,13 +127,13 @@ object CookLunch extends Story {
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {
     if (actors.contains(Father)) {
       CookDinner.actors.add(Mother)
     } else {
       CookDinner.actors.add(Father)
     }
+    Table.readyForLunch = true
   }
   def storySpecificInterrupt(tick: Int): Unit = {}
 
@@ -164,8 +163,7 @@ object CookDinner extends Story {
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = { Table.readyForDinner = true }
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset(): Unit = {
@@ -214,7 +212,10 @@ object Movie extends Story with Occupy with Pausable {
   }
 
   var importance = Importance.Event
-  def progress(tick: Int): Unit = { proceed() }
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
   def reset(): Unit = {
     active = false
     commonState = startState
@@ -222,8 +223,206 @@ object Movie extends Story with Occupy with Pausable {
     beginAnew()
     needToSeat = size
   }
-  def storySpecificBeginning(tick: Int): Unit = { beginAnew() }
+  def storySpecificBeginning(tick: Int): Unit = { begin() }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
+
+}
+
+object JoinMovie extends Story with Occupy {
+  val size = 1
+  var active: Boolean = false
+  lazy val actors = HashSet(Daughter)
+  val startState = (false, -1, true, -1)
+
+  var commonState = startState.copy()
+  var conditions: List[() => Boolean] = List(
+    () => Movie.active,
+    () => GameManager.tick - 2 >= Movie.commonState.startTime,
+    () => Importance.interrupt(Daughter.getCurStoryImportance(), importance),
+    () => livingRoomHasSpace()
+  )
+
+  val livingRoomSeating = List(Sofachair, Couch)
+  def livingRoomHasSpace(): Boolean = {
+    actors --= livingRoomSeating
+    val iterator = livingRoomSeating.iterator
+    while (iterator.hasNext) {
+      val seating = iterator.next()
+      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+        actors.add(seating)
+        return true
+      }
+    }
+    return false
+  }
+  var importance: Base.Importance.Importance = Importance.Event
+  def reset(): Unit = {
+    commonState = startState
+    active = false
+  }
+  override def progress(tick: Int): Boolean = {
+    return !Movie.active
+  }
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+}
+
+// Son and Daughter
+object Gossip extends Story with Delay {
+  var active: Boolean = false
+  lazy val actors = HashSet(Son, Daughter)
+  val startState = (false, -1, true, 6)
+  var commonState = startState.copy()
+
+  var conditions: List[() => Boolean] =
+    List(
+      () => readyToRepeat(),
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        )
+    )
+
+  val delay = 20
+  repeatsLeft = 2
+
+  var importance = Importance.Event
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    endTime = 0
+    repeatsLeft = 2
+  }
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    setEndTime(tick)
+  }
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+}
+
+object CleanTable extends Story with Pausable {
+  var active: Boolean = false
+  lazy val actors = HashSet(Son, Daughter, Table, Dishwasher)
+  val startState = (false, -1, true, 5)
+  var commonState = startState.copy()
+
+  var conditions: List[() => Boolean] =
+    List(
+      () => Dishwasher.dirty,
+      () => Table.readyToClear,
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        )
+    )
+
+  var importance = Importance.Interrupt
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    beginAnew()
+  }
+  def storySpecificBeginning(tick: Int): Unit = { begin() }
+  def storySpecificEnding(tick: Int): Unit = {
+    Table.readyToClear = false
+    beginAnew()
+  }
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+
+}
+
+// Everybody
+object Lunch extends Story with Pausable with Occupy {
+  var size = 3
+  var active: Boolean = false
+  lazy val actors = HashSet(Father, Mother, Daughter, Table)
+  val startState = (false, -1, false, 10)
+  var commonState = startState.copy()
+
+  var conditions: List[() => Boolean] =
+    List(
+      () => Table.readyForLunch,
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        )
+    )
+
+  var importance = Importance.Interrupt
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    beginAnew()
+    actors.remove(Son)
+  }
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    if (Importance.interrupt(Son.getCurStoryImportance(), importance)) {
+      actors.add(Son)
+      StoryRunner.stories.remove(Son.commonState.curStory)
+      Son.beginStory(this, tick)
+      size = 4
+      Table.occupy(this)
+    }
+  }
+  def storySpecificEnding(tick: Int): Unit = {
+    Table.readyToClear = true
+    Son.lastAte = tick
+  }
+  def storySpecificInterrupt(tick: Int): Unit = {
+    pause()
+    Son.lastAte = tick
+  }
+
+}
+
+object Dinner extends Story with Pausable with Occupy {
+  val size = 4
+  var active: Boolean = false
+  lazy val actors = HashSet(Father, Mother, Son, Daughter, Table)
+  val startState = (false, -1, false, 10)
+  var commonState = startState.copy()
+
+  var conditions: List[() => Boolean] =
+    List(
+      () => Table.readyForDinner,
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        )
+    )
+
+  var importance = Importance.Interrupt
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    beginAnew()
+  }
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+  }
+  def storySpecificEnding(tick: Int): Unit = {
+    Table.readyToClear = true
+    Son.lastAte = tick
+  }
+  def storySpecificInterrupt(tick: Int): Unit = {
+    pause()
+    Son.lastAte = tick
+  }
 
 }

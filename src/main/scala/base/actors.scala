@@ -28,6 +28,9 @@ trait Spaces {
   def occupy(size: Int): Unit = curCapacity -= size
   def occupy(story: Occupy, size: Int = -1): Unit = {
     var taking = if (size != -1) size else story.size
+    if (occupiers.contains(story)) {
+      leave(story)
+    }
     occupiers += (story -> taking)
     occupy(taking)
   }

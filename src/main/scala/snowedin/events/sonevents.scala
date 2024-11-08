@@ -22,16 +22,22 @@ object Knit extends Story with Pausable with Delay {
       () => Importance.interrupt(Son.getCurStoryImportance(), importance)
     )
   var importance: Base.Importance.Importance = Importance.Base
-  def progress(tick: Int): Unit = proceed()
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
   def reset(): Unit = {
     commonState = startState
     active = false
     beginAnew()
     endTime = 0
   }
-  def storySpecificBeginning(tick: Int): Unit = beginAnew()
-  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
-  def storySpecificInterrupt(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = begin()
+  def storySpecificEnding(tick: Int): Unit = {
+    setEndTime(tick)
+    beginAnew()
+  }
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
 }
 
 object Woodworking extends Story with Pausable with Delay {
@@ -50,7 +56,10 @@ object Woodworking extends Story with Pausable with Delay {
         )
     )
   var importance: Base.Importance.Importance = Importance.Base
-  def progress(tick: Int): Unit = proceed()
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
   def reset(): Unit = {
     commonState = startState
     active = false
@@ -58,7 +67,7 @@ object Woodworking extends Story with Pausable with Delay {
     endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    beginAnew()
+    begin()
     Son.tools.add(Knife)
     Worktable.tools.remove(Knife)
   }
@@ -66,6 +75,7 @@ object Woodworking extends Story with Pausable with Delay {
     Son.tools.remove(Knife)
     Worktable.tools.add(Knife)
     setEndTime(tick)
+    beginAnew()
   }
   def storySpecificInterrupt(tick: Int): Unit = {
     pause()
@@ -122,7 +132,6 @@ object Snack extends Story with Occupy with Delay {
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
-  def progress(tick: Int): Unit = {}
   def reset(): Unit = {
     commonState = startState
     active = false
@@ -157,7 +166,6 @@ object GiveScarf extends Story {
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
-  def progress(tick: Int): Unit = {}
   def reset(): Unit = {
     active = false
     commonState = startState
@@ -165,6 +173,29 @@ object GiveScarf extends Story {
   }
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+}
+
+object StartDishwasher extends Story {
+  var active: Boolean = false
+  lazy val actors = HashSet(Son, Dishwasher)
+  val startState: Base.StoryCommonState = (false, -1, false, 1)
+
+  var commonState: Base.StoryCommonState = startState.copy()
+  var conditions: List[() => Boolean] = List(
+    () => Dishwasher.readyToWash,
+    () =>
+      actors.forall(actor =>
+        Importance.interrupt(actor.getCurStoryImportance(), importance)
+      )
+  )
+  var importance: Base.Importance.Importance = Importance.Interrupt
+  def reset(): Unit = {
+    commonState = startState
+    active = false
+  }
   def storySpecificBeginning(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
