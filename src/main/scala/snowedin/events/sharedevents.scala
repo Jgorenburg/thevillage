@@ -9,6 +9,7 @@ import Base.Pausable
 import Base.Occupy
 import Base.Delay
 import Base.StoryRunner
+import Base.Actor
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -48,7 +49,7 @@ object Chat extends Story with Delay {
 object NoticeBrokenDoor extends Story {
   lazy val actors = HashSet()
   var conditions: List[() => Boolean] =
-    List(() => fatherNotices() | motherNotices())
+    List(() => motherNotices())
 
   def fatherNotices(): Boolean = {
     if (
@@ -425,4 +426,171 @@ object Dinner extends Story with Pausable with Occupy {
     Son.lastAte = tick
   }
 
+}
+
+object Singalong extends Story {
+  var active: Boolean = false
+  lazy val actors = HashSet(Mother)
+  val potentialSingers = List(Father, Daughter, Son)
+  val startState = (false, -1, false, 3)
+  var commonState = startState.copy()
+
+  var conditions: List[() => Boolean] =
+    List(
+      () => Music.active,
+      () => Dinner.commonState.completed
+    )
+
+  var importance = Importance.Interrupt
+  var joinInImportance = Importance.Event
+  override def progress(tick: Int): Boolean = {
+    potentialSingers
+      .filter(person =>
+        Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
+      )
+      .foreach(person => join(person, tick))
+    return false
+  }
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+  }
+  def storySpecificBeginning(tick: Int): Unit = {
+    commonState.completed = true
+    Music.commonState.completed = true
+    potentialSingers
+      .filter(person =>
+        Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
+      )
+      .foreach(person => join(person, tick))
+  }
+  def join(person: Actor, tick: Int): Unit = {
+    actors.add(person)
+    StoryRunner.stories.remove(person.commonState.curStory)
+    person.beginStory(this, tick)
+  }
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+}
+
+// complex
+object Boardgame extends Story with Occupy with Pausable {
+  restartTime = 2
+  var size = 3
+  lazy val actors = HashSet(Son, Daughter, Table)
+  var conditions: List[() => Boolean] =
+    List(
+      // halfway through the day
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        ),
+      () => fatherAvailible() | motherAvailible()
+    )
+
+  def fatherAvailible(): Boolean = {
+    actors.remove(Father)
+    if (Importance.interrupt(Father.getCurStoryImportance(), importance)) {
+      actors.add(Father)
+      return true
+    } else {
+      return false
+    }
+  }
+  def motherAvailible(): Boolean = {
+    actors.remove(Mother)
+    if (Importance.interrupt(Mother.getCurStoryImportance(), importance)) {
+      actors.add(Mother)
+      return true
+    } else {
+      return false
+    }
+  }
+  var active: Boolean = false
+  val startState = (false, -1, false, 14)
+  var commonState = startState.copy()
+
+  var importance: Importance.Importance = Importance.Event
+
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    if (actors.contains(Father) && actors.contains(Mother)) {
+      size = 4
+      Table.occupy(this)
+    }
+  }
+  def storySpecificEnding(tick: Int): Unit = {
+    beginAnew()
+  }
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
+
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    actors.clear()
+    beginAnew()
+  }
+}
+
+object FixSomething extends Story with Occupy with Pausable {
+  restartTime = 3
+  var size = 1
+  lazy val actors = HashSet(Father, Worktable)
+  var conditions: List[() => Boolean] =
+    List(
+      // TODO: come up with how/why something breaks
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        ),
+      () => daughterAvailible() || sonAvailible()
+    )
+
+  def sonAvailible(): Boolean = {
+    actors.remove(Son)
+    if (Importance.interrupt(Son.getCurStoryImportance(), importance)) {
+      actors.add(Son)
+      return true
+    } else {
+      return false
+    }
+  }
+  def daughterAvailible(): Boolean = {
+    actors.remove(Daughter)
+    if (Importance.interrupt(Daughter.getCurStoryImportance(), importance)) {
+      actors.add(Daughter)
+      return true
+    } else {
+      return false
+    }
+  }
+  var active: Boolean = false
+  val startState = (false, -1, false, 7)
+  var commonState = startState.copy()
+
+  var importance: Importance.Importance = Importance.Event
+
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+  }
+  def storySpecificEnding(tick: Int): Unit = {
+    beginAnew()
+  }
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+  override def progress(tick: Int): Boolean = {
+    proceed()
+    return false
+  }
+
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    actors.clear()
+    beginAnew()
+  }
 }

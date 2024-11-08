@@ -38,7 +38,10 @@ object ControlRoom {
       StartDishwasher,
       RunDishwasher,
       UnloadDishwasher,
-      Gossip
+      Gossip,
+      Boardgame,
+      FixSomething,
+      Singalong
     )
   val characters: List[Actor] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =

@@ -139,6 +139,9 @@ object Table extends Actor with Spaces {
   lazy val myEvents: Array[Any] = Array(Snack)
 
   def actorSpecificBeginning(tick: Int): Unit = {
+    if (commonState.curStory != Boardgame && Boardgame.isPaused) {
+      Boardgame.beginAnew()
+    }
     commonState.curStory match
       case story: Occupy => occupy(story)
       case _: Story      =>

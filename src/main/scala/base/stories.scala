@@ -34,10 +34,18 @@ trait Pausable {
 
   var amountleft: Int = -1
   var restartTime: Int = 1
-  def begin() = { if (amountleft == -1) { amountleft = commonState.duration } }
+  var isPaused: Boolean = false
+  def begin() = {
+    if (amountleft == -1) { amountleft = commonState.duration }
+    isPaused = false
+  }
   def proceed() = amountleft -= 1
-  def pause() = self.commonState.duration = amountleft + restartTime
+  def pause() = {
+    self.commonState.duration = amountleft + restartTime
+    isPaused = true
+  }
   def beginAnew() = {
+    isPaused = false
     commonState.duration = startState.duration
     amountleft = commonState.duration
   }
