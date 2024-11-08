@@ -12,7 +12,11 @@ case class StoryCommonState(
     var startTime: Int,
     var repeatable: Boolean,
     var duration: Int
-) {}
+) {
+  def copy(): StoryCommonState =
+    new StoryCommonState(completed, startTime, repeatable, duration)
+
+}
 object Importance extends Enumeration {
   type Importance = Value
   val Vibe, Base, Event, Interrupt, Critical, Instantaneous = Value
@@ -24,9 +28,26 @@ object Importance extends Enumeration {
   }
 }
 
+// for stories where progress is not lost when interrupted
+trait Pausable {
+  self: Story =>
+
+  var amountleft: Int = -1
+  def proceed() = amountleft -= 1
+  def pause() = self.commonState.duration = amountleft
+  def beginAnew() = amountleft = commonState.duration
+}
+
+// for stories which occupy part or all of an object
+trait Occupy {
+  self: Story =>
+
+  val size: Int
+}
+
 trait Story extends Subject[Story] with Listener {
   lazy val actors: HashSet[Actor]
-  var universalConditions: List[() => Boolean] =
+  lazy val universalConditions: List[() => Boolean] =
     List(() => !active && (commonState.repeatable || !commonState.completed))
   var conditions: List[() => Boolean]
   var active: Boolean
@@ -35,6 +56,7 @@ trait Story extends Subject[Story] with Listener {
   //    2: start time (-1 if not active)
   //    3: repeatable story
   //    4: duration (-1 if not timebound)
+  val startState: StoryCommonState
   var commonState: StoryCommonState
   var importance: Importance.Importance
 
@@ -95,7 +117,8 @@ trait Story extends Subject[Story] with Listener {
 object Vibe extends Story {
   lazy val actors = HashSet()
   var conditions: List[() => Boolean] = List()
-  var commonState = (false, 0, true, -1)
+  val startState = (false, 0, true, -1)
+  var commonState = startState.copy()
   var active: Boolean = true
   val importance = Importance.Vibe
   override def canBegin: Boolean = true
@@ -107,6 +130,6 @@ object Vibe extends Story {
 
   def reset(): Unit = {
     active = true
-    commonState = (false, 0, true, -1)
+    commonState = startState
   }
 }

@@ -4,12 +4,17 @@ import Base.Story
 import scala.collection.mutable.HashSet
 import Base.Importance
 import Base.GameManager
+import Base.Spaces
+import Base.Pausable
+import Base.Occupy
 
 // Father and Mother
 object Chat extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Mother, Father)
-  var commonState = (false, -1, true, 3)
+  val startState = (false, -1, true, 3)
+  var commonState = startState.copy()
+
   var conditions: List[() => Boolean] =
     List(
       () => noRecentChats(),
@@ -28,7 +33,7 @@ object Chat extends Story {
   def progress(tick: Int): Unit = {}
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, true, 3)
+    commonState = startState
     chatEnd = 0 - chatGap
   }
   def storySpecificBeginning(tick: Int): Unit = {
@@ -71,7 +76,8 @@ object NoticeBrokenDoor extends Story {
     }
   }
   var active: Boolean = false
-  var commonState = (false, -1, true, 0)
+  val startState = (false, -1, true, 0)
+  var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Instantaneous
 
   // Instantaneous stories immedietely end
@@ -82,12 +88,12 @@ object NoticeBrokenDoor extends Story {
 
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, false, 0)
+    commonState = startState
   }
 }
 
 object CookLunch extends Story {
-  lazy val actors = HashSet()
+  lazy val actors = HashSet(Stove)
   var conditions: List[() => Boolean] =
     List(
       // halfway through the day
@@ -118,7 +124,9 @@ object CookLunch extends Story {
     }
   }
   var active: Boolean = false
-  var commonState = (false, -1, false, 6)
+  val startState = (false, -1, false, 6)
+  var commonState = startState.copy()
+
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -134,13 +142,13 @@ object CookLunch extends Story {
 
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, false, 6)
+    commonState = startState
     actors.clear()
   }
 }
 
 object CookDinner extends Story {
-  lazy val actors = HashSet()
+  lazy val actors = HashSet(Stove)
   var conditions: List[() => Boolean] =
     List(
       // 3/4th through the day
@@ -152,7 +160,9 @@ object CookDinner extends Story {
     )
 
   var active: Boolean = false
-  var commonState = (false, -1, false, 7)
+  val startState = (false, -1, false, 7)
+  var commonState = startState.copy()
+
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -162,7 +172,60 @@ object CookDinner extends Story {
 
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, false, 7)
+    commonState = startState
     actors.clear()
   }
+}
+
+// Father and Son, TODO: Daughter Optional
+object Movie extends Story with Occupy with Pausable {
+  val size = 2
+  var needToSeat = size
+  var active: Boolean = false
+  lazy val actors = HashSet(Son, Father)
+  val startState = (false, -1, false, 23)
+  var commonState = startState.copy()
+  var conditions: List[() => Boolean] =
+    List(
+      () =>
+        actors.forall(actor =>
+          Importance.interrupt(actor.getCurStoryImportance(), importance)
+        ),
+      () => livingRoomHasSpace()
+    )
+
+  val livingRoomSeating = List(Couch, Sofachair)
+  def livingRoomHasSpace(): Boolean = {
+    actors --= livingRoomSeating
+    val iterator = livingRoomSeating.iterator
+    var toFind = size
+    while (iterator.hasNext) {
+      val seating = iterator.next()
+      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+        toFind -= seating.curCapacity
+        if (seating.curCapacity > 0) {
+          actors.add(seating)
+        }
+        if (toFind <= 0) {
+          return true
+        }
+      }
+    }
+    actors --= livingRoomSeating
+    return false
+  }
+
+  var importance = Importance.Event
+  def progress(tick: Int): Unit = { proceed() }
+  def reset(): Unit = {
+    active = false
+    commonState = startState
+    actors --= livingRoomSeating
+    beginAnew()
+    needToSeat = size
+  }
+  def storySpecificBeginning(tick: Int): Unit = { beginAnew() }
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+
 }

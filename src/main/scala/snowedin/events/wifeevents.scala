@@ -3,14 +3,17 @@ package Snowedin
 import Base.Importance
 import scala.collection.mutable.HashSet
 import Base.Story
-import Snowedin.Tools.Tamborine
+import Snowedin.Tools.Tambourine
+import Base.Pausable
+import Base.Occupy
 
 object Cleaning extends Story {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
     List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
   var active: Boolean = false
-  var commonState = (false, -1, false, 7)
+  val startState = (false, -1, false, 7)
+  var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -21,7 +24,7 @@ object Cleaning extends Story {
 
   def reset() = {
     active = false
-    commonState = (false, -1, false, 7)
+    commonState = startState
   }
 }
 
@@ -29,11 +32,12 @@ object Music extends Story {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
     List(
-      () => Mother.tools.contains(Tamborine),
+      () => Mother.tools.contains(Tambourine),
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  var commonState = (false, -1, false, 4)
+  val startState = (false, -1, false, 4)
+  var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -44,16 +48,21 @@ object Music extends Story {
 
   def reset() = {
     active = false
-    commonState = (false, -1, false, 4)
+    commonState = startState
   }
 }
 
-object Art extends Story {
+object Art extends Story with Occupy {
+  val size = 1
   lazy val actors = HashSet(Mother, Easle)
   var conditions: List[() => Boolean] =
-    List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
+    List(
+      () => Easle.curCapacity >= size,
+      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+    )
   var active: Boolean = false
-  var commonState = (false, -1, true, -1)
+  val startState = (false, -1, true, -1)
+  var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {}
@@ -72,37 +81,37 @@ object Art extends Story {
 
   def reset() = {
     active = false
-    commonState = (false, -1, true, -1)
+    commonState = startState
     importance = Importance.Base
   }
 }
 
-object RearrangeHousehold extends Story {
+object RearrangeHousehold extends Story with Pausable {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
     List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
   var active: Boolean = false
-  var commonState = (false, -1, false, 20)
-  var amountleft = commonState.duration
+  val startState = (false, -1, false, 20)
+  var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = beginAnew()
   def progress(tick: Int): Unit = {
-    amountleft -= 1
+    proceed()
     if (amountleft < commonState.duration / 2) {
-      Mother.tools.add(Tamborine)
+      Mother.tools.add(Tambourine)
     }
   }
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {
-    commonState.duration = amountleft
+    pause()
   }
 
   def reset() = {
     active = false
-    commonState = (false, -1, false, 20)
-    amountleft = commonState.duration
+    commonState = startState
+    beginAnew()
   }
 }

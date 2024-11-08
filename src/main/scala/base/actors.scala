@@ -1,6 +1,9 @@
 package Base
 
 import Base.Importance.interrupt
+import Snowedin.Couch.maxCapacity
+import Snowedin.Couch.curCapacity
+import scala.collection.mutable.HashMap
 
 case class curStory(
     var curStory: Story,
@@ -9,6 +12,35 @@ case class curStory(
   def copy(): curStory = { new curStory(curStory, startTime) }
   override def toString(): String =
     s"Current Story: ${curStory.getClass.getSimpleName.stripSuffix("$")}, Start Time: ${startTime}"
+}
+
+// for objects that can only take a certain number of charecters
+trait Spaces {
+  self: Actor =>
+
+  val maxCapacity: Int
+  var curCapacity: Int = maxCapacity
+
+  val occupiers: HashMap[Occupy, Int] = HashMap()
+
+  def hasSpace(size: Int): Boolean = size <= curCapacity
+  def hasSpace(story: Occupy): Boolean = hasSpace(story.size)
+  def occupy(size: Int): Unit = curCapacity -= size
+  def occupy(story: Occupy, size: Int = -1): Unit = {
+    var taking = if (size != -1) size else story.size
+    occupiers += (story -> taking)
+    occupy(taking)
+  }
+  def leave(size: Int): Unit = curCapacity += size
+  def leave(story: Occupy): Unit = {
+    leave(if (occupiers.contains(story)) occupiers(story) else story.size)
+    occupiers.remove(story)
+  }
+
+  def vacate() = {
+    curCapacity = maxCapacity
+    occupiers.clear()
+  }
 }
 
 trait Actor extends Subject[Actor] with Listener {

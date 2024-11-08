@@ -3,7 +3,31 @@ package Snowedin
 import Base.{Actor, Story, Vibe}
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
-import Snowedin.Tools.Tamborine
+import Snowedin.Tools.Tambourine
+
+object Son extends Actor {
+  var tools: HashSet[Tools.Tools] = HashSet()
+  var lastAte = 0
+
+  def actorSpecificBeginning(tick: Int): Unit = {}
+  def actorSpecificEnding(tick: Int): Unit = {}
+  def actorSpecificInterrupt(tick: Int): Unit = {}
+  def log(): String = commonState.toString() +
+    ", Importance: " + commonState.curStory.importance +
+    ", Tools: " + tools.mkString(", ") +
+    s", Last Ate: ${lastAte}"
+  lazy val myEvents: Array[Any] = Array()
+  def reset(): Unit = {
+    tools = HashSet()
+    lastAte = 0
+    commonState = (Vibe, 0)
+  }
+  def tick(tick: Int): Unit = {
+    commonState.curStory match
+      case Snack    => lastAte = tick
+      case _: Story =>
+  }
+}
 
 object Mother extends Actor {
   var noticedBrokenDoor = false

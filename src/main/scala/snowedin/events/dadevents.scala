@@ -7,6 +7,8 @@ import Base.Actor
 import Base.GameManager
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
+import Base.Pausable
+import Base.Occupy
 
 // Father only
 object Laundry extends Story {
@@ -17,7 +19,9 @@ object Laundry extends Story {
       () => Importance.interrupt(Father.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  var commonState = (false, -1, false, 7)
+  val startState = (false, -1, false, 7)
+  var commonState = startState.copy()
+
   var importance: Importance.Importance = Importance.Event
 
   // Father will collect laundry, then go to laundry machine
@@ -29,12 +33,13 @@ object Laundry extends Story {
 
   def reset() = {
     active = false
-    commonState = (false, -1, false, 7)
+    commonState = startState
   }
 }
 
-object Nap extends Story {
+object Nap extends Story with Occupy {
   lazy val actors = HashSet(Father, Couch)
+  val size = 2
 
   var conditions: List[() => Boolean] = List(
     () => sleepy(),
@@ -50,7 +55,8 @@ object Nap extends Story {
   }
   var active: Boolean = false
 
-  var commonState = (false, -1, true, 10)
+  val startState = (false, -1, true, 10)
+  var commonState = startState.copy()
 
 // state:
 //     0: how many naps father has taken
@@ -68,7 +74,7 @@ object Nap extends Story {
 
   def reset() = {
     active = false
-    commonState = (false, -1, true, 10)
+    commonState = startState
     state = Array(0, -1)
     napEnd = 0
   }
@@ -82,7 +88,8 @@ object FixDoor extends Story {
     () => Importance.interrupt(Father.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
-  var commonState = (false, -1, false, 3)
+  val startState = (false, -1, false, 3)
+  var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
 
@@ -93,32 +100,31 @@ object FixDoor extends Story {
 
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, false, 3)
+    commonState = startState
   }
 
 }
 
-object Construction extends Story {
+object Construction extends Story with Pausable {
   lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] = List(
     () => Importance.interrupt(Father.getCurStoryImportance(), importance),
     () => Importance.interrupt(Worktable.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
-  var commonState = (false, -1, true, 15)
-  var amountleft = commonState.duration
+  val startState = (false, -1, true, 15)
+  var commonState = startState.copy()
+
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = {}
-  def progress(tick: Int): Unit = { amountleft -= 1 }
+  def storySpecificBeginning(tick: Int): Unit = { beginAnew() }
+  def progress(tick: Int): Unit = { proceed() }
   def storySpecificEnding(tick: Int): Unit = {}
-  def storySpecificInterrupt(tick: Int): Unit = {
-    commonState.duration = amountleft
-  }
+  def storySpecificInterrupt(tick: Int): Unit = { pause() }
 
   def reset(): Unit = {
     active = false
-    commonState = (false, -1, true, 15)
-    amountleft = commonState.duration
+    commonState = startState
+    beginAnew()
   }
 }
