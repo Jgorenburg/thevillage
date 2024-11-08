@@ -5,6 +5,7 @@ import Snowedin.Couch.maxCapacity
 import Snowedin.Couch.curCapacity
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.LinkedHashMap
+import Snowedin.Location
 
 case class curStory(
     var curStory: Story,
@@ -62,6 +63,8 @@ trait Actor extends Subject[Actor] with Listener {
   //    2: activity start time
   var commonState: curStory = (Vibe, 0)
   var interrupted: curStory = commonState.copy()
+
+  var location: Location.Room = Location.Bedroom
 
   lazy val myEvents: Array[Any]
 
@@ -121,6 +124,11 @@ trait Actor extends Subject[Actor] with Listener {
   def actorSpecificInterrupt(tick: Int): Unit
 
   def reset(): Unit
+  def defaultReset(): Unit = {
+    commonState = (Vibe, 0)
+    interrupted = (Vibe, 0)
+    location = Location.Bedroom
+  }
 
   def log(): String
 

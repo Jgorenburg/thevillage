@@ -7,6 +7,8 @@ import Base.Importance
 import Base.Delay
 import Base.GameManager
 import Base.Pausable
+import Snowedin.Location.LivingRoom
+import Snowedin.Location.Kitchen
 
 object Read extends Story with Occupy {
   val size = 1
@@ -42,11 +44,13 @@ object Read extends Story with Occupy {
     return false
   }
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     importance = Importance.Base
   }
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Daughter.location = LivingRoom
+  }
   def storySpecificEnding(tick: Int): Unit = { importance = Importance.Base }
   def storySpecificInterrupt(tick: Int): Unit = { importance = Importance.Base }
 }
@@ -79,7 +83,7 @@ object Watercolor extends Story with Occupy with Delay {
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     importance = Importance.Base
     endTime = 0
     repeatsLeft = 3
@@ -99,14 +103,16 @@ object StartFire extends Story {
 
   var importance: Importance.Importance = Importance.Event
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Daughter.location = LivingRoom
+  }
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
   }
 }
 
@@ -129,11 +135,14 @@ object UnloadDishwasher extends Story with Pausable {
     return false
   }
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     beginAnew()
   }
-  def storySpecificBeginning(tick: Int): Unit = { begin() }
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    Daughter.location = Kitchen
+  }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
 }

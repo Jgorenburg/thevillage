@@ -159,6 +159,6 @@ object Vibe extends Story {
 
   def reset(): Unit = {
     active = true
-    commonState = startState
+    commonState = startState.copy()
   }
 }

@@ -10,6 +10,9 @@ import Snowedin.Tools.Screwdriver
 import Base.Pausable
 import Base.Occupy
 import Base.Delay
+import Snowedin.Location.Workroom
+import Snowedin.Location.LivingRoom
+import Snowedin.Location.Door
 
 // Father only
 object Laundry extends Story {
@@ -26,14 +29,14 @@ object Laundry extends Story {
   var importance: Importance.Importance = Importance.Event
 
   // Father will collect laundry, then go to laundry machine
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Father.location = Workroom }
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
   }
 }
 
@@ -56,7 +59,7 @@ object Nap extends Story with Occupy with Delay {
 
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Father.location = LivingRoom }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
   }
@@ -64,7 +67,7 @@ object Nap extends Story with Occupy with Delay {
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     endTime = 0
   }
 }
@@ -82,13 +85,13 @@ object FixDoor extends Story {
 
   var importance: Importance.Importance = Importance.Event
 
-  def storySpecificBeginning(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Father.location = Door }
+  def storySpecificEnding(tick: Int): Unit = { GlobalVars.brokenDoor = false }
   def storySpecificInterrupt(tick: Int): Unit = {}
 
   def reset(): Unit = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
   }
 
 }
@@ -108,7 +111,10 @@ object Construction extends Story with Pausable with Delay {
 
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = { begin() }
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    Father.location = Workroom
+  }
   override def progress(tick: Int): Boolean = {
     proceed()
     return false
@@ -121,7 +127,7 @@ object Construction extends Story with Pausable with Delay {
 
   def reset(): Unit = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     beginAnew()
     endTime = 0
   }

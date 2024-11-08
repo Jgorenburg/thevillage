@@ -12,8 +12,8 @@ object Daughter extends Actor {
   def actorSpecificEnding(tick: Int): Unit = {}
   def actorSpecificInterrupt(tick: Int): Unit = {}
   def log(): String = commonState.toString() +
-    ", Importance: " + commonState.curStory.importance
-  // ", Tools: " + tools.mkString(", ") +
+    ", Importance: " + commonState.curStory.importance +
+    ", Location: " + location
   lazy val myEvents: Array[Any] = Array()
   def reset(): Unit = {
     // tools = HashSet()
@@ -35,7 +35,8 @@ object Son extends Actor {
   def log(): String = commonState.toString() +
     ", Importance: " + commonState.curStory.importance +
     ", Tools: " + tools.mkString(", ") +
-    s", Last Ate: ${lastAte}"
+    s", Last Ate: ${lastAte}" +
+    ", Location: " + location
   lazy val myEvents: Array[Any] = Array()
   def reset(): Unit = {
     tools = HashSet()
@@ -54,7 +55,7 @@ object Mother extends Actor {
 
   var tools: HashSet[Tools.Tools] = HashSet()
 
-  lazy val myEvents: Array[Any] = Array(Vibe, Cleaning)
+  lazy val myEvents: Array[Any] = Array(Vibe, Placeholder)
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
       case NoticeBrokenDoor => noticedBrokenDoor = true
@@ -75,8 +76,9 @@ object Mother extends Actor {
 
   def log() = commonState.toString() +
     ", Importance: " + commonState.curStory.importance +
-    ", Tools: " + tools.mkString(", ")
-    + s", Aware of Door: ${noticedBrokenDoor}"
+    ", Tools: " + tools.mkString(", ") +
+    s", Aware of Door: ${noticedBrokenDoor}" +
+    ", Location: " + location
 }
 
 object Father extends Actor {
@@ -121,7 +123,8 @@ object Father extends Actor {
 
   def log() = commonState.toString() +
     ", Importance: " + commonState.curStory.importance +
-    ", Tools: " + tools.mkString(", ")
-    + s", Aware of Door: ${noticedBrokenDoor}"
+    ", Tools: " + tools.mkString(", ") +
+    s", Aware of Door: ${noticedBrokenDoor}" +
+    ", Location: " + location
 
 }

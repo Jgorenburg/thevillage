@@ -5,11 +5,16 @@ import Snowedin.Tools.Screwdriver
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Knife
 import Base.Occupy
+import Snowedin.Location.Kitchen
+import Snowedin.Location.LivingRoom
+import Snowedin.Location.DiningRoom
+import Snowedin.Location.Workroom
 
 object Worktable extends Actor {
   lazy val myEvents: Array[Any] = Array(Construction)
   val startingTools: HashSet[Tools.Tools] = HashSet(Screwdriver, Knife)
   var tools: HashSet[Tools.Tools] = startingTools
+  location = Workroom
 
   def actorSpecificBeginning(tick: Int): Unit = {}
   def tick(tick: Int): Unit = {
@@ -38,6 +43,7 @@ object Worktable extends Actor {
 object Couch extends Actor with Spaces {
   val maxCapacity = 2
   var curCapacity = maxCapacity
+  location = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Nap, Read, Movie, JoinMovie)
 
@@ -84,6 +90,7 @@ object Couch extends Actor with Spaces {
 object Sofachair extends Actor with Spaces {
   val maxCapacity = 1
   var curCapacity = maxCapacity
+  location = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Snack, Read, JoinMovie, Movie)
 
@@ -135,6 +142,7 @@ object Table extends Actor with Spaces {
   var readyForDinner: Boolean = false
   val maxCapacity = 4
   var curCapacity = maxCapacity
+  location = DiningRoom
 
   lazy val myEvents: Array[Any] = Array(Snack)
 
@@ -175,6 +183,7 @@ object Table extends Actor with Spaces {
 object Easle extends Actor with Spaces {
   val maxCapacity = 1
   var curCapacity = maxCapacity
+  location = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Art)
 
@@ -213,6 +222,7 @@ object Stove extends Actor {
   lazy val myEvents: Array[Any] = Array(CookLunch, CookDinner)
   var unattended = false
   var leftAlone = -1
+  location = Kitchen
 
   def actorSpecificBeginning(tick: Int): Unit = {
     unattended = false
@@ -247,6 +257,7 @@ object Dishwasher extends Actor {
   var running = false
   var clean = false
   var unloaded = false
+  location = Kitchen
   def actorSpecificBeginning(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match

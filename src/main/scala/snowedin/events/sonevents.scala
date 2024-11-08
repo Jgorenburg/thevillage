@@ -9,6 +9,10 @@ import Base.Occupy
 import Base.GameManager
 import Base.StoryCommonState
 import Base.Delay
+import Snowedin.Location.Workroom
+import Snowedin.Location.Room
+import Snowedin.Location.Bedroom
+import Snowedin.Location.Kitchen
 
 object Knit extends Story with Pausable with Delay {
   var active: Boolean = false
@@ -27,7 +31,7 @@ object Knit extends Story with Pausable with Delay {
     return false
   }
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     beginAnew()
     endTime = 0
@@ -61,7 +65,7 @@ object Woodworking extends Story with Pausable with Delay {
     return false
   }
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     beginAnew()
     endTime = 0
@@ -70,6 +74,7 @@ object Woodworking extends Story with Pausable with Delay {
     begin()
     Son.tools.add(Knife)
     Worktable.tools.remove(Knife)
+    Son.location = Workroom
   }
   def storySpecificEnding(tick: Int): Unit = {
     Son.tools.remove(Knife)
@@ -97,6 +102,7 @@ object Snack extends Story with Occupy with Delay {
     )
 
   var delay = 0
+  var location: Room = Bedroom
   repeatsLeft = 2
 
   // priority order: Table > Sofachair > Couch
@@ -109,6 +115,7 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Table)
+      location = Table.location
       return true
     }
     if (
@@ -118,6 +125,7 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Sofachair)
+      location = Sofachair.location
       return true
     }
     if (
@@ -127,18 +135,19 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Couch)
+      location = Couch.location
       return true
     }
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     repeatsLeft = 2
     endTime = 0
   }
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Son.location = location }
   def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
@@ -158,22 +167,29 @@ object GiveScarf extends Story {
     val iterator = recipients.iterator
     while (iterator.hasNext) {
       val person = iterator.next()
-      if (Importance.interrupt(person.getCurStoryImportance(), importance)) {
+      if (
+        Importance.interrupt(person.getCurStoryImportance(), importance) &&
+        Location.areClose(Son, person)
+      ) {
         actors.add(person)
+        location = person.location
         return true
       }
     }
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
+  var location = Bedroom
   def reset(): Unit = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     actors --= recipients
   }
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Son.location = location
+  }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
@@ -193,10 +209,10 @@ object StartDishwasher extends Story {
   )
   var importance: Base.Importance.Importance = Importance.Interrupt
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
   }
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Son.location = Kitchen }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 }

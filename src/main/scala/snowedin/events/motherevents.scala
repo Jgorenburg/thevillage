@@ -7,8 +7,14 @@ import Snowedin.Tools.Tambourine
 import Base.Pausable
 import Base.Occupy
 import Base.Delay
+import Snowedin.Location.Room
+import scala.collection.mutable.Queue
+import Snowedin.Location.DiningRoom
+import Snowedin.Location.LivingRoom
+import Snowedin.Location.Kitchen
+import Snowedin.Location.Door
 
-object Cleaning extends Story {
+object Placeholder extends Story {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
     List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
@@ -24,7 +30,7 @@ object Cleaning extends Story {
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
   }
 }
 
@@ -47,7 +53,7 @@ object Music extends Story {
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
   }
 }
 
@@ -64,7 +70,7 @@ object Art extends Story with Occupy {
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = { Mother.location = LivingRoom }
   override def progress(tick: Int): Boolean = {
     if (tick - commonState.startTime > 5) {
       importance = Importance.Vibe
@@ -81,12 +87,12 @@ object Art extends Story with Occupy {
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     importance = Importance.Base
   }
 }
 
-object RearrangeHousehold extends Story with Pausable with Delay {
+object Cleaning extends Story with Pausable with Delay {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
     List(
@@ -94,16 +100,23 @@ object RearrangeHousehold extends Story with Pausable with Delay {
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, true, 20)
-  var delay = 60
+  val startState = (false, -1, true, 5)
+  val delay = 10
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Base
+  var rooms: Array[Room] = Array(DiningRoom, LivingRoom, Kitchen, Door)
+  var cleansSoFar = 0
 
-  def storySpecificBeginning(tick: Int): Unit = begin()
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    Mother.location = rooms(cleansSoFar % rooms.length)
+  }
   override def progress(tick: Int): Boolean = {
     proceed()
-    if (amountleft < commonState.duration / 2) {
+    if (
+      Mother.location == LivingRoom && amountleft < commonState.duration / 2
+    ) {
       Mother.tools.add(Tambourine)
     }
     return false
@@ -111,17 +124,45 @@ object RearrangeHousehold extends Story with Pausable with Delay {
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
     beginAnew()
+    cleansSoFar += 1
   }
 
   def storySpecificInterrupt(tick: Int): Unit = {
-    restartTime = 3
-    pause()
+    if (amountleft < commonState.duration / 3) {
+      cleansSoFar += 1
+      beginAnew()
+    } else {
+      restartTime = 3
+      pause()
+    }
   }
 
   def reset() = {
     active = false
-    commonState = startState
+    commonState = startState.copy()
     beginAnew()
     endTime = 0
+    cleansSoFar = 0
+  }
+}
+
+object NoticeBrokenDoor extends Story {
+  lazy val actors = HashSet(Mother)
+  var conditions: List[() => Boolean] =
+    List(() => Mother.noticedBrokenDoor, () => Location.areClose(Mother, Door))
+
+  var active: Boolean = false
+  val startState = (false, -1, true, 0)
+  var commonState = startState.copy()
+  var importance: Importance.Importance = Importance.Instantaneous
+
+  // Instantaneous stories immedietely end
+  def storySpecificBeginning(tick: Int): Unit = endStory(tick)
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+  def reset(): Unit = {
+    active = false
+    commonState = startState.copy()
   }
 }

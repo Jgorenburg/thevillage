@@ -21,7 +21,7 @@ object RunDishwasher extends Story with Pausable {
     return false
   }
   def reset(): Unit = {
-    commonState = startState
+    commonState = startState.copy()
     active = false
     beginAnew()
   }
