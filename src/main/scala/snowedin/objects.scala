@@ -53,7 +53,7 @@ object Couch extends Actor with Spaces {
           occupy(Movie)
         }
       case story: Occupy => occupy(story)
-      case _: Story      =>
+      case _: Story      => vacate()
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
@@ -100,7 +100,7 @@ object Sofachair extends Actor with Spaces {
       case story: Occupy => {
         occupy(story)
       }
-      case _: Story =>
+      case _: Story => vacate()
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
@@ -144,7 +144,7 @@ object Table extends Actor with Spaces {
     }
     commonState.curStory match
       case story: Occupy => occupy(story)
-      case _: Story      =>
+      case _: Story      => vacate()
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
@@ -181,7 +181,7 @@ object Easle extends Actor with Spaces {
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState.curStory match
       case story: Occupy => occupy(story)
-      case _: Story      =>
+      case _: Story      => vacate()
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match

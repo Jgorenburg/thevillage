@@ -41,7 +41,8 @@ object ControlRoom {
       Gossip,
       Boardgame,
       FixSomething,
-      Singalong
+      Singalong,
+      Breakfast
     )
   val characters: List[Actor] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =

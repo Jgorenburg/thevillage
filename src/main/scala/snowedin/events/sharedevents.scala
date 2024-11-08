@@ -10,6 +10,7 @@ import Base.Occupy
 import Base.Delay
 import Base.StoryRunner
 import Base.Actor
+import Base.StoryCommonState
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -184,6 +185,7 @@ object Movie extends Story with Occupy with Pausable {
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
+      () => Lunch.commonState.completed,
       () =>
         actors.forall(actor =>
           Importance.interrupt(actor.getCurStoryImportance(), importance)
@@ -397,6 +399,7 @@ object Dinner extends Story with Pausable with Occupy {
 
   var conditions: List[() => Boolean] =
     List(
+      () => !Table.readyToClear,
       () => Table.readyForDinner,
       () =>
         actors.forall(actor =>
@@ -481,7 +484,7 @@ object Boardgame extends Story with Occupy with Pausable {
   lazy val actors = HashSet(Son, Daughter, Table)
   var conditions: List[() => Boolean] =
     List(
-      // halfway through the day
+      () => !Table.readyToClear,
       () =>
         actors.forall(actor =>
           Importance.interrupt(actor.getCurStoryImportance(), importance)
@@ -592,5 +595,60 @@ object FixSomething extends Story with Occupy with Pausable {
     commonState = startState
     actors.clear()
     beginAnew()
+  }
+}
+
+object Breakfast extends Story {
+  var active: Boolean = false
+  lazy val actors = HashSet()
+  val eaters = HashSet(Father, Mother, Daughter, Son)
+  var conditions: List[() => Boolean] =
+    List(
+      () => GameManager.tick <= GameManager.ending / 6,
+      () => Table.curCapacity > 0,
+      () => Importance.interrupt(Table.getCurStoryImportance(), importance),
+      () =>
+        eaters.exists(person =>
+          Importance.interrupt(person.getCurStoryImportance(), importance)
+        )
+    )
+  var importance: Base.Importance.Importance = Importance.Event
+  def reset(): Unit = {
+    commonState = startState
+    active = false
+  }
+  val startState: Base.StoryCommonState = (false, -1, true, 0)
+  var commonState: StoryCommonState = startState.copy()
+  def storySpecificBeginning(tick: Int): Unit = {
+    val willEat = eaters.filter(person =>
+      Importance.interrupt(person.getCurStoryImportance(), importance)
+    )
+    willEat.foreach(eater => StoryRunner.addStory(new IndivBreakfast(eater)))
+    eaters --= willEat
+  }
+  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificInterrupt(tick: Int): Unit = {}
+}
+
+class IndivBreakfast(eater: Actor) extends Story with Occupy {
+  val size = 1
+  var active: Boolean = false
+  lazy val actors = HashSet(eater, Table)
+  var conditions: List[() => Boolean] =
+    List(() => false)
+  var importance: Base.Importance.Importance = Breakfast.importance
+  def reset(): Unit = {}
+  val startState: Base.StoryCommonState = (false, -1, false, 4)
+  var commonState: StoryCommonState = startState.copy()
+  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    if (eater == Son) {
+      Son.lastAte = tick
+    }
+  }
+  def storySpecificInterrupt(tick: Int): Unit = {
+    if (eater == Son) {
+      Son.lastAte = tick
+    }
   }
 }
