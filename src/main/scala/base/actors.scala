@@ -4,6 +4,7 @@ import Base.Importance.interrupt
 import Snowedin.Couch.maxCapacity
 import Snowedin.Couch.curCapacity
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.LinkedHashMap
 
 case class curStory(
     var curStory: Story,
@@ -22,22 +23,29 @@ trait Spaces {
   var curCapacity: Int
 
   val occupiers: HashMap[Occupy, Int] = HashMap()
+  // Story -> starttime
+  val activeEvents: LinkedHashMap[Story, Int] = LinkedHashMap()
 
   def hasSpace(size: Int): Boolean = size <= curCapacity
   def hasSpace(story: Occupy): Boolean = hasSpace(story.size)
   def occupy(size: Int): Unit = curCapacity -= size
-  def occupy(story: Occupy, size: Int = -1): Unit = {
-    var taking = if (size != -1) size else story.size
-    if (occupiers.contains(story)) {
+  def occupy(story: Story, size: Int = -1): Unit = {
+    if (activeEvents.contains(story)) {
       leave(story)
     }
-    occupiers += (story -> taking)
+    activeEvents += (story -> GameManager.tick)
+
+    val occ = story.asInstanceOf[Occupy]
+    var taking = if (size != -1) size else occ.size
+    occupiers += (occ -> taking)
     occupy(taking)
   }
   def leave(size: Int): Unit = curCapacity += size
-  def leave(story: Occupy): Unit = {
-    leave(if (occupiers.contains(story)) occupiers(story) else story.size)
-    occupiers.remove(story)
+  def leave(story: Story): Unit = {
+    val occ = story.asInstanceOf[Occupy]
+    leave(if (occupiers.contains(occ)) occupiers(occ) else occ.size)
+    occupiers.remove(occ)
+    activeEvents.remove(story)
   }
 
   def vacate() = {
@@ -63,7 +71,9 @@ trait Actor extends Subject[Actor] with Listener {
 
   def beginStory(story: Story, tick: Int): Unit = {
     interrupted = commonState.copy()
-    interrupted.curStory.interruptStory(tick)
+    if (shouldInterrupt(story)) {
+      interrupted.curStory.interruptStory(tick)
+    }
 
     commonState.curStory = story
     commonState.startTime = tick
@@ -78,12 +88,28 @@ trait Actor extends Subject[Actor] with Listener {
     actorSpecificEnding(tick)
     if (commonState.curStory.importance == Importance.Instantaneous) {
       commonState = interrupted.copy()
+    } else if (
+      this
+        .isInstanceOf[Spaces] && !this.asInstanceOf[Spaces].activeEvents.isEmpty
+    ) {
+      commonState.curStory = this.asInstanceOf[Spaces].activeEvents.head._1
+      commonState.startTime = this.asInstanceOf[Spaces].activeEvents.head._2
     } else {
       commonState.curStory = Vibe
       commonState.startTime = tick
     }
   }
   def actorSpecificEnding(tick: Int): Unit
+
+  def shouldInterrupt(newStory: Story): Boolean = {
+    if (GameManager.characters.contains(this)) {
+      return true
+    } else if (this.isInstanceOf[Spaces] && newStory.isInstanceOf[Occupy]) {
+      return newStory.asInstanceOf[Occupy].size >
+        this.asInstanceOf[Spaces].curCapacity
+    }
+    return true
+  }
 
   def interruptStory(tick: Int): Unit = {
     actorSpecificInterrupt(tick)

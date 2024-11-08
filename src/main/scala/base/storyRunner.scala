@@ -15,7 +15,7 @@ object StoryRunner extends Updater {
 
       // interrupt every story an actor for this story is currently engaged in
       story.actors
-        .filter(_.commonState.curStory != Vibe)
+        .filter(_.shouldInterrupt(story))
         .foreach(actor => interruptStory(actor.commonState.curStory))
     }
 
