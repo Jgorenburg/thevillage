@@ -1,6 +1,7 @@
 package Snowedin
 
 import Base.Actor
+import scala.collection.mutable.HashMap
 
 // global vars
 
@@ -32,4 +33,35 @@ object Location extends Enumeration {
   def areClose(actor: Actor, actor2: Actor): Boolean =
     areClose(actor.location, actor2.location)
   def areClose(l1: Room, actor: Actor): Boolean = areClose(l1, actor.location)
+
+  var distances: HashMap[(Room, Room), Double] = HashMap()
+  distances += ((Bedroom, Bedroom) -> 0)
+
+  def distanceFrom(actor: Actor, loc: Room): Double = {
+    val rooms: (Room, Room) =
+      if (loc.id <= actor.location.id) (loc, actor.location)
+      else (actor.location, loc)
+
+    if (!distances.contains(rooms)) {
+
+      var dist: Double = 0
+      var close = List(rooms._1)
+      if (rooms._1 == Bedroom) {
+        dist = Double.PositiveInfinity
+        close = List(rooms._2)
+      }
+      while (!close.contains(rooms._2)) {
+        close = close.flatMap(l => values.filter(v => areClose(l, v)))
+        dist += 1
+      }
+      distances += rooms -> dist
+    }
+
+    return distances(rooms)
+  }
+
+  def closest(loc: Room, howMany: Int, actors: List[Actor]): List[Actor] = {
+    def distance(actor: Actor): Double = distanceFrom(actor, loc)
+    actors.sortWith((a1, a2) => distance(a1) <= distance(a2)).take(howMany)
+  }
 }

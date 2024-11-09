@@ -42,7 +42,9 @@ object ControlRoom {
       Boardgame,
       FixSomething,
       Singalong,
-      Breakfast
+      Breakfast,
+      Snowcrash,
+      KitchenFire
     )
   val characters: List[Actor] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =
