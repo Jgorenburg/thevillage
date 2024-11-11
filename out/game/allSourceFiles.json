@@ -1,0 +1,25 @@
+{
+    "value": [
+        "ref:v0:74a2ba6a:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\base\\actors.scala",
+        "ref:v0:4c17d0c6:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\base\\gameManager.scala",
+        "ref:v0:7dd00f36:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\base\\observor.scala",
+        "ref:v0:db9cd635:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\base\\stories.scala",
+        "ref:v0:600892be:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\base\\storyRunner.scala",
+        "ref:v0:b14d778b:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\Main.scala",
+        "ref:v0:06f19e7c:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\MyLogger.scala",
+        "ref:v0:ad238613:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\characters.scala",
+        "ref:v0:8e1d0574:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\controlRoom.scala",
+        "ref:v0:6ec2bc04:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\criticalevents.scala",
+        "ref:v0:53379aeb:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\daughterevents.scala",
+        "ref:v0:990e6616:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\fatherevents.scala",
+        "ref:v0:bf8a0781:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\motherevents.scala",
+        "ref:v0:f665e17c:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\objectevents.scala",
+        "ref:v0:2764cdf7:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\sharedevents.scala",
+        "ref:v0:40c1ec2c:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\events\\sonevents.scala",
+        "ref:v0:c444b2e3:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\globalstate.scala",
+        "ref:v0:a3bfe44e:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\main\\scala\\snowedin\\objects.scala",
+        "ref:v0:43269e46:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\src\\test\\scala\\MySuite.scala"
+    ],
+    "valueHash": 1314393558,
+    "inputsHash": -2039620451
+}

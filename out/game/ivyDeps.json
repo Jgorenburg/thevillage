@@ -1,0 +1,126 @@
+{
+    "value": [
+        {
+            "dep": {
+                "module": {
+                    "organization": {
+                        "value": "com.badlogicgames.gdx"
+                    },
+                    "name": {
+                        "value": "gdx"
+                    },
+                    "attributes": {}
+                },
+                "version": "1.11.0",
+                "configuration": {
+                    "value": "default(compile)"
+                },
+                "minimizedExclusions": {
+                    "data": "coursier.core.MinimizedExclusions.ExcludeNone"
+                },
+                "publication": {
+                    "name": "",
+                    "type": {
+                        "value": ""
+                    },
+                    "ext": {
+                        "value": ""
+                    },
+                    "classifier": {
+                        "value": ""
+                    }
+                },
+                "optional": false,
+                "transitive": true
+            },
+            "cross": {
+                "$type": "mill.scalalib.CrossVersion.Constant",
+                "value": "",
+                "platformed": false
+            },
+            "force": false
+        },
+        {
+            "dep": {
+                "module": {
+                    "organization": {
+                        "value": "com.badlogicgames.gdx"
+                    },
+                    "name": {
+                        "value": "gdx-backend-lwjgl3"
+                    },
+                    "attributes": {}
+                },
+                "version": "1.11.0",
+                "configuration": {
+                    "value": "default(compile)"
+                },
+                "minimizedExclusions": {
+                    "data": "coursier.core.MinimizedExclusions.ExcludeNone"
+                },
+                "publication": {
+                    "name": "",
+                    "type": {
+                        "value": ""
+                    },
+                    "ext": {
+                        "value": ""
+                    },
+                    "classifier": {
+                        "value": ""
+                    }
+                },
+                "optional": false,
+                "transitive": true
+            },
+            "cross": {
+                "$type": "mill.scalalib.CrossVersion.Constant",
+                "value": "",
+                "platformed": false
+            },
+            "force": false
+        },
+        {
+            "dep": {
+                "module": {
+                    "organization": {
+                        "value": "com.badlogicgames.gdx"
+                    },
+                    "name": {
+                        "value": "gdx-platform"
+                    },
+                    "attributes": {}
+                },
+                "version": "1.11.0",
+                "configuration": {
+                    "value": "default(compile)"
+                },
+                "minimizedExclusions": {
+                    "data": "coursier.core.MinimizedExclusions.ExcludeNone"
+                },
+                "publication": {
+                    "name": "",
+                    "type": {
+                        "value": ""
+                    },
+                    "ext": {
+                        "value": ""
+                    },
+                    "classifier": {
+                        "value": "natives-desktop"
+                    }
+                },
+                "optional": false,
+                "transitive": true
+            },
+            "cross": {
+                "$type": "mill.scalalib.CrossVersion.Constant",
+                "value": "",
+                "platformed": false
+            },
+            "force": false
+        }
+    ],
+    "valueHash": -1733401618,
+    "inputsHash": 520821721
+}

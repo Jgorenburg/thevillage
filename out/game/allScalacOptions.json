@@ -1,0 +1,19 @@
+{
+    "value": [
+        "-deprecation",
+        "-encoding",
+        "utf-8",
+        "-feature",
+        "-language:existentials",
+        "-language:experimental.macros",
+        "-language:higherKinds",
+        "-language:implicitConversions",
+        "-language:unsafeNulls",
+        "-unchecked",
+        "-Xfatal-warnings",
+        "-Yexplicit-nulls",
+        "-Wsafe-init"
+    ],
+    "valueHash": 663113560,
+    "inputsHash": 919045672
+}
