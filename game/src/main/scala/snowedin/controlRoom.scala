@@ -13,7 +13,13 @@ import com.badlogic.gdx.{ApplicationAdapter, Gdx}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import Snowedin.ControlRoom.statics
+import Snowedin.ControlRoom.{statics, objects, characters, stories}
+import Snowedin.PositionConstants.HouseWidth
+import Snowedin.PositionConstants.HouseHeight
+import Snowedin.PositionConstants.houseX
+import Snowedin.PositionConstants.boxSize
+import Snowedin.PositionConstants.topRight
+import Snowedin.PositionConstants.houseY
 
 object ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
@@ -57,7 +63,19 @@ object ControlRoom {
   val characters: List[Actor] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =
     List(Couch, Sofachair, Table, Worktable, Easle, Stove, Dishwasher)
-  val statics: List[Static] = List(House, Counter, LivingRoomTable)
+  val statics: List[Static] =
+    List(
+      House,
+      Counter,
+      CoffeeTable,
+      LivingRoomTable,
+      WorkroomWall,
+      Door,
+      Closet,
+      WashingMachine,
+      Fireplace,
+      Fridge
+    )
 
   def runGame(
       gameLen: Int = 120,
@@ -81,6 +99,9 @@ class SnowedIn extends ApplicationAdapter {
     // Initialize the shape renderer
     shapeRenderer = new ShapeRenderer()
 
+    println(HouseWidth)
+    println(HouseHeight)
+
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
@@ -98,18 +119,19 @@ class SnowedIn extends ApplicationAdapter {
     // Begin shape rendering
     shapeRenderer.begin(ShapeType.Line)
 
-    // Set color (RGBA)
-    shapeRenderer.setColor(0, 0, 0, 1)
-
-    // Draw the box
-    // shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight)
-    shapeRenderer.setColor(0, 1, 0, 1)
-
-    // bob += 1
-    // println(bob)
-    // shapeRenderer.circle(200f, 200f, bob, 500)
+    // temp grid for object placement
+    // shapeRenderer.setColor(.7f, .7f, .7f, 1)
+    // (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(boxSize))
+    //   .foreach(x =>
+    //     shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
+    //   )
+    // (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(boxSize))
+    //   .foreach(y =>
+    //     shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
+    //   )
 
     statics.foreach(_.render(shapeRenderer))
+    objects.foreach(_.render(shapeRenderer))
 
     // End shape rendering
     shapeRenderer.end()

@@ -74,7 +74,7 @@ object Woodworking extends Story with Pausable with Delay {
     begin()
     Son.tools.add(Knife)
     Worktable.tools.remove(Knife)
-    Son.location = Workroom
+    Son.room = Workroom
   }
   def storySpecificEnding(tick: Int): Unit = {
     Son.tools.remove(Knife)
@@ -115,7 +115,7 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Table)
-      location = Table.location
+      location = Table.room
       return true
     }
     if (
@@ -125,7 +125,7 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Sofachair)
-      location = Sofachair.location
+      location = Sofachair.room
       return true
     }
     if (
@@ -135,7 +135,7 @@ object Snack extends Story with Occupy with Delay {
       )
     ) {
       actors.add(Couch)
-      location = Couch.location
+      location = Couch.room
       return true
     }
     return false
@@ -147,7 +147,7 @@ object Snack extends Story with Occupy with Delay {
     repeatsLeft = 2
     endTime = 0
   }
-  def storySpecificBeginning(tick: Int): Unit = { Son.location = location }
+  def storySpecificBeginning(tick: Int): Unit = { Son.room = location }
   def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
@@ -172,7 +172,7 @@ object GiveScarf extends Story {
         Location.areClose(Son, person)
       ) {
         actors.add(person)
-        location = person.location
+        location = person.room
         return true
       }
     }
@@ -188,7 +188,7 @@ object GiveScarf extends Story {
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
-    Son.location = location
+    Son.room = location
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -212,7 +212,7 @@ object StartDishwasher extends Story {
     commonState = startState.copy()
     active = false
   }
-  def storySpecificBeginning(tick: Int): Unit = { Son.location = Kitchen }
+  def storySpecificBeginning(tick: Int): Unit = { Son.room = Kitchen }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 }

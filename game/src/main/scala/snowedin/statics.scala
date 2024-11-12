@@ -21,41 +21,119 @@ object House extends Static {
 }
 
 object Counter extends Static {
-  val location = (WIDTH / 3, HEIGHT / 10)
+  val location = (houseX + 5 * boxSize, houseY)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     val vertices = Array(
-      houseX + HouseWidth / 3,
-      houseY,
+      location._1,
+      location._2,
       bottomRight._1,
       bottomRight._2,
       bottomRight._1,
-      bottomRight._2 + HouseHeight / 3,
-      bottomRight._1 - HouseWidth / 7,
-      bottomRight._2 + HouseHeight / 3,
-      bottomRight._1 - HouseWidth / 7,
-      bottomRight._2 + HouseHeight / 7,
-      houseX + HouseWidth / 3,
-      houseY + HouseHeight / 7
+      bottomRight._2 + 7 * boxSize,
+      bottomRight._1 - 3 * boxSize,
+      bottomRight._2 + 7 * boxSize,
+      bottomRight._1 - 3 * boxSize,
+      bottomRight._2 + 3 * boxSize,
+      houseX + 5 * boxSize,
+      houseY + 3 * boxSize
     )
     shapeRenderer.polygon(vertices)
   }
 }
 
-object LivingRoomTable extends Static {
-  val location = HouseBase
+object CoffeeTable extends Static {
+  val location =
+    (topLeft._1 + 2 * boxSize, topLeft._2 - 8 * boxSize)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     shapeRenderer.rect(
-      topLeft._1 + HouseWidth / 10,
-      topLeft._2 - HouseHeight * 2.2f / 5.5f,
-      HouseWidth / 10,
-      HouseHeight / 6.2f
+      location._1,
+      location._2,
+      1 * boxSize,
+      3 * boxSize
+    )
+  }
+}
+
+object LivingRoomTable extends Static {
+  val location =
+    (topLeft._1 + 4 * boxSize, topLeft._2 - 11 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    // Set color (RGBA)
+    shapeRenderer.setColor(0, 0, 0, 1)
+
+    // Draw the box
+    shapeRenderer.rect(
+      location._1,
+      location._2,
+      2 * boxSize,
+      2 * boxSize
+    )
+  }
+}
+
+object WorkroomWall extends Static {
+  val location = (bottomRight._1, bottomRight._2 + 11 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    // Set color (RGBA)
+    shapeRenderer.setColor(0, 0, 0, 1)
+
+    val vertices = Array(
+      location._1,
+      location._2,
+      bottomRight._1 - 5 * boxSize,
+      location._2,
+      bottomRight._1 - 5 * boxSize,
+      location._2 + 3 * boxSize
+    )
+    shapeRenderer.polyline(vertices)
+  }
+}
+
+object Door extends Static {
+  val location = (topRight._1 - 8 * boxSize, topRight._2 - 0.5f * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 0.5f * boxSize)
+  }
+}
+
+object Closet extends Static {
+  val location = (bottomLeft._1, bottomLeft._2 + 3 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.rect(location._1, location._2, 0.5f * boxSize, 2 * boxSize)
+  }
+}
+
+object Fireplace extends Static {
+  val location = (topLeft._1, topLeft._2 - 8 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.rect(location._1, location._2, 0.5f * boxSize, 3 * boxSize)
+  }
+}
+
+object Fridge extends Static {
+  val location = (bottomLeft._1 + 3 * boxSize, bottomLeft._2)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 3 * boxSize)
+  }
+}
+
+object WashingMachine extends Static {
+  val location = (topRight._1 - 4 * boxSize, topRight._2 - 11 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 2 * boxSize)
+
+    shapeRenderer.rect(
+      location._1 + 2 * boxSize,
+      location._2,
+      2 * boxSize,
+      2 * boxSize
     )
   }
 }

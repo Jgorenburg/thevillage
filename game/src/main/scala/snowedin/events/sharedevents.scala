@@ -26,7 +26,7 @@ object Chat extends Story with Delay {
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
-      () => Location.areClose(Mother.location, Father.location),
+      () => Location.areClose(Mother.room, Father.room),
       () =>
         actors.forall(actor =>
           Importance.interrupt(actor.getCurStoryImportance(), importance)
@@ -43,7 +43,7 @@ object Chat extends Story with Delay {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     Father.noticedBrokenDoor |= Mother.noticedBrokenDoor
-    Father.location = Mother.location
+    Father.room = Mother.room
   }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
@@ -90,7 +90,7 @@ object CookLunch extends Story {
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {
-    actors.foreach(_.location = Kitchen)
+    actors.foreach(_.room = Kitchen)
   }
   def storySpecificEnding(tick: Int): Unit = {
     if (actors.contains(Father)) {
@@ -128,7 +128,7 @@ object CookDinner extends Story {
   var importance: Importance.Importance = Importance.Interrupt
 
   def storySpecificBeginning(tick: Int): Unit = {
-    actors.foreach(_.location = Kitchen)
+    actors.foreach(_.room = Kitchen)
   }
   def storySpecificEnding(tick: Int): Unit = { Table.readyForDinner = true }
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -193,7 +193,7 @@ object Movie extends Story with Occupy with Pausable {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    actors.foreach(_.location = LivingRoom)
+    actors.foreach(_.room = LivingRoom)
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
@@ -237,7 +237,7 @@ object JoinMovie extends Story with Occupy {
     return !Movie.active
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    Daughter.location = LivingRoom
+    Daughter.room = LivingRoom
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -271,7 +271,7 @@ object Gossip extends Story with Delay {
     repeatsLeft = 2
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    Daughter.location = Son.location
+    Daughter.room = Son.room
   }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
@@ -308,14 +308,14 @@ object CleanTable extends Story with Pausable {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    Son.location = DiningRoom
-    Daughter.location = DiningRoom
+    Son.room = DiningRoom
+    Daughter.room = DiningRoom
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = false
     beginAnew()
-    Son.location = Kitchen
-    Daughter.location = Kitchen
+    Son.room = Kitchen
+    Daughter.room = Kitchen
   }
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
 
@@ -358,7 +358,7 @@ object Lunch extends Story with Pausable with Occupy {
       size = 4
       Table.occupy(this)
     }
-    actors.foreach(_.location = DiningRoom)
+    actors.foreach(_.room = DiningRoom)
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = true
@@ -400,7 +400,7 @@ object Dinner extends Story with Pausable with Occupy {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    actors.foreach(_.location = DiningRoom)
+    actors.foreach(_.room = DiningRoom)
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = true
@@ -504,7 +504,7 @@ object Boardgame extends Story with Occupy with Pausable {
       size = 4
       Table.occupy(this)
     }
-    actors.foreach(_.location = DiningRoom)
+    actors.foreach(_.room = DiningRoom)
   }
   def storySpecificEnding(tick: Int): Unit = {
     beginAnew()
@@ -563,7 +563,7 @@ object FixSomething extends Story with Occupy with Pausable {
 
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    actors.foreach(_.location = Workroom)
+    actors.foreach(_.room = Workroom)
   }
   def storySpecificEnding(tick: Int): Unit = {
     beginAnew()
@@ -624,7 +624,7 @@ class IndivBreakfast(eater: Actor) extends Story with Occupy {
   def reset(): Unit = {}
   val startState: Base.StoryCommonState = (false, -1, false, 4)
   var commonState: StoryCommonState = startState.copy()
-  def storySpecificBeginning(tick: Int): Unit = { eater.location = DiningRoom }
+  def storySpecificBeginning(tick: Int): Unit = { eater.room = DiningRoom }
   def storySpecificEnding(tick: Int): Unit = {
     if (eater == Son) {
       Son.lastAte = tick

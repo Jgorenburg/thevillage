@@ -70,7 +70,7 @@ object Art extends Story with Occupy {
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = { Mother.location = LivingRoom }
+  def storySpecificBeginning(tick: Int): Unit = { Mother.room = LivingRoom }
   override def progress(tick: Int): Boolean = {
     if (tick - commonState.startTime > 5) {
       importance = Importance.Vibe
@@ -110,13 +110,11 @@ object Cleaning extends Story with Pausable with Delay {
 
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    Mother.location = rooms(cleansSoFar % rooms.length)
+    Mother.room = rooms(cleansSoFar % rooms.length)
   }
   override def progress(tick: Int): Boolean = {
     proceed()
-    if (
-      Mother.location == LivingRoom && amountleft < commonState.duration / 2
-    ) {
+    if (Mother.room == LivingRoom && amountleft < commonState.duration / 2) {
       Mother.tools.add(Tambourine)
     }
     return false

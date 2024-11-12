@@ -9,12 +9,29 @@ import Snowedin.Location.Kitchen
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.DiningRoom
 import Snowedin.Location.Workroom
+import Snowedin.PositionConstants.topRight
+import Snowedin.PositionConstants.HouseWidth
+import Snowedin.PositionConstants.HouseHeight
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import Snowedin.PositionConstants.*
 
 object Worktable extends Actor {
+  val location = (topRight._1 - 2 * boxSize, topRight._2 - 5 * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.setColor(0, 0, 0, 1)
+
+    // Draw the box
+    shapeRenderer.rect(
+      location._1,
+      location._2,
+      2 * boxSize,
+      4 * boxSize
+    )
+  }
   lazy val myEvents: Array[Any] = Array(Construction)
   val startingTools: HashSet[Tools.Tools] = HashSet(Screwdriver, Knife)
   var tools: HashSet[Tools.Tools] = startingTools
-  location = Workroom
+  room = Workroom
 
   def actorSpecificBeginning(tick: Int): Unit = {}
   def tick(tick: Int): Unit = {
@@ -41,9 +58,67 @@ object Worktable extends Actor {
 }
 
 object Couch extends Actor with Spaces {
+  val location =
+    (topLeft._1 + 4 * boxSize, topLeft._2 - 9 * boxSize)
+
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+    shapeRenderer.setColor(0, 0, 0, 1)
+
+    // Draw the box
+    val vertices = Array(
+      location._1,
+      location._2,
+      location._1 + 2 * boxSize,
+      location._2,
+      location._1 + 2 * boxSize,
+      location._2 + 5 * boxSize,
+      location._1,
+      location._2 + 5 * boxSize,
+      location._1,
+      location._2 + 4 * boxSize,
+      location._1 + 1 * boxSize,
+      location._2 + 4 * boxSize,
+      location._1 + 1 * boxSize,
+      location._2 + 1 * boxSize,
+      location._1,
+      location._2 + 1 * boxSize
+    )
+
+    shapeRenderer.polygon(vertices)
+    shapeRenderer.line(
+      location._1,
+      location._2 + 2.5f * boxSize,
+      location._1 + boxSize,
+      location._2 + 2.5f * boxSize
+    )
+    shapeRenderer.curve(
+      location._1,
+      location._2 + 4 * boxSize,
+      location._1 - .2f * boxSize,
+      location._2 + 3.8f * boxSize,
+      location._1 - .2f * boxSize,
+      location._2 + 2.7f * boxSize,
+      location._1,
+      location._2 + 2.5f * boxSize,
+      100
+    )
+    shapeRenderer.curve(
+      location._1,
+      location._2 + 1 * boxSize,
+      location._1 - .2f * boxSize,
+      location._2 + 1.2f * boxSize,
+      location._1 - .2f * boxSize,
+      location._2 + 2.3f * boxSize,
+      location._1,
+      location._2 + 2.5f * boxSize,
+      100
+    )
+
+  }
+
   val maxCapacity = 2
   var curCapacity = maxCapacity
-  location = LivingRoom
+  room = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Nap, Read, Movie, JoinMovie)
 
@@ -88,9 +163,45 @@ object Couch extends Actor with Spaces {
 }
 
 object Sofachair extends Actor with Spaces {
+  val location = (topLeft._1 + 3.5f * boxSize, topLeft._2 - 3.5f * boxSize)
+  def render(shapeRenderer: ShapeRenderer): Unit = {
+
+    val vertices: Array[Float] =
+      Array(
+        location._1,
+        location._2,
+        location._1,
+        location._2 + 1.5f * boxSize,
+        location._1 - 2 * boxSize,
+        location._2 + 1.5f * boxSize,
+        location._1 - 2 * boxSize,
+        location._2,
+        location._1 - 1.5f * boxSize,
+        location._2,
+        location._1 - 1.5f * boxSize,
+        location._2 + 1.0f * boxSize,
+        location._1 - 0.5f * boxSize,
+        location._2 + 1.0f * boxSize,
+        location._1 - 0.5f * boxSize,
+        location._2
+      )
+
+    shapeRenderer.polygon(vertices)
+    shapeRenderer.curve(
+      location._1 - 0.5f * boxSize,
+      location._2,
+      location._1 - 0.7f * boxSize,
+      location._2 - 0.2f * boxSize,
+      location._1 - 1.3f * boxSize,
+      location._2 - 0.2f * boxSize,
+      location._1 - 1.5f * boxSize,
+      location._2,
+      100
+    )
+  }
   val maxCapacity = 1
   var curCapacity = maxCapacity
-  location = LivingRoom
+  room = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Snack, Read, JoinMovie, Movie)
 
@@ -136,13 +247,17 @@ object Sofachair extends Actor with Spaces {
 }
 
 object Table extends Actor with Spaces {
+  val location = (bottomLeft._1 + 6 * boxSize, bottomLeft._2 + 5 * boxSize)
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.rect(location._1, location._2, 6 * boxSize, 4 * boxSize)
+  }
 
   var readyToClear: Boolean = false
   var readyForLunch: Boolean = false
   var readyForDinner: Boolean = false
   val maxCapacity = 4
   var curCapacity = maxCapacity
-  location = DiningRoom
+  room = DiningRoom
 
   lazy val myEvents: Array[Any] = Array(Snack)
 
@@ -181,9 +296,13 @@ object Table extends Actor with Spaces {
 }
 
 object Easle extends Actor with Spaces {
+  val location = (topLeft._1 + 6 * boxSize, topLeft._2 - 2 * boxSize)
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.rect(location._1, location._2, boxSize, boxSize)
+  }
   val maxCapacity = 1
   var curCapacity = maxCapacity
-  location = LivingRoom
+  room = LivingRoom
 
   lazy val myEvents: Array[Any] = Array(Art)
 
@@ -219,10 +338,14 @@ object Easle extends Actor with Spaces {
 }
 
 object Stove extends Actor {
+  val location = (bottomLeft._1 + 6 * boxSize, bottomLeft._2 + boxSize)
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.rect(location._1, location._2, 3 * boxSize, 2 * boxSize)
+  }
   lazy val myEvents: Array[Any] = Array(CookLunch, CookDinner)
   var unattended = false
   var leftAlone = -1
-  location = Kitchen
+  room = Kitchen
 
   def actorSpecificBeginning(tick: Int): Unit = {
     unattended = false
@@ -252,12 +375,17 @@ object Stove extends Actor {
 }
 
 object Dishwasher extends Actor {
+  val location = (bottomRight._1 - 3 * boxSize, bottomRight._2 + 3 * boxSize)
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 3 * boxSize)
+  }
+
   var dirty = true
   var readyToWash = false
   var running = false
   var clean = false
   var unloaded = false
-  location = Kitchen
+  room = Kitchen
   def actorSpecificBeginning(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {
     commonState.curStory match

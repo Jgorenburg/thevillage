@@ -30,18 +30,18 @@ object Location extends Enumeration {
       case _          => false
   }
 
-  def areClose(actor: Actor, l2: Room): Boolean = areClose(actor.location, l2)
+  def areClose(actor: Actor, l2: Room): Boolean = areClose(actor.room, l2)
   def areClose(actor: Actor, actor2: Actor): Boolean =
-    areClose(actor.location, actor2.location)
-  def areClose(l1: Room, actor: Actor): Boolean = areClose(l1, actor.location)
+    areClose(actor.room, actor2.room)
+  def areClose(l1: Room, actor: Actor): Boolean = areClose(l1, actor.room)
 
   var distances: HashMap[(Room, Room), Double] = HashMap()
   distances += ((Bedroom, Bedroom) -> 0)
 
   def distanceFrom(actor: Actor, loc: Room): Double = {
     val rooms: (Room, Room) =
-      if (loc.id <= actor.location.id) (loc, actor.location)
-      else (actor.location, loc)
+      if (loc.id <= actor.room.id) (loc, actor.room)
+      else (actor.room, loc)
 
     if (!distances.contains(rooms)) {
 
@@ -70,13 +70,20 @@ object Location extends Enumeration {
 object PositionConstants {
   val WIDTH: Float = Gdx.graphics.getWidth().toFloat
   val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
-  val HouseBase: (Float, Float) = (WIDTH / 3, HEIGHT / 10)
+  def heightToWidth(h: Float) = h * 8.5f / 11
+  def widthToHeight(w: Float) = w * 11 / 8.5f
+  val size: Float = WIDTH / 2.8f
+  // House will always be centered on the X axis and slightly high on the Y
+  val HouseBase: (Float, Float) =
+    ((WIDTH - size) / 2, (HEIGHT - widthToHeight(size)) / 2)
   def houseX: Float = HouseBase._1
   def houseY: Float = HouseBase._2
-  val HouseWidth: Float = WIDTH / 3
-  val HouseHeight: Float = (WIDTH / 3) * 1.3f
+
+  val HouseWidth: Float = size
+  val HouseHeight: Float = widthToHeight(size)
   def bottomLeft = HouseBase
   def bottomRight = (houseX + HouseWidth, houseY)
   def topLeft = (houseX, houseY + HouseHeight)
   def topRight = (houseX + HouseWidth, houseY + HouseHeight)
+  val boxSize = size / 17
 }

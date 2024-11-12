@@ -24,7 +24,7 @@ object KitchenFire extends Story {
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
-    actors.foreach(_.location = Kitchen)
+    actors.foreach(_.room = Kitchen)
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -60,7 +60,7 @@ object Snowcrash extends Story {
 
   var commonState: Base.StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
-    actors.foreach(_.location = Door)
+    actors.foreach(_.room = Door)
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}

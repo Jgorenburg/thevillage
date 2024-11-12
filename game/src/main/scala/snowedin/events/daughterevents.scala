@@ -49,7 +49,7 @@ object Read extends Story with Occupy {
     importance = Importance.Base
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    Daughter.location = LivingRoom
+    Daughter.room = LivingRoom
   }
   def storySpecificEnding(tick: Int): Unit = { importance = Importance.Base }
   def storySpecificInterrupt(tick: Int): Unit = { importance = Importance.Base }
@@ -104,7 +104,7 @@ object StartFire extends Story {
   var importance: Importance.Importance = Importance.Event
 
   def storySpecificBeginning(tick: Int): Unit = {
-    Daughter.location = LivingRoom
+    Daughter.room = LivingRoom
   }
   def storySpecificEnding(tick: Int): Unit = {}
 
@@ -141,7 +141,7 @@ object UnloadDishwasher extends Story with Pausable {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    Daughter.location = Kitchen
+    Daughter.room = Kitchen
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = { pause() }

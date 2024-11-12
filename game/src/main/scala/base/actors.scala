@@ -66,7 +66,7 @@ trait Renderable {
 // for things that aren't interacted with, but still exist
 trait Static extends Renderable
 
-trait Actor extends Subject[Actor] with Listener {
+trait Actor extends Subject[Actor] with Listener with Renderable {
   // common state is for things every actor has
   // common state:
   //    1: current activity
@@ -74,7 +74,7 @@ trait Actor extends Subject[Actor] with Listener {
   var commonState: curStory = (Vibe, 0)
   var interrupted: curStory = commonState.copy()
 
-  var location: Location.Room = Location.Bedroom
+  var room: Location.Room = Location.Bedroom
 
   lazy val myEvents: Array[Any]
 
@@ -137,7 +137,7 @@ trait Actor extends Subject[Actor] with Listener {
   def defaultReset(): Unit = {
     commonState = (Vibe, 0)
     interrupted = (Vibe, 0)
-    location = Location.Bedroom
+    room = Location.Bedroom
   }
 
   def log(): String

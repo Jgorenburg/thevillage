@@ -4,8 +4,11 @@ import Base.{Actor, Story, Vibe}
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
 import Snowedin.Tools.Tambourine
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
 object Daughter extends Actor {
+  val location = (0, 0)
+  def render(shapeRenderer: ShapeRenderer) = {}
   // var tools: HashSet[Tools.Tools] = HashSet()
 
   def actorSpecificBeginning(tick: Int): Unit = {}
@@ -13,7 +16,7 @@ object Daughter extends Actor {
   def actorSpecificInterrupt(tick: Int): Unit = {}
   def log(): String = commonState.toString() +
     ", Importance: " + commonState.curStory.importance +
-    ", Location: " + location
+    ", Location: " + room
   lazy val myEvents: Array[Any] = Array()
   def reset(): Unit = {
     // tools = HashSet()
@@ -26,6 +29,8 @@ object Daughter extends Actor {
 }
 
 object Son extends Actor {
+  val location = (0, 0)
+  def render(shapeRenderer: ShapeRenderer) = {}
   var tools: HashSet[Tools.Tools] = HashSet()
   var lastAte = 0
 
@@ -36,7 +41,7 @@ object Son extends Actor {
     ", Importance: " + commonState.curStory.importance +
     ", Tools: " + tools.mkString(", ") +
     s", Last Ate: ${lastAte}" +
-    ", Location: " + location
+    ", Location: " + room
   lazy val myEvents: Array[Any] = Array()
   def reset(): Unit = {
     tools = HashSet()
@@ -51,6 +56,8 @@ object Son extends Actor {
 }
 
 object Mother extends Actor {
+  val location = (0, 0)
+  def render(shapeRenderer: ShapeRenderer) = {}
   var noticedBrokenDoor = false
 
   var tools: HashSet[Tools.Tools] = HashSet()
@@ -78,10 +85,12 @@ object Mother extends Actor {
     ", Importance: " + commonState.curStory.importance +
     ", Tools: " + tools.mkString(", ") +
     s", Aware of Door: ${noticedBrokenDoor}" +
-    ", Location: " + location
+    ", Location: " + room
 }
 
 object Father extends Actor {
+  val location = (0, 0)
+  def render(shapeRenderer: ShapeRenderer) = {}
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
   var noticedBrokenDoor = false
@@ -125,6 +134,6 @@ object Father extends Actor {
     ", Importance: " + commonState.curStory.importance +
     ", Tools: " + tools.mkString(", ") +
     s", Aware of Door: ${noticedBrokenDoor}" +
-    ", Location: " + location
+    ", Location: " + room
 
 }
