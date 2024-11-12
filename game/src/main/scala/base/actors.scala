@@ -6,6 +6,7 @@ import Snowedin.Couch.curCapacity
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
 case class curStory(
     var curStory: Story,
@@ -55,6 +56,15 @@ trait Spaces {
   }
 
 }
+
+trait Renderable {
+  var location: (Float, Float)
+  // should only be called within Shaperenderer
+  def render(shapeRenderer: ShapeRenderer): Unit
+}
+
+// for things that aren't interacted with, but still exist
+trait Static extends Renderable
 
 trait Actor extends Subject[Actor] with Listener {
   // common state is for things every actor has

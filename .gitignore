@@ -29,6 +29,8 @@ metals.sbt
 # IDEA
 .idea
 .idea_modules
+
+# My Ignores
 worksheets/
-logs/
 src/main/scala/Main.scala
+out/

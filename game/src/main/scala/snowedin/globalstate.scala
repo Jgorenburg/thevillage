@@ -2,6 +2,7 @@ package Snowedin
 
 import Base.Actor
 import scala.collection.mutable.HashMap
+import com.badlogic.gdx.Gdx
 
 // global vars
 
@@ -64,4 +65,18 @@ object Location extends Enumeration {
     def distance(actor: Actor): Double = distanceFrom(actor, loc)
     actors.sortWith((a1, a2) => distance(a1) <= distance(a2)).take(howMany)
   }
+}
+
+object PositionConstants {
+  val WIDTH: Float = Gdx.graphics.getWidth().toFloat
+  val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
+  val HouseBase: (Float, Float) = (WIDTH / 3, HEIGHT / 10)
+  def houseX: Float = HouseBase._1
+  def houseY: Float = HouseBase._2
+  val HouseWidth: Float = WIDTH / 3
+  val HouseHeight: Float = (WIDTH / 3) * 1.3f
+  def bottomLeft = HouseBase
+  def bottomRight = (houseX + HouseWidth, houseY)
+  def topLeft = (houseX, houseY + HouseHeight)
+  def topRight = (houseX + HouseWidth, houseY + HouseHeight)
 }

@@ -57,9 +57,9 @@
         "qref:v1:3ff13e4e:C:\\Users\\jacob\\AppData\\Local\\Coursier\\cache\\v1\\https\\repo1.maven.org\\maven2\\org\\jcraft\\jorbis\\0.0.17\\jorbis-0.0.17.jar",
         "qref:v1:616d8205:C:\\Users\\jacob\\AppData\\Local\\Coursier\\cache\\v1\\https\\repo1.maven.org\\maven2\\org\\scala-lang\\scala-library\\2.13.14\\scala-library-2.13.14.jar",
         "ref:v0:c984eca8:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\game\\compile-resources",
-        "ref:v0:c984eca8:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\assets",
-        "ref:v0:dcae09d1:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\out\\game\\compile.dest\\classes"
+        "ref:v0:37460b23:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\assets",
+        "ref:v0:01f1741f:C:\\Users\\jacob\\Desktop\\Coding Work\\thevillage\\out\\game\\compile.dest\\classes"
     ],
-    "valueHash": 1039249239,
-    "inputsHash": -1166558718
+    "valueHash": 1080698499,
+    "inputsHash": -1393017215
 }
