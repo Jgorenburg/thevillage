@@ -15,6 +15,11 @@ import Snowedin.Location.Kitchen
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.DiningRoom
 import Snowedin.Location.Workroom
+import Base.Person
+import Snowedin.PositionConstants.bottomLeft
+import Snowedin.PositionConstants.boxSize
+import Snowedin.PositionConstants.bottomRight
+import Snowedin.PositionConstants.topRight
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -32,6 +37,17 @@ object Chat extends Story with Delay {
           Importance.interrupt(actor.getCurStoryImportance(), importance)
         )
     )
+
+  def setStartLocations(): Unit = actors
+    .asInstanceOf[HashSet[Person]]
+    .foreach(_.setDestinationNoAdjust(Father.location))
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Mother.walk()
+    }
+    return false
+  }
 
   val delay = 15
 
@@ -54,6 +70,7 @@ object Chat extends Story with Delay {
 
 object CookLunch extends Story {
   lazy val actors = HashSet(Stove)
+  var cook: Person = Father
   var conditions: List[() => Boolean] =
     List(
       // halfway through the day
@@ -64,6 +81,7 @@ object CookLunch extends Story {
   def fatherAvailible(): Boolean = {
     if (Importance.interrupt(Father.getCurStoryImportance(), importance)) {
       actors.add(Father)
+      cook = Father
       actors.remove(Mother)
       return true
     } else {
@@ -77,6 +95,7 @@ object CookLunch extends Story {
       Importance.interrupt(Mother.getCurStoryImportance(), importance)
     ) {
       actors.add(Mother)
+      cook = Mother
       return true
     } else {
       actors.remove(Mother)
@@ -89,14 +108,27 @@ object CookLunch extends Story {
 
   var importance: Importance.Importance = Importance.Interrupt
 
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = cook.walk()
+    }
+    return false
+  }
+  def setStartLocations(): Unit = cook.setDestination(
+    bottomLeft._1 + 8 * boxSize,
+    bottomLeft._2 + 4 * boxSize
+  )
+
   def storySpecificBeginning(tick: Int): Unit = {
     actors.foreach(_.room = Kitchen)
   }
   def storySpecificEnding(tick: Int): Unit = {
     if (actors.contains(Father)) {
       CookDinner.actors.add(Mother)
+      CookDinner.cook = Mother
     } else {
       CookDinner.actors.add(Father)
+      CookDinner.cook = Father
     }
     Table.readyForLunch = true
   }
@@ -111,6 +143,7 @@ object CookLunch extends Story {
 
 object CookDinner extends Story {
   lazy val actors = HashSet(Stove)
+  var cook: Person = Father
   var conditions: List[() => Boolean] =
     List(
       // 3/4th through the day
@@ -126,7 +159,17 @@ object CookDinner extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Interrupt
+  def setStartLocations(): Unit = cook.setDestination(
+    bottomLeft._1 + 8 * boxSize,
+    bottomLeft._2 + 4 * boxSize
+  )
 
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = cook.walk()
+    }
+    return false
+  }
   def storySpecificBeginning(tick: Int): Unit = {
     actors.foreach(_.room = Kitchen)
   }
@@ -179,9 +222,23 @@ object Movie extends Story with Occupy with Pausable {
     return false
   }
 
+  def setStartLocations(): Unit = {
+    Father.setDestination(Couch.seat2Loc)
+
+    if (actors.contains(Sofachair)) {
+      Son.setDestination(Sofachair.getSeatingLoc())
+    } else {
+      Son.setDestination(Couch.seat1Loc)
+    }
+  }
+
   var importance = Importance.Event
-  override def progress(tick: Int): Boolean = {
+
+  def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Son.walk() & Father.walk()
+    }
     return false
   }
   def reset(): Unit = {
@@ -233,7 +290,18 @@ object JoinMovie extends Story with Occupy {
     commonState = startState.copy()
     active = false
   }
+  def setStartLocations(): Unit = {
+    Daughter.setDestination(if (actors.contains(Sofachair)) {
+      Sofachair.getSeatingLoc()
+    } else {
+      Couch.getSeatLoc()
+    })
+  }
+
   override def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Daughter.walk()
+    }
     return !Movie.active
   }
   def storySpecificBeginning(tick: Int): Unit = {
@@ -264,6 +332,18 @@ object Gossip extends Story with Delay {
   repeatsLeft = 2
 
   var importance = Importance.Event
+  def setStartLocations(): Unit = {
+    actors
+      .asInstanceOf[HashSet[Person]]
+      .foreach(_.setDestinationNoAdjust(Daughter.location))
+  }
+
+  override def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Son.walk()
+    }
+    return false
+  }
   def reset(): Unit = {
     active = false
     commonState = startState.copy()
@@ -297,15 +377,52 @@ object CleanTable extends Story with Pausable {
     )
 
   var importance = Importance.Interrupt
-  override def progress(tick: Int): Boolean = {
-    proceed()
-    return false
-  }
+
   def reset(): Unit = {
     active = false
     commonState = startState.copy()
     beginAnew()
   }
+
+  def setStartLocations(): Unit = {
+    Son.setDestination(Table.getLoc4())
+    Daughter.setDestination(Table.getLoc3())
+    sonsDest = Table
+    daughtDest = Table
+  }
+
+  var sonsDest: Actor = Table
+  var daughtDest: Actor = Table
+  def progress(tick: Int): Boolean = {
+    if (Son.walk()) {
+      if (sonsDest == Table) {
+        sonsDest = Dishwasher
+        Son.setDestination(
+          bottomRight._1 - 4 * boxSize,
+          bottomRight._2 + 4 * boxSize
+        )
+      } else {
+        sonsDest = Dishwasher
+        Son.setDestination(Table.getLoc4())
+      }
+    }
+    if (Daughter.walk()) {
+      if (daughtDest == Table) {
+        daughtDest = Dishwasher
+        Daughter.setDestination(
+          bottomRight._1 - 4 * boxSize,
+          bottomRight._2 + 5 * boxSize
+        )
+
+      } else {
+        daughtDest = Table
+        Daughter.setDestination(Table.getLoc3())
+      }
+    }
+    proceed()
+    return false
+  }
+
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
     Son.room = DiningRoom
@@ -339,7 +456,18 @@ object Lunch extends Story with Pausable with Occupy {
     )
 
   var importance = Importance.Interrupt
-  override def progress(tick: Int): Boolean = {
+  def setStartLocations(): Unit = {
+    if (actors.contains(Son)) Son.setDestination(Table.getLoc1())
+    Daughter.setDestination(Table.getLoc2())
+    Mother.setDestination(Table.getLoc3())
+    Father.setDestination(Table.getLoc4())
+  }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Daughter.walk() & Father.walk() & Mother.walk()
+      if (actors.contains(Son)) arrived = Son.walk() && arrived
+    }
     proceed()
     return false
   }
@@ -389,7 +517,17 @@ object Dinner extends Story with Pausable with Occupy {
     )
 
   var importance = Importance.Interrupt
-  override def progress(tick: Int): Boolean = {
+  def setStartLocations(): Unit = {
+    Son.setDestination(Table.getLoc1())
+    Daughter.setDestination(Table.getLoc2())
+    Mother.setDestination(Table.getLoc3())
+    Father.setDestination(Table.getLoc4())
+  }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Son.walk() & Daughter.walk() & Father.walk() & Mother.walk()
+    }
     proceed()
     return false
   }
@@ -428,7 +566,12 @@ object Singalong extends Story {
 
   var importance = Importance.Interrupt
   var joinInImportance = Importance.Event
-  override def progress(tick: Int): Boolean = {
+  def setStartLocations(): Unit = {
+    actors
+      .asInstanceOf[HashSet[Person]]
+      .foreach(p => p.setDestination(p.location))
+  }
+  def progress(tick: Int): Boolean = {
     potentialSingers
       .filter(person =>
         Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
@@ -492,6 +635,14 @@ object Boardgame extends Story with Occupy with Pausable {
       return false
     }
   }
+
+  def setStartLocations(): Unit = {
+    Son.setDestination(Table.getLoc1())
+    Daughter.setDestination(Table.getLoc2())
+    if (actors.contains(Mother)) Mother.setDestination(Table.getLoc3())
+    if (actors.contains(Father)) Father.setDestination(Table.getLoc4())
+  }
+
   var active: Boolean = false
   val startState = (false, -1, false, 14)
   var commonState = startState.copy()
@@ -510,7 +661,12 @@ object Boardgame extends Story with Occupy with Pausable {
     beginAnew()
   }
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
-  override def progress(tick: Int): Boolean = {
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Son.walk() & Daughter.walk()
+      if (actors.contains(Mother)) arrived = Mother.walk() & arrived
+      if (actors.contains(Father)) arrived = Father.walk() & arrived
+    }
     proceed()
     return false
   }
@@ -541,6 +697,7 @@ object FixSomething extends Story with Occupy with Pausable {
     actors.remove(Son)
     if (Importance.interrupt(Son.getCurStoryImportance(), importance)) {
       actors.add(Son)
+      helper = Son
       return true
     } else {
       return false
@@ -550,16 +707,23 @@ object FixSomething extends Story with Occupy with Pausable {
     actors.remove(Daughter)
     if (Importance.interrupt(Daughter.getCurStoryImportance(), importance)) {
       actors.add(Daughter)
+      helper = Daughter
       return true
     } else {
       return false
     }
   }
+
+  var helper: Person = Son
   var active: Boolean = false
   val startState = (false, -1, false, 7)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
+  def setStartLocations(): Unit = {
+    Father.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 4 * boxSize)
+    helper.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 3 * boxSize)
+  }
 
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
@@ -569,7 +733,11 @@ object FixSomething extends Story with Occupy with Pausable {
     beginAnew()
   }
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
-  override def progress(tick: Int): Boolean = {
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Father.walk() & helper.walk()
+    }
     proceed()
     return false
   }
@@ -601,6 +769,8 @@ object Breakfast extends Story {
     commonState = startState.copy()
     active = false
   }
+  def progress(tick: Int): Boolean = return false
+  def setStartLocations(): Unit = {}
   val startState: Base.StoryCommonState = (false, -1, true, 0)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
@@ -614,7 +784,7 @@ object Breakfast extends Story {
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
 
-class IndivBreakfast(eater: Actor) extends Story with Occupy {
+class IndivBreakfast(eater: Person) extends Story with Occupy {
   val size = 1
   var active: Boolean = false
   lazy val actors = HashSet(eater, Table)
@@ -624,6 +794,20 @@ class IndivBreakfast(eater: Actor) extends Story with Occupy {
   def reset(): Unit = {}
   val startState: Base.StoryCommonState = (false, -1, false, 4)
   var commonState: StoryCommonState = startState.copy()
+  def setStartLocations(): Unit = {
+    eater.setDestination(
+      eater match
+        case Son      => Table.getLoc1()
+        case Daughter => Table.getLoc2()
+        case Mother   => Table.getLoc3()
+        case Father   => Table.getLoc4()
+    )
+  }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) arrived = eater.walk()
+    return false
+  }
   def storySpecificBeginning(tick: Int): Unit = { eater.room = DiningRoom }
   def storySpecificEnding(tick: Int): Unit = {
     if (eater == Son) {

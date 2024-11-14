@@ -13,7 +13,14 @@ import Snowedin.Location.Workroom
 import Snowedin.Location.Room
 import Snowedin.Location.Bedroom
 import Snowedin.Location.Kitchen
+import Snowedin.PositionConstants.topLeft
+import Snowedin.PositionConstants.boxSize
+import Snowedin.PositionConstants.topRight
+import Snowedin.PositionConstants.bottomLeft
+import Base.Person
+import Snowedin.PositionConstants.bottomRight
 
+// TODO: knitting should be done at a seat
 object Knit extends Story with Pausable with Delay {
   var active: Boolean = false
   var delay = 29
@@ -26,7 +33,7 @@ object Knit extends Story with Pausable with Delay {
       () => Importance.interrupt(Son.getCurStoryImportance(), importance)
     )
   var importance: Base.Importance.Importance = Importance.Base
-  override def progress(tick: Int): Boolean = {
+  def progress(tick: Int): Boolean = {
     proceed()
     return false
   }
@@ -37,6 +44,7 @@ object Knit extends Story with Pausable with Delay {
     endTime = 0
   }
   def storySpecificBeginning(tick: Int): Unit = begin()
+  def setStartLocations(): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
     beginAnew()
@@ -60,8 +68,12 @@ object Woodworking extends Story with Pausable with Delay {
         )
     )
   var importance: Base.Importance.Importance = Importance.Base
-  override def progress(tick: Int): Boolean = {
+
+  def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Son.walk()
+    }
     return false
   }
   def reset(): Unit = {
@@ -76,6 +88,9 @@ object Woodworking extends Story with Pausable with Delay {
     Worktable.tools.remove(Knife)
     Son.room = Workroom
   }
+  def setStartLocations(): Unit =
+    Son.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 3 * boxSize)
+
   def storySpecificEnding(tick: Int): Unit = {
     Son.tools.remove(Knife)
     Worktable.tools.add(Knife)
@@ -147,13 +162,33 @@ object Snack extends Story with Occupy with Delay {
     repeatsLeft = 2
     endTime = 0
   }
+
+  var reachedFridge = false
+  var reachedSeating = false
+  def progress(tick: Int): Boolean = {
+    if (!reachedFridge) {
+      if (Son.walk()) {
+        Son.setDestination(
+          Table.getLoc1()
+        )
+        reachedFridge = true
+      }
+
+    } else if (!reachedSeating) {
+      reachedSeating = Son.walk()
+    }
+    return false
+  }
   def storySpecificBeginning(tick: Int): Unit = { Son.room = location }
+  def setStartLocations(): Unit =
+    Son.setDestination(bottomLeft._1 + 4 * boxSize, bottomLeft._2 + 3 * boxSize)
   def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
 
 object GiveScarf extends Story {
   var active: Boolean = false
+  var location: (Float, Float) = (0, 0)
   lazy val actors = HashSet(Son)
   var conditions: List[() => Boolean] = List(
     () => Knit.commonState.completed,
@@ -172,14 +207,15 @@ object GiveScarf extends Story {
         Location.areClose(Son, person)
       ) {
         actors.add(person)
-        location = person.room
+        room = person.room
+        location = person.location
         return true
       }
     }
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
-  var location = Bedroom
+  var room = Bedroom
   def reset(): Unit = {
     active = false
     commonState = startState.copy()
@@ -188,8 +224,22 @@ object GiveScarf extends Story {
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
-    Son.room = location
+    Son.room = room
   }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Son.walk()
+    }
+    return false
+  }
+  def setStartLocations(): Unit = {
+    actors
+      .filter(_.isInstanceOf[Person])
+      .asInstanceOf[HashSet[Person]]
+      .foreach(_.setDestinationNoAdjust(location))
+  }
+
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
@@ -211,6 +261,17 @@ object StartDishwasher extends Story {
   def reset(): Unit = {
     commonState = startState.copy()
     active = false
+  }
+  def setStartLocations(): Unit = Son.setDestination(
+    bottomRight._1 - 4 * boxSize,
+    bottomRight._2 + 4 * boxSize
+  )
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Son.walk()
+    }
+    return false
   }
   def storySpecificBeginning(tick: Int): Unit = { Son.room = Kitchen }
   def storySpecificEnding(tick: Int): Unit = {}

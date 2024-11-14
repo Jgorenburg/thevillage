@@ -68,8 +68,8 @@ object Location extends Enumeration {
 }
 
 object PositionConstants {
-  val WIDTH: Float = Gdx.graphics.getWidth().toFloat
-  val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
+  lazy val WIDTH: Float = Gdx.graphics.getWidth().toFloat
+  lazy val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
   def heightToWidth(h: Float) = h * 8.5f / 11
   def widthToHeight(w: Float) = w * 11 / 8.5f
   val size: Float = WIDTH / 2.8f

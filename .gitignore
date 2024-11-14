@@ -34,3 +34,4 @@ metals.sbt
 worksheets/
 src/main/scala/Main.scala
 out/
+logs/*

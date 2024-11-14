@@ -13,6 +13,9 @@ import Base.Delay
 import Snowedin.Location.Workroom
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Door
+import Snowedin.PositionConstants.topRight
+import Snowedin.PositionConstants.boxSize
+import Snowedin.PositionConstants.topLeft
 
 // Father only
 object Laundry extends Story {
@@ -27,6 +30,15 @@ object Laundry extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
+  def setStartLocations(): Unit =
+    Father.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 9 * boxSize)
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Father.walk()
+    }
+    return false
+  }
 
   // Father will collect laundry, then go to laundry machine
   def storySpecificBeginning(tick: Int): Unit = { Father.room = Workroom }
@@ -58,8 +70,17 @@ object Nap extends Story with Occupy with Delay {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Base
+  def setStartLocations(): Unit =
+    Father.setDestination(Couch.seat1Loc)
 
   def storySpecificBeginning(tick: Int): Unit = { Father.room = LivingRoom }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Father.walk()
+    }
+    return false
+  }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
   }
@@ -84,6 +105,14 @@ object FixDoor extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
+  def setStartLocations(): Unit = Father.setDestination(FrontDoor.location)
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Father.walk()
+    }
+    return false
+  }
 
   def storySpecificBeginning(tick: Int): Unit = { Father.room = Door }
   def storySpecificEnding(tick: Int): Unit = { GlobalVars.brokenDoor = false }
@@ -115,8 +144,14 @@ object Construction extends Story with Pausable with Delay {
     begin()
     Father.room = Workroom
   }
-  override def progress(tick: Int): Boolean = {
+  def setStartLocations(): Unit =
+    Father.setDestination(topRight._1 - 3 * boxSize, topLeft._2 - 4 * boxSize)
+
+  def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Father.walk()
+    }
     return false
   }
   def storySpecificEnding(tick: Int): Unit = {

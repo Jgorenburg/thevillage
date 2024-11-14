@@ -58,6 +58,17 @@ object Worktable extends Actor {
 }
 
 object Couch extends Actor with Spaces {
+
+  // TODO other objects should have this method
+  def getSeatLoc(): (Float, Float) = {
+    if (curCapacity == 1) {
+      seat2Loc
+    } else {
+      seat1Loc
+    }
+  }
+  val seat1Loc = (topLeft._1 + 4 * boxSize, topLeft._2 - 8 * boxSize)
+  val seat2Loc = (topLeft._1 + 4 * boxSize, topLeft._2 - 6 * boxSize)
   val location =
     (topLeft._1 + 4 * boxSize, topLeft._2 - 9 * boxSize)
 
@@ -164,6 +175,8 @@ object Couch extends Actor with Spaces {
 
 object Sofachair extends Actor with Spaces {
   val location = (topLeft._1 + 3.5f * boxSize, topLeft._2 - 3.5f * boxSize)
+  val seatingLoc = (topLeft._1 + 2 * boxSize, topLeft._2 - 3.5f * boxSize)
+  def getSeatingLoc() = seatingLoc
   def render(shapeRenderer: ShapeRenderer): Unit = {
 
     val vertices: Array[Float] =
@@ -248,6 +261,10 @@ object Sofachair extends Actor with Spaces {
 
 object Table extends Actor with Spaces {
   val location = (bottomLeft._1 + 6 * boxSize, bottomLeft._2 + 5 * boxSize)
+  def getLoc1() = (bottomLeft._1 + 7 * boxSize, bottomLeft._2 + 9 * boxSize)
+  def getLoc2() = (bottomLeft._1 + 10 * boxSize, bottomLeft._2 + 9 * boxSize)
+  def getLoc3() = (bottomLeft._1 + 10 * boxSize, bottomLeft._2 + 4 * boxSize)
+  def getLoc4() = (bottomLeft._1 + 7 * boxSize, bottomLeft._2 + 4 * boxSize)
   def render(shapeRenderer: ShapeRenderer) = {
     shapeRenderer.rect(location._1, location._2, 6 * boxSize, 4 * boxSize)
   }

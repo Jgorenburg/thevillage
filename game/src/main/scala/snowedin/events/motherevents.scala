@@ -13,6 +13,11 @@ import Snowedin.Location.DiningRoom
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Kitchen
 import Snowedin.Location.Door
+import Snowedin.PositionConstants.bottomLeft
+import Snowedin.PositionConstants.boxSize
+import Snowedin.PositionConstants.topLeft
+import Snowedin.PositionConstants.bottomRight
+import scala.collection.immutable.HashMap
 
 object Placeholder extends Story {
   lazy val actors = HashSet(Mother)
@@ -22,6 +27,8 @@ object Placeholder extends Story {
   val startState = (false, -1, false, 7)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
+  def progress(tick: Int): Boolean = return false
+  def setStartLocations(): Unit = {}
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
@@ -45,7 +52,8 @@ object Music extends Story {
   val startState = (false, -1, false, 4)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
-
+  def progress(tick: Int): Boolean = return false
+  def setStartLocations(): Unit = {}
   def storySpecificBeginning(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
 
@@ -69,9 +77,10 @@ object Art extends Story with Occupy {
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
+  def setStartLocations(): Unit = Mother.setDestination(Easle.location)
 
   def storySpecificBeginning(tick: Int): Unit = { Mother.room = LivingRoom }
-  override def progress(tick: Int): Boolean = {
+  def progress(tick: Int): Boolean = {
     if (tick - commonState.startTime > 5) {
       importance = Importance.Vibe
     }
@@ -106,14 +115,25 @@ object Cleaning extends Story with Pausable with Delay {
 
   var importance: Importance.Importance = Importance.Base
   var rooms: Array[Room] = Array(DiningRoom, LivingRoom, Kitchen, Door)
+  var locs: HashMap[Room, (Float, Float)] = HashMap(
+    DiningRoom -> (bottomLeft._1 + 9 * boxSize, bottomLeft._2 + 11 * boxSize),
+    LivingRoom -> (topLeft._1 + 3 * boxSize, topLeft._2 - 10 * boxSize),
+    Kitchen -> (bottomRight._1 - 7 * boxSize, bottomRight._2 + 4 * boxSize),
+    Door -> FrontDoor.location
+  )
   var cleansSoFar = 0
 
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
     Mother.room = rooms(cleansSoFar % rooms.length)
   }
+  def setStartLocations(): Unit = Mother.setDestination(locs(Mother.room))
+
   override def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Mother.walk()
+    }
     if (Mother.room == LivingRoom && amountleft < commonState.duration / 2) {
       Mother.tools.add(Tambourine)
     }
@@ -153,6 +173,8 @@ object NoticeBrokenDoor extends Story {
   val startState = (false, -1, true, 0)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Instantaneous
+  def setStartLocations(): Unit = {}
+  def progress(tick: Int): Boolean = return false
 
   // Instantaneous stories immedietely end
   def storySpecificBeginning(tick: Int): Unit = endStory(tick)

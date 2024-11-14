@@ -9,6 +9,8 @@ import Base.GameManager
 import Base.Pausable
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Kitchen
+import Base.Actor
+import Snowedin.PositionConstants.*
 
 object Read extends Story with Occupy {
   val size = 1
@@ -23,6 +25,7 @@ object Read extends Story with Occupy {
     )
 
   val livingRoomSeating = List(Sofachair, Couch)
+  var location: (Float, Float) = (0, 0)
   def livingRoomHasSpace(): Boolean = {
     actors --= livingRoomSeating
     val iterator = livingRoomSeating.iterator
@@ -30,16 +33,29 @@ object Read extends Story with Occupy {
       val seating = iterator.next()
       if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
         actors.add(seating)
+        seat = seating
         return true
       }
     }
     return false
   }
 
+  var seat: Actor = Couch
+  def setStartLocations(): Unit = {
+    Daughter.setDestination(
+      seat match
+        case Sofachair => Sofachair.getSeatingLoc()
+        case Couch     => Couch.getSeatLoc()
+    )
+  }
+
   var importance: Base.Importance.Importance = Importance.Base
-  override def progress(tick: Int): Boolean = {
+  def progress(tick: Int): Boolean = {
     if (tick - commonState.startTime > 15) {
       importance = Importance.Vibe
+    }
+    if (!arrived) {
+      arrived = Daughter.walk()
     }
     return false
   }
@@ -81,6 +97,15 @@ object Watercolor extends Story with Occupy with Delay {
     importance = Importance.Base
   }
 
+  def setStartLocations(): Unit = Daughter.setDestination(Easle.location)
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Daughter.walk()
+    }
+    return false
+  }
+
   def reset() = {
     active = false
     commonState = startState.copy()
@@ -102,7 +127,13 @@ object StartFire extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
-
+  def setStartLocations(): Unit = Daughter.setDestination(Fireplace.location)
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Daughter.walk()
+    }
+    return false
+  }
   def storySpecificBeginning(tick: Int): Unit = {
     Daughter.room = LivingRoom
   }
@@ -130,8 +161,16 @@ object UnloadDishwasher extends Story with Pausable {
       )
   )
   var importance: Base.Importance.Importance = Importance.Event
-  override def progress(tick: Int): Boolean = {
+  def setStartLocations(): Unit = Son.setDestination(
+    bottomRight._1 - 4 * boxSize,
+    bottomRight._2 + 4 * boxSize
+  )
+
+  def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Daughter.walk()
+    }
     return false
   }
   def reset(): Unit = {

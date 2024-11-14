@@ -15,8 +15,10 @@ object RunDishwasher extends Story with Pausable {
     () => Dishwasher.running,
     () => Importance.interrupt(Dishwasher.getCurStoryImportance(), importance)
   )
+
+  def setStartLocations(): Unit = {}
   var importance: Base.Importance.Importance = Importance.Event
-  override def progress(tick: Int): Boolean = {
+  def progress(tick: Int): Boolean = {
     proceed()
     return false
   }

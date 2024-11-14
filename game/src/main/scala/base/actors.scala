@@ -7,6 +7,7 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import Snowedin.PositionConstants.*
 
 case class curStory(
     var curStory: Story,
@@ -133,6 +134,7 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 
   def actorSpecificInterrupt(tick: Int): Unit
 
+  // TODO: improve resets
   def reset(): Unit
   def defaultReset(): Unit = {
     commonState = (Vibe, 0)
@@ -151,4 +153,47 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
       t: (Story, Int)
   ): curStory = curStory(t._1, t._2)
 
+}
+
+trait Person extends Actor {
+  var location: (Float, Float) =
+    (topRight._1 - 8 * boxSize, topRight._2 - 8f * boxSize)
+  var destination: (Float, Float) = location
+  var speed: Float = boxSize
+  var traveling: Boolean = false
+
+  // returns true if person has reached their destination
+  def walk(): Boolean = {
+    if (!traveling) return true
+    val dx = destination._1 - location._1
+    val dy = destination._2 - location._2
+    val total_distance = math.sqrt((math.pow(dx, 2) + math.pow(dy, 2)))
+
+    if (total_distance < speed) {
+      location = destination
+      traveling = false
+
+    } else {
+      val norm = speed / total_distance
+      val x = location._1 + (dx * norm)
+      val y = location._2 + (dy * norm)
+      location = (x.toFloat, y.toFloat)
+      traveling = true
+    }
+    return !traveling
+  }
+  def setDestination(x: Float, y: Float): Unit = {
+    traveling = true
+    // Squares draw from bottom left but circles from the center,
+    // the 0.5 fixes the disconnect
+    destination = (x + 0.5f * boxSize, y + 0.5f * boxSize)
+  }
+  def setDestination(pos: (Float, Float)): Unit = {
+    setDestination(pos._1, pos._2)
+  }
+  def setDestinationNoAdjust(pos: (Float, Float)): Unit = {
+    traveling = true
+    destination = pos
+  }
+  def setSpeed(newSpeed: Float) = speed = newSpeed
 }

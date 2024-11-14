@@ -89,6 +89,8 @@ trait Story extends Subject[Story] with Listener {
   var commonState: StoryCommonState
   var importance: Importance.Importance
 
+  def allArrived: Boolean = false
+
   def canBegin: Boolean =
     universalConditions.forall(f => f()) && conditions.forall(f => f())
 
@@ -96,24 +98,27 @@ trait Story extends Subject[Story] with Listener {
     active = true
     commonState.startTime = tick
     actors.foreach(_.beginStory(this, tick))
+    arrived = false
+    setStartLocations()
     storySpecificBeginning(tick)
   }
   def storySpecificBeginning(tick: Int): Unit
+  def setStartLocations(): Unit
+  var arrived = false
 
   def tick(tick: Int): Boolean = {
     var shouldEnd = progress(tick: Int)
     actors.foreach(_.tick(tick))
-
     if (
       shouldEnd ||
-      commonState.duration != -1 && tick >= commonState.startTime + commonState.duration
+      commonState.duration != -1 && tick >= commonState.startTime + commonState.duration + 10 // TODO remove 20
     ) {
       endStory(tick)
       return true
     }
     return false
   }
-  def progress(tick: Int): Boolean = false
+  def progress(tick: Int): Boolean
 
   def endStory(tick: Int): Unit = {
     active = false
@@ -152,8 +157,10 @@ object Vibe extends Story {
   var active: Boolean = true
   val importance = Importance.Vibe
   override def canBegin: Boolean = true
+  def progress(tick: Int): Boolean = false
 
   def storySpecificBeginning(tick: Int): Unit = {}
+  def setStartLocations(): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
 

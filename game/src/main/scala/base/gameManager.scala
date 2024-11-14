@@ -18,11 +18,13 @@ object GameManager {
   var ending: Int = 0
 
   def setup(
+      endTick: Int,
       ups: List[Updater],
       stors: List[Story],
       chars: List[Actor],
       objs: List[Actor]
   ) = {
+    ending = endTick
     updaters = ups
     stories = stors
     characters = chars
@@ -32,14 +34,15 @@ object GameManager {
   def runGame(endTick: Int, logging: Boolean = false): Unit = {
     ending = endTick
     while (tick < ending) {
-      step()
-      if (logging) { log() }
+      step(logging)
     }
   }
 
-  def step(): Unit = {
+  def step(logging: Boolean = false): Int = {
     tick += 1
     updaters.foreach(_.tick())
+    if (logging) { log() }
+    return tick
   }
 
   def reset(): Unit = {

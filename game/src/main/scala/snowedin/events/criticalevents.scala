@@ -8,10 +8,13 @@ import Snowedin.Location.Door
 import Base.StoryCommonState
 import Base.Importance.Critical
 import Snowedin.Location.Kitchen
+import Base.Person
+import Snowedin.PositionConstants.*
 
 object KitchenFire extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Father, Mother, Son, Daughter, Stove)
+  val people: HashSet[Person] = HashSet(Father, Mother, Son, Daughter)
   var conditions: List[() => Boolean] = List(
     () => Stove.unattended,
     () => GameManager.tick - 4 >= Stove.leftAlone
@@ -23,6 +26,18 @@ object KitchenFire extends Story {
   }
   val startState: Base.StoryCommonState = (false, -1, false, 2)
   var commonState: StoryCommonState = startState.copy()
+  def setStartLocations(): Unit = {
+    people
+      .foreach(
+        _.setDestination(
+          bottomLeft._1 + 8 * boxSize,
+          bottomLeft._2 + 4 * boxSize
+        )
+      )
+  }
+  def progress(tick: Int): Boolean = {
+    return people.exists(_.walk())
+  }
   def storySpecificBeginning(tick: Int): Unit = {
     actors.foreach(_.room = Kitchen)
   }
@@ -50,6 +65,22 @@ object Snowcrash extends Story {
     }
     actors ++= Location.closest(Door, numParticipants, potential)
     return true
+  }
+
+  def setStartLocations(): Unit = {
+    actors
+      .asInstanceOf[HashSet[Person]]
+      .foreach(_.setDestination(FrontDoor.location))
+  }
+
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = true
+      actors
+        .asInstanceOf[HashSet[Person]]
+        .foreach(p => arrived = p.walk() && arrived)
+    }
+    return false
   }
   var importance: Base.Importance.Importance = Importance.Critical
   def reset(): Unit = {

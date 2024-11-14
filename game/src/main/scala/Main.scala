@@ -12,24 +12,19 @@ import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import Snowedin.SnowedIn
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
+import Snowedin.ControlRoom
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 
 // Desktop launcher example
 object DesktopLauncher extends App {
-  import com.badlogic.gdx.backends.lwjgl3.{
-    Lwjgl3Application,
-    Lwjgl3ApplicationConfiguration
-  }
 
   val config = new Lwjgl3ApplicationConfiguration
   config.setTitle("Snowed In")
 //   config.setWindowedMode(800, 600)
   config.setMaximized(true)
-  config.setForegroundFPS(60)
+  config.setForegroundFPS(2)
 
-//   config.title = "Box Example"
-//   config.width = 800
-//   config.height = 600
 //   config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode())
-
   new Lwjgl3Application(new SnowedIn, config)
 }

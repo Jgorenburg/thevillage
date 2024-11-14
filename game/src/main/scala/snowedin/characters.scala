@@ -1,14 +1,19 @@
 package Snowedin
 
-import Base.{Actor, Story, Vibe}
+import Base.{Actor, Story, Vibe, Person}
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
 import Snowedin.Tools.Tambourine
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.Color
+import Snowedin.PositionConstants.boxSize
 
-object Daughter extends Actor {
-  val location = (0, 0)
-  def render(shapeRenderer: ShapeRenderer) = {}
+object Daughter extends Person {
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.setColor(Color.GREEN)
+    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.setColor(0, 0, 0, 1)
+  }
   // var tools: HashSet[Tools.Tools] = HashSet()
 
   def actorSpecificBeginning(tick: Int): Unit = {}
@@ -28,9 +33,12 @@ object Daughter extends Actor {
   }
 }
 
-object Son extends Actor {
-  val location = (0, 0)
-  def render(shapeRenderer: ShapeRenderer) = {}
+object Son extends Person {
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.setColor(Color.PURPLE)
+    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.setColor(0, 0, 0, 1)
+  }
   var tools: HashSet[Tools.Tools] = HashSet()
   var lastAte = 0
 
@@ -55,9 +63,12 @@ object Son extends Actor {
   }
 }
 
-object Mother extends Actor {
-  val location = (0, 0)
-  def render(shapeRenderer: ShapeRenderer) = {}
+object Mother extends Person {
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.setColor(Color.BLUE)
+    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.setColor(0, 0, 0, 1)
+  }
   var noticedBrokenDoor = false
 
   var tools: HashSet[Tools.Tools] = HashSet()
@@ -88,9 +99,12 @@ object Mother extends Actor {
     ", Location: " + room
 }
 
-object Father extends Actor {
-  val location = (0, 0)
-  def render(shapeRenderer: ShapeRenderer) = {}
+object Father extends Person {
+  def render(shapeRenderer: ShapeRenderer) = {
+    shapeRenderer.setColor(Color.RED)
+    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.setColor(0, 0, 0, 1)
+  }
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
   var noticedBrokenDoor = false

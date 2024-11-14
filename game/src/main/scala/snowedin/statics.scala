@@ -96,7 +96,7 @@ object WorkroomWall extends Static {
   }
 }
 
-object Door extends Static {
+object FrontDoor extends Static {
   val location = (topRight._1 - 8 * boxSize, topRight._2 - 0.5f * boxSize)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.rect(location._1, location._2, 2 * boxSize, 0.5f * boxSize)
