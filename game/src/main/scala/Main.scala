@@ -22,7 +22,7 @@ object DesktopLauncher extends App {
   config.setTitle("Snowed In")
 //   config.setWindowedMode(800, 600)
   config.setMaximized(true)
-  config.setForegroundFPS(8)
+  config.setForegroundFPS(120)
 
 //   config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode())
   new Lwjgl3Application(new SnowedIn, config)

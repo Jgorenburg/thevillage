@@ -23,10 +23,10 @@ import Snowedin.Location.LivingRoom
 
 object Knit extends Story with Pausable with Delay with Occupy {
   var active: Boolean = false
-  var delay = 29
+  var delay = 7200
   var size = 1
   lazy val actors = HashSet(Son)
-  val startState = (false, -1, true, 17)
+  val startState = (false, -1, true, 18000)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
@@ -82,9 +82,9 @@ object Knit extends Story with Pausable with Delay with Occupy {
 
 object Woodworking extends Story with Pausable with Delay {
   var active: Boolean = false
-  var delay = 13
+  var delay = 10800
   lazy val actors = HashSet(Son, Worktable)
-  val startState = (false, -1, true, 31)
+  val startState = (false, -1, true, 14400)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
@@ -134,11 +134,11 @@ object Snack extends Story with Occupy with Delay {
   val size = 1
   var active: Boolean = false
   lazy val actors = HashSet(Son)
-  val startState = (false, -1, true, 3)
+  val startState = (false, -1, true, 900)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
-      () => GameManager.tick - 20 > Son.lastAte,
+      () => GameManager.tick - 180 > Son.lastAte,
       () => readyToRepeat(),
       () => Importance.interrupt(Son.getCurStoryImportance(), importance),
       () => locationIsFree()
@@ -209,18 +209,21 @@ object Snack extends Story with Occupy with Delay {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     Son.room = location
-    reachedFridge = false
     reachedSeating = false
   }
   def setStartLocations(): Unit =
     Son.setDestination(bottomLeft._1 + 4 * boxSize, bottomLeft._2 + 3 * boxSize)
-  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
+  def storySpecificEnding(tick: Int): Unit = {
+    setEndTime(tick)
+    reachedFridge = false
+  }
   def storySpecificInterrupt(tick: Int): Unit = {}
 }
 
 object GiveScarf extends Story {
   var active: Boolean = false
   var location: (Float, Float) = (0, 0)
+  var recipient: Person = Son
   lazy val actors = HashSet(Son)
   var conditions: List[() => Boolean] = List(
     () => Knit.commonState.completed,
@@ -228,7 +231,7 @@ object GiveScarf extends Story {
     () => availibleRecipient()
   )
   // TODO: add daughter
-  val recipients = List(Father, Mother)
+  val recipients = List(Father, Mother, Daughter)
   def availibleRecipient(): Boolean = {
     actors --= recipients
     val iterator = recipients.iterator
@@ -239,6 +242,7 @@ object GiveScarf extends Story {
         Location.areClose(Son, person)
       ) {
         actors.add(person)
+        recipient = person
         room = person.room
         location = person.location
         return true
@@ -253,7 +257,7 @@ object GiveScarf extends Story {
     commonState = startState.copy()
     actors --= recipients
   }
-  val startState: Base.StoryCommonState = (false, -1, false, 2)
+  val startState: Base.StoryCommonState = (false, -1, false, 600)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
     Son.room = room
@@ -266,10 +270,8 @@ object GiveScarf extends Story {
     return false
   }
   def setStartLocations(): Unit = {
-    actors
-      .filter(_.isInstanceOf[Person])
-      .asInstanceOf[HashSet[Person]]
-      .foreach(_.setDestinationNoAdjust(location))
+    Son.setDestination(recipient.location)
+    recipient.setDestinationNoAdjust(recipient.location)
   }
 
   def storySpecificEnding(tick: Int): Unit = {}
@@ -279,7 +281,7 @@ object GiveScarf extends Story {
 object StartDishwasher extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Son, Dishwasher)
-  val startState: Base.StoryCommonState = (false, -1, false, 1)
+  val startState: Base.StoryCommonState = (false, -1, false, 60)
 
   var commonState: Base.StoryCommonState = startState.copy()
   var conditions: List[() => Boolean] = List(

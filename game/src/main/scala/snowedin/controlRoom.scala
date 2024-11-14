@@ -84,25 +84,25 @@ object ControlRoom {
       Fridge
     )
 
-  var endTick = 1000
+  var endTick = 0
   var isLogging = false
 
   def setup(
-      gameLen: Int = 1000,
+      gameLen: Int = 720,
       logging: Boolean = false,
       loggerFile: String = "unnamed"
   ) = {
     endTick = gameLen
     isLogging = logging
+    GameManager.setup(gameLen, updaters, stories, characters, objects)
     if (logging) {
       MyLogger.setFile(loggerFile)
       MyLogger.printHeader(GameManager.characters ::: GameManager.objects)
     }
-    GameManager.setup(gameLen, updaters, stories, characters, objects)
   }
 
   def runGame(
-      gameLen: Int = 120,
+      gameLen: Int = 720,
       logging: Boolean = false,
       loggerFile: String = "unnamed"
   ) = {
@@ -138,7 +138,7 @@ class SnowedIn extends ApplicationAdapter {
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
-    ControlRoom.setup(300, true, "movement")
+    ControlRoom.setup(43200, true, "movement")
     // CleanTable.beginStory(0)
     // Cleaning.beginStory(0)
   }
@@ -190,7 +190,12 @@ class SnowedIn extends ApplicationAdapter {
 
     batch.begin()
 
-    font.draw(batch, s"Tick: ${tick}", 50, 50)
+    font.draw(
+      batch,
+      s"Hour: ${(tick / 3600).toInt} Minute: ${(tick / 60).toInt % 60}\nTicks: ${tick}",
+      50,
+      50
+    )
     font.draw(
       batch,
       s"Father:\n\tCurrent Story: ${Father.commonState.curStory.getClass.getSimpleName

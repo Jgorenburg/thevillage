@@ -25,7 +25,7 @@ import Snowedin.PositionConstants.topRight
 object Chat extends Story with Delay {
   var active: Boolean = false
   lazy val actors = HashSet(Mother, Father)
-  val startState = (false, -1, true, 3)
+  val startState = (false, -1, true, 1800)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -50,7 +50,7 @@ object Chat extends Story with Delay {
     return false
   }
 
-  val delay = 15
+  val delay = 10800
 
   var importance = Importance.Event
   def reset(): Unit = {
@@ -104,7 +104,7 @@ object CookLunch extends Story {
     }
   }
   var active: Boolean = false
-  val startState = (false, -1, false, 6)
+  val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Interrupt
@@ -156,7 +156,7 @@ object CookDinner extends Story {
     )
 
   var active: Boolean = false
-  val startState = (false, -1, false, 7)
+  val startState = (false, -1, false, 3600)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Interrupt
@@ -191,7 +191,7 @@ object Movie extends Story with Occupy with Pausable {
   var active: Boolean = false
   lazy val actors = HashSet(Son, Father)
   val people: HashSet[Person] = HashSet(Son, Father)
-  val startState = (false, -1, false, 23)
+  val startState = (false, -1, false, 6600)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
@@ -255,6 +255,7 @@ object Movie extends Story with Occupy with Pausable {
     actors.foreach(_.room = LivingRoom)
   }
   def storySpecificEnding(tick: Int): Unit = {}
+  restartTime = 300
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
 
 }
@@ -318,7 +319,7 @@ object JoinMovie extends Story with Occupy {
 object Gossip extends Story with Delay {
   var active: Boolean = false
   lazy val actors = HashSet(Son, Daughter)
-  val startState = (false, -1, true, 6)
+  val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -331,7 +332,7 @@ object Gossip extends Story with Delay {
         )
     )
 
-  val delay = 20
+  val delay = 3600
   repeatsLeft = 2
 
   var importance = Importance.Event
@@ -365,7 +366,7 @@ object Gossip extends Story with Delay {
 object CleanTable extends Story with Pausable {
   var active: Boolean = false
   lazy val actors = HashSet(Son, Daughter, Table, Dishwasher)
-  val startState = (false, -1, true, 5)
+  val startState = (false, -1, true, 900)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -458,7 +459,7 @@ object Lunch extends Story with Pausable with Occupy {
   var size = 3
   var active: Boolean = false
   lazy val actors = HashSet(Father, Mother, Daughter, Table)
-  val startState = (false, -1, false, 10)
+  val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -511,6 +512,7 @@ object Lunch extends Story with Pausable with Occupy {
     pause()
     Son.lastAte = tick
   }
+  restartTime = 300
 
 }
 
@@ -518,7 +520,8 @@ object Dinner extends Story with Pausable with Occupy {
   val size = 4
   var active: Boolean = false
   lazy val actors = HashSet(Father, Mother, Son, Daughter, Table)
-  val startState = (false, -1, false, 10)
+  val startState = (false, -1, false, 3600)
+  restartTime = 600
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -570,7 +573,7 @@ object Singalong extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Mother)
   val potentialSingers = List(Father, Daughter, Son)
-  val startState = (false, -1, false, 3)
+  val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
@@ -620,7 +623,7 @@ object Singalong extends Story {
 
 // complex
 object Boardgame extends Story with Occupy with Pausable {
-  restartTime = 2
+  restartTime = 900
   var size = 3
   lazy val actors = HashSet(Son, Daughter, Table)
   var conditions: List[() => Boolean] =
@@ -660,7 +663,7 @@ object Boardgame extends Story with Occupy with Pausable {
   }
 
   var active: Boolean = false
-  val startState = (false, -1, false, 14)
+  val startState = (false, -1, false, 5400)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -696,7 +699,7 @@ object Boardgame extends Story with Occupy with Pausable {
 }
 
 object FixSomething extends Story with Occupy with Pausable {
-  restartTime = 3
+  restartTime = 1800
   var size = 1
   lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] =
@@ -732,7 +735,7 @@ object FixSomething extends Story with Occupy with Pausable {
 
   var helper: Person = Son
   var active: Boolean = false
-  val startState = (false, -1, false, 7)
+  val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -808,7 +811,7 @@ class IndivBreakfast(eater: Person) extends Story with Occupy {
     List(() => false)
   var importance: Base.Importance.Importance = Breakfast.importance
   def reset(): Unit = {}
-  val startState: Base.StoryCommonState = (false, -1, false, 4)
+  val startState: Base.StoryCommonState = (false, -1, false, 1200)
   var commonState: StoryCommonState = startState.copy()
   def setStartLocations(): Unit = {
     eater.setDestination(

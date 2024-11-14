@@ -73,7 +73,7 @@ object Read extends Story with Occupy {
 
 object Watercolor extends Story with Occupy with Delay {
   val size = 1
-  var delay = 20
+  var delay = 1800
   repeatsLeft = 3
   lazy val actors = HashSet(Daughter, Easle)
   var conditions: List[() => Boolean] =
@@ -83,7 +83,7 @@ object Watercolor extends Story with Occupy with Delay {
       () => Importance.interrupt(Daughter.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, true, 10)
+  val startState = (false, -1, true, 1800)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
@@ -123,7 +123,7 @@ object StartFire extends Story {
       () => Importance.interrupt(Daughter.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, false, 4)
+  val startState = (false, -1, false, 600)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -150,7 +150,7 @@ object StartFire extends Story {
 object UnloadDishwasher extends Story with Pausable {
   var active: Boolean = false
   lazy val actors = HashSet(Daughter, Dishwasher)
-  val startState: Base.StoryCommonState = (false, -1, false, 3)
+  val startState: Base.StoryCommonState = (false, -1, false, 1200)
 
   var commonState: Base.StoryCommonState = startState.copy()
   var conditions: List[() => Boolean] = List(

@@ -24,7 +24,7 @@ object KitchenFire extends Story {
     commonState = startState.copy()
     active = false
   }
-  val startState: Base.StoryCommonState = (false, -1, false, 2)
+  val startState: Base.StoryCommonState = (false, -1, false, 600)
   var commonState: StoryCommonState = startState.copy()
   def setStartLocations(): Unit = {
     people
@@ -87,7 +87,7 @@ object Snowcrash extends Story {
     active = false
     commonState = startState.copy()
   }
-  val startState: Base.StoryCommonState = (false, -1, false, 3)
+  val startState: Base.StoryCommonState = (false, -1, false, 900)
 
   var commonState: Base.StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {

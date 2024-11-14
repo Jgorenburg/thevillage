@@ -8,6 +8,8 @@ import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import Snowedin.PositionConstants.*
+import com.badlogic.gdx.Game
+import Snowedin.GlobalVars
 
 case class curStory(
     var curStory: Story,
@@ -159,7 +161,8 @@ trait Person extends Actor {
   var location: (Float, Float) =
     (topRight._1 - 8 * boxSize, topRight._2 - 8f * boxSize)
   var destination: (Float, Float) = location
-  var speed: Float = boxSize
+  var speed: Float =
+    boxSize * GlobalVars.secsPerTick / 8 // (2 * GlobalVars.secsPerTick)
   var traveling: Boolean = false
 
   // returns true if person has reached their destination

@@ -5,9 +5,9 @@ import scala.collection.mutable.HashMap
 import com.badlogic.gdx.Gdx
 
 // global vars
-
 object GlobalVars {
   var brokenDoor: Boolean = true
+  val secsPerTick = 2
 }
 
 object Tools extends Enumeration {
@@ -25,8 +25,8 @@ object Location extends Enumeration {
     l1 match
       case LivingRoom => List(DiningRoom, Door).contains(l2)
       case Kitchen    => l2 == DiningRoom
-      case DiningRoom => List(LivingRoom, Door, Kitchen).contains(l2)
-      case Door       => List(LivingRoom, DiningRoom, Workroom).contains(l2)
+      case DiningRoom => List(LivingRoom, Kitchen).contains(l2)
+      case Door       => List(LivingRoom, Workroom).contains(l2)
       case Workroom   => l2 == Door
       case _          => false
   }

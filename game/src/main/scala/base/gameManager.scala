@@ -1,6 +1,7 @@
 package Base
 
 import MyLogger.MyLogger
+import Snowedin.GlobalVars
 
 trait Updater {
   def tick(): Unit
@@ -39,7 +40,7 @@ object GameManager {
   }
 
   def step(logging: Boolean = false): Int = {
-    tick += 1
+    tick += GlobalVars.secsPerTick
     updaters.foreach(_.tick())
     if (logging) { log() }
     return tick

@@ -8,7 +8,7 @@ import Base.Importance
 object RunDishwasher extends Story with Pausable {
   var active: Boolean = false
   lazy val actors = HashSet(Dishwasher)
-  val startState: Base.StoryCommonState = (false, -1, false, 16)
+  val startState: Base.StoryCommonState = (false, -1, false, 5400)
 
   var commonState: Base.StoryCommonState = startState.copy()
   var conditions: List[() => Boolean] = List(

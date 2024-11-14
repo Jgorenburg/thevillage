@@ -24,7 +24,6 @@ object Daughter extends Person {
     ", Location: " + room
   lazy val myEvents: Array[Any] = Array()
   def reset(): Unit = {
-    // tools = HashSet()
     commonState = (Vibe, 0)
   }
   def tick(tick: Int): Unit = {
@@ -77,7 +76,7 @@ object Mother extends Person {
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
       case NoticeBrokenDoor => noticedBrokenDoor = true
-      case _: Story         => // stories without relevant beginnings for mother
+      case _: Story         =>
   }
   def tick(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {
@@ -113,7 +112,7 @@ object Father extends Person {
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
       case NoticeBrokenDoor => noticedBrokenDoor = true
-      case _: Story         => // stories without relevant beginnings for father
+      case _: Story         =>
   }
   def tick(tick: Int): Unit = {
     commonState._1 match
@@ -123,7 +122,7 @@ object Father extends Person {
     if (
       noticedBrokenDoor &&
       !tools.contains(Screwdriver) &&
-      commonState.curStory.actors.contains(Worktable) &&
+      room == Location.Workroom &&
       Worktable.tools.contains(Screwdriver)
     ) {
       tools.add(Screwdriver)
@@ -134,8 +133,17 @@ object Father extends Person {
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
+    if (
+      noticedBrokenDoor &&
+      !tools.contains(Screwdriver) &&
+      room == Location.Workroom &&
+      Worktable.tools.contains(Screwdriver)
+    ) {
+      tools.add(Screwdriver)
+      Worktable.tools.remove(Screwdriver)
+    }
     commonState._1 match
-      case _: Story => // stories without relevant interrupts for father
+      case _: Story =>
   }
 
   def reset() = {

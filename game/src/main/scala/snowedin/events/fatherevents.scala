@@ -26,7 +26,7 @@ object Laundry extends Story {
       () => Importance.interrupt(Father.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, false, 7)
+  val startState = (false, -1, false, 900)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -63,10 +63,10 @@ object Nap extends Story with Occupy with Delay {
     () => Importance.interrupt(Couch.getCurStoryImportance(), importance)
   )
 
-  val delay = 11
+  val delay = 10800 // 3 hours
   var active: Boolean = false
 
-  val startState = (false, -1, true, 10)
+  val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Base
@@ -101,7 +101,7 @@ object FixDoor extends Story {
     () => Importance.interrupt(Father.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
-  val startState = (false, -1, false, 3)
+  val startState = (false, -1, false, 900)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -133,10 +133,10 @@ object Construction extends Story with Pausable with Delay {
     () => Importance.interrupt(Worktable.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
-  val startState = (false, -1, true, 15)
+  val startState = (false, -1, true, -1)
   var commonState = startState.copy()
 
-  val delay = 9
+  val delay = 1200
 
   var importance: Importance.Importance = Importance.Base
 

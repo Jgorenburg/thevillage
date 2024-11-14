@@ -114,6 +114,7 @@ trait Story extends Subject[Story] with Listener {
     if (arrived && !started) {
       started = true
       commonState.startTime = tick
+      actors.foreach(_.commonState.startTime = tick)
     }
     if (
       started && (shouldEnd ||

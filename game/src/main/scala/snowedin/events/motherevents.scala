@@ -20,16 +20,20 @@ import Snowedin.PositionConstants.bottomRight
 import scala.collection.immutable.HashMap
 import Snowedin.PositionConstants.topRight
 
-object Code extends Story with Occupy {
+object Code extends Story with Occupy with Delay {
 
   var size = 1
+  val delay = 900
   lazy val actors = HashSet(Mother, Table)
   var conditions: List[() => Boolean] =
-    List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
+    List(
+      () => readyToRepeat(),
+      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+    )
   var active: Boolean = false
-  val startState = (false, -1, false, 7)
+  val startState = (false, -1, false, 13200)
   var commonState = startState.copy()
-  var importance: Importance.Importance = Importance.Event
+  var importance: Importance.Importance = Importance.Base
   def progress(tick: Int): Boolean = {
     if (!arrived) {
       arrived = Mother.walk()
@@ -41,7 +45,7 @@ object Code extends Story with Occupy {
   }
 
   def storySpecificBeginning(tick: Int): Unit = {}
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
 
   def storySpecificInterrupt(tick: Int): Unit = {}
 
@@ -59,7 +63,7 @@ object Music extends Story {
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, false, 4)
+  val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
   def progress(tick: Int): Boolean = return false
@@ -77,11 +81,13 @@ object Music extends Story {
   }
 }
 
-object Art extends Story with Occupy {
+object Art extends Story with Occupy with Delay {
   val size = 1
+  var delay = 7200
   lazy val actors = HashSet(Mother, Easle)
   var conditions: List[() => Boolean] =
     List(
+      () => readyToRepeat(),
       () => Easle.curCapacity >= size,
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
@@ -104,6 +110,7 @@ object Art extends Story with Occupy {
 
   def storySpecificInterrupt(tick: Int): Unit = {
     importance = Importance.Base
+    setEndTime(tick)
   }
 
   def reset() = {
@@ -121,11 +128,11 @@ object Cleaning extends Story with Pausable with Delay {
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, true, 5)
-  val delay = 10
+  val startState = (false, -1, true, 1800)
+  val delay = 600
   var commonState = startState.copy()
 
-  var importance: Importance.Importance = Importance.Base
+  var importance: Importance.Importance = Importance.Event
   var rooms: Array[Room] = Array(DiningRoom, LivingRoom, Kitchen, Door)
   var locs: HashMap[Room, (Float, Float)] = HashMap(
     DiningRoom -> (bottomLeft._1 + 9 * boxSize, bottomLeft._2 + 12 * boxSize),
@@ -146,12 +153,12 @@ object Cleaning extends Story with Pausable with Delay {
     if (!arrived) {
       arrived = Mother.walk()
     }
-    if (Mother.room == LivingRoom && amountleft < commonState.duration / 2) {
-      Mother.tools.add(Tambourine)
-    }
     return false
   }
   def storySpecificEnding(tick: Int): Unit = {
+    if (Mother.room == LivingRoom) {
+      Mother.tools.add(Tambourine)
+    }
     setEndTime(tick)
     beginAnew()
     cleansSoFar += 1
@@ -162,7 +169,7 @@ object Cleaning extends Story with Pausable with Delay {
       cleansSoFar += 1
       beginAnew()
     } else {
-      restartTime = 3
+      restartTime = 300
       pause()
     }
   }
