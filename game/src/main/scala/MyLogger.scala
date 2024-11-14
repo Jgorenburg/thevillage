@@ -13,7 +13,7 @@ object MyLogger {
   var line = ""
 
   def printHeader(actors: List[Actor]) = {
-    var content = "Active Stories;" + actors
+    var content = "Tick;Active Stories;" + actors
       .map(_.getClass.getSimpleName.stripSuffix("$"))
       .mkString(";")
     Using(BufferedWriter(FileWriter(File(file), false))) { bufferedWriter =>

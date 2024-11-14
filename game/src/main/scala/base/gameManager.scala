@@ -55,6 +55,7 @@ object GameManager {
   }
 
   def log(): Unit = {
+    MyLogger.addToLine(tick.toString)
     MyLogger.addActiveStories(StoryRunner.stories)
     (characters ::: objects).foreach(c => MyLogger.addToLine(c.log()))
     MyLogger.printLine()
