@@ -161,8 +161,8 @@ object CookDinner extends Story {
 
   var importance: Importance.Importance = Importance.Interrupt
   def setStartLocations(): Unit = cook.setDestination(
-    bottomLeft._1 + 8 * boxSize,
-    bottomLeft._2 + 4 * boxSize
+    bottomLeft._1 + 7 * boxSize,
+    bottomLeft._2 + 3 * boxSize
   )
 
   def progress(tick: Int): Boolean = {
@@ -387,8 +387,14 @@ object CleanTable extends Story with Pausable {
   }
 
   def setStartLocations(): Unit = {
-    Son.setDestination(Table.getLoc4())
-    Daughter.setDestination(Table.getLoc3())
+    Son.setDestination(
+      bottomRight._1 - 12 * boxSize,
+      bottomRight._2 + 6 * boxSize
+    )
+    Daughter.setDestination(
+      bottomRight._1 - 5 * boxSize,
+      bottomRight._2 + 7 * boxSize
+    )
     sonsDest = Table
     daughtDest = Table
   }
@@ -405,8 +411,11 @@ object CleanTable extends Story with Pausable {
           bottomRight._2 + 4 * boxSize
         )
       } else {
-        sonsDest = Dishwasher
-        Son.setDestination(Table.getLoc4())
+        sonsDest = Table
+        Son.setDestination(
+          bottomRight._1 - 12 * boxSize,
+          bottomRight._2 + 6 * boxSize
+        )
       }
     }
     if (Daughter.walk()) {
@@ -419,7 +428,10 @@ object CleanTable extends Story with Pausable {
 
       } else {
         daughtDest = Table
-        Daughter.setDestination(Table.getLoc3())
+        Daughter.setDestination(
+          bottomRight._1 - 5 * boxSize,
+          bottomRight._2 + 7 * boxSize
+        )
       }
     }
     proceed()

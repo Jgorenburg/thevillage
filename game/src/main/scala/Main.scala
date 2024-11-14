@@ -16,14 +16,13 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import Snowedin.ControlRoom
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 
-// Desktop launcher example
 object DesktopLauncher extends App {
 
   val config = new Lwjgl3ApplicationConfiguration
   config.setTitle("Snowed In")
 //   config.setWindowedMode(800, 600)
   config.setMaximized(true)
-  config.setForegroundFPS(4)
+  config.setForegroundFPS(8)
 
 //   config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode())
   new Lwjgl3Application(new SnowedIn, config)

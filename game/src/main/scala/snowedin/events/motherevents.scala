@@ -18,6 +18,7 @@ import Snowedin.PositionConstants.boxSize
 import Snowedin.PositionConstants.topLeft
 import Snowedin.PositionConstants.bottomRight
 import scala.collection.immutable.HashMap
+import Snowedin.PositionConstants.topRight
 
 object Code extends Story with Occupy {
 
@@ -127,10 +128,10 @@ object Cleaning extends Story with Pausable with Delay {
   var importance: Importance.Importance = Importance.Base
   var rooms: Array[Room] = Array(DiningRoom, LivingRoom, Kitchen, Door)
   var locs: HashMap[Room, (Float, Float)] = HashMap(
-    DiningRoom -> (bottomLeft._1 + 9 * boxSize, bottomLeft._2 + 11 * boxSize),
+    DiningRoom -> (bottomLeft._1 + 9 * boxSize, bottomLeft._2 + 12 * boxSize),
     LivingRoom -> (topLeft._1 + 3 * boxSize, topLeft._2 - 10 * boxSize),
-    Kitchen -> (bottomRight._1 - 7 * boxSize, bottomRight._2 + 4 * boxSize),
-    Door -> FrontDoor.location
+    Kitchen -> (bottomRight._1 - 4 * boxSize, bottomRight._2 + 6 * boxSize),
+    Door -> (topRight._1 - 8 * boxSize, topRight._2 - 1 * boxSize)
   )
   var cleansSoFar = 0
 
