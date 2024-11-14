@@ -99,19 +99,25 @@ trait Story extends Subject[Story] with Listener {
     commonState.startTime = tick
     actors.foreach(_.beginStory(this, tick))
     arrived = false
-    setStartLocations()
+    started = false
     storySpecificBeginning(tick)
+    setStartLocations()
   }
   def storySpecificBeginning(tick: Int): Unit
   def setStartLocations(): Unit
   var arrived = false
+  var started = false
 
   def tick(tick: Int): Boolean = {
     var shouldEnd = progress(tick: Int)
     actors.foreach(_.tick(tick))
+    if (arrived && !started) {
+      started = true
+      commonState.startTime = tick
+    }
     if (
-      shouldEnd ||
-      commonState.duration != -1 && tick >= commonState.startTime + commonState.duration + 10 // TODO remove 20
+      started && (shouldEnd ||
+        commonState.duration != -1 && tick >= commonState.startTime + commonState.duration)
     ) {
       endStory(tick)
       return true

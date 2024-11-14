@@ -73,7 +73,7 @@ object Mother extends Person {
 
   var tools: HashSet[Tools.Tools] = HashSet()
 
-  lazy val myEvents: Array[Any] = Array(Vibe, Placeholder)
+  lazy val myEvents: Array[Any] = Array(Vibe, Code)
   def actorSpecificBeginning(tick: Int): Unit = {
     commonState._1 match
       case NoticeBrokenDoor => noticedBrokenDoor = true

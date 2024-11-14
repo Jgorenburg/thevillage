@@ -26,7 +26,8 @@ object Location extends Enumeration {
       case LivingRoom => List(DiningRoom, Door).contains(l2)
       case Kitchen    => l2 == DiningRoom
       case DiningRoom => List(LivingRoom, Door, Kitchen).contains(l2)
-      case Door       => List(LivingRoom, DiningRoom).contains(l2)
+      case Door       => List(LivingRoom, DiningRoom, Workroom).contains(l2)
+      case Workroom   => l2 == Door
       case _          => false
   }
 

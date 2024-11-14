@@ -19,16 +19,25 @@ import Snowedin.PositionConstants.topLeft
 import Snowedin.PositionConstants.bottomRight
 import scala.collection.immutable.HashMap
 
-object Placeholder extends Story {
-  lazy val actors = HashSet(Mother)
+object Code extends Story with Occupy {
+
+  var size = 1
+  lazy val actors = HashSet(Mother, Table)
   var conditions: List[() => Boolean] =
     List(() => Importance.interrupt(Mother.getCurStoryImportance(), importance))
   var active: Boolean = false
   val startState = (false, -1, false, 7)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
-  def progress(tick: Int): Boolean = return false
-  def setStartLocations(): Unit = {}
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Mother.walk()
+    }
+    return false
+  }
+  def setStartLocations(): Unit = {
+    Mother.setDestination(Table.getLoc3())
+  }
 
   def storySpecificBeginning(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {}
@@ -54,7 +63,9 @@ object Music extends Story {
   var importance: Importance.Importance = Importance.Event
   def progress(tick: Int): Boolean = return false
   def setStartLocations(): Unit = {}
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    arrived = true
+  }
   def storySpecificEnding(tick: Int): Unit = {}
 
   def storySpecificInterrupt(tick: Int): Unit = {}

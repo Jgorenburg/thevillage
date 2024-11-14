@@ -38,9 +38,10 @@ object Chat extends Story with Delay {
         )
     )
 
-  def setStartLocations(): Unit = actors
-    .asInstanceOf[HashSet[Person]]
-    .foreach(_.setDestinationNoAdjust(Father.location))
+  def setStartLocations(): Unit = {
+    Father.setDestinationNoAdjust(Father.location)
+    Mother.setDestination(Father.location)
+  }
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
@@ -115,8 +116,8 @@ object CookLunch extends Story {
     return false
   }
   def setStartLocations(): Unit = cook.setDestination(
-    bottomLeft._1 + 8 * boxSize,
-    bottomLeft._2 + 4 * boxSize
+    bottomLeft._1 + 7 * boxSize,
+    bottomLeft._2 + 3 * boxSize
   )
 
   def storySpecificBeginning(tick: Int): Unit = {
@@ -189,6 +190,7 @@ object Movie extends Story with Occupy with Pausable {
   var needToSeat = size
   var active: Boolean = false
   lazy val actors = HashSet(Son, Father)
+  val people: HashSet[Person] = HashSet(Son, Father)
   val startState = (false, -1, false, 23)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
@@ -266,6 +268,7 @@ object JoinMovie extends Story with Occupy {
   var commonState = startState.copy()
   var conditions: List[() => Boolean] = List(
     () => Movie.active,
+    () => Movie.arrived,
     () => GameManager.tick - 2 >= Movie.commonState.startTime,
     () => Importance.interrupt(Daughter.getCurStoryImportance(), importance),
     () => livingRoomHasSpace(),
@@ -333,9 +336,8 @@ object Gossip extends Story with Delay {
 
   var importance = Importance.Event
   def setStartLocations(): Unit = {
-    actors
-      .asInstanceOf[HashSet[Person]]
-      .foreach(_.setDestinationNoAdjust(Daughter.location))
+    Daughter.setDestinationNoAdjust(Daughter.location)
+    Son.setDestination(Daughter.location)
   }
 
   override def progress(tick: Int): Boolean = {
@@ -395,6 +397,7 @@ object CleanTable extends Story with Pausable {
   var daughtDest: Actor = Table
   def progress(tick: Int): Boolean = {
     if (Son.walk()) {
+      arrived = true
       if (sonsDest == Table) {
         sonsDest = Dishwasher
         Son.setDestination(
@@ -591,6 +594,7 @@ object Singalong extends Story {
         Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
       )
       .foreach(person => join(person, tick))
+    arrived = true
   }
   def join(person: Actor, tick: Int): Unit = {
     actors.add(person)

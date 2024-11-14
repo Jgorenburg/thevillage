@@ -19,22 +19,41 @@ import Snowedin.PositionConstants.topRight
 import Snowedin.PositionConstants.bottomLeft
 import Base.Person
 import Snowedin.PositionConstants.bottomRight
+import Snowedin.Location.LivingRoom
 
-// TODO: knitting should be done at a seat
-object Knit extends Story with Pausable with Delay {
+object Knit extends Story with Pausable with Delay with Occupy {
   var active: Boolean = false
   var delay = 29
+  var size = 1
   lazy val actors = HashSet(Son)
   val startState = (false, -1, true, 17)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
+      () => livingRoomHasSpace(),
       () => Importance.interrupt(Son.getCurStoryImportance(), importance)
     )
+
+  val livingRoomSeating = List(Sofachair, Couch)
+  def livingRoomHasSpace(): Boolean = {
+    actors --= livingRoomSeating
+    val iterator = livingRoomSeating.iterator
+    while (iterator.hasNext) {
+      val seating = iterator.next()
+      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+        actors.add(seating)
+        return true
+      }
+    }
+    return false
+  }
   var importance: Base.Importance.Importance = Importance.Base
   def progress(tick: Int): Boolean = {
     proceed()
+    if (!arrived) {
+      arrived = Son.walk()
+    }
     return false
   }
   def reset(): Unit = {
@@ -43,8 +62,17 @@ object Knit extends Story with Pausable with Delay {
     beginAnew()
     endTime = 0
   }
-  def storySpecificBeginning(tick: Int): Unit = begin()
-  def setStartLocations(): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Son.room = LivingRoom
+    begin()
+  }
+  def setStartLocations(): Unit = {
+    Son.setDestination(if (actors.contains(Sofachair)) {
+      Sofachair.getSeatingLoc()
+    } else {
+      Couch.getSeatLoc()
+    })
+  }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
     beginAnew()
@@ -172,14 +200,18 @@ object Snack extends Story with Occupy with Delay {
           Table.getLoc1()
         )
         reachedFridge = true
+        arrived = true
       }
-
     } else if (!reachedSeating) {
       reachedSeating = Son.walk()
     }
     return false
   }
-  def storySpecificBeginning(tick: Int): Unit = { Son.room = location }
+  def storySpecificBeginning(tick: Int): Unit = {
+    Son.room = location
+    reachedFridge = false
+    reachedSeating = false
+  }
   def setStartLocations(): Unit =
     Son.setDestination(bottomLeft._1 + 4 * boxSize, bottomLeft._2 + 3 * boxSize)
   def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }

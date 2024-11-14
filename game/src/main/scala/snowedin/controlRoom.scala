@@ -37,7 +37,7 @@ object ControlRoom {
       NoticeBrokenDoor,
       FixDoor,
       Construction,
-      Placeholder,
+      Code,
       Art,
       Cleaning,
       Music,
@@ -138,7 +138,7 @@ class SnowedIn extends ApplicationAdapter {
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
-    ControlRoom.setup(120, true, "movement")
+    ControlRoom.setup(300, true, "movement")
     // Laundry.beginStory(0)
   }
 
@@ -159,25 +159,25 @@ class SnowedIn extends ApplicationAdapter {
     shapeRenderer.begin(ShapeType.Line)
 
     // temp grid for object placement
-    // shapeRenderer.setColor(.7f, .7f, .7f, 1)
-    // (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(boxSize))
-    //   .foreach(x =>
-    //     shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
-    //   )
-    // (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(boxSize))
-    //   .foreach(y =>
-    //     shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
-    //   )
-    // shapeRenderer.setColor(1, 0, 0, .5f)
-    // (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(5 * boxSize))
-    //   .foreach(x =>
-    //     shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
-    //   )
-    // (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(5 * boxSize))
-    //   .foreach(y =>
-    //     shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
-    //   )
-    // shapeRenderer.setColor(0, 0, 0, 1)
+    shapeRenderer.setColor(.7f, .7f, .7f, 1)
+    (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(boxSize))
+      .foreach(x =>
+        shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
+      )
+    (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(boxSize))
+      .foreach(y =>
+        shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
+      )
+    shapeRenderer.setColor(1, 0, 0, .5f)
+    (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(5 * boxSize))
+      .foreach(x =>
+        shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
+      )
+    (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(5 * boxSize))
+      .foreach(y =>
+        shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
+      )
+    shapeRenderer.setColor(0, 0, 0, 1)
 
     statics.foreach(_.render(shapeRenderer))
     objects.foreach(_.render(shapeRenderer))
@@ -188,6 +188,7 @@ class SnowedIn extends ApplicationAdapter {
 
     batch.begin()
 
+    font.draw(batch, s"Tick: ${tick}", 50, 50)
     font.draw(
       batch,
       s"Father:\n\tCurrent Story: ${Father.commonState.curStory.getClass.getSimpleName
