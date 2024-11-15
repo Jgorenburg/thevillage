@@ -81,7 +81,7 @@ object ControlRoom {
       LivingRoomTable,
       WorkroomWall,
       FrontDoor,
-      Closet,
+      BedroomDoor,
       WashingMachine,
       Fireplace,
       Fridge
@@ -153,9 +153,9 @@ class SnowedIn extends ApplicationAdapter {
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
     ControlRoom.setup(43200, true, "full")(
-      // 2,
-      // List(60, 120, 1800, 4000),
-      // List(4000, 3500, 100, 2)
+      4,
+      List(60, 120, 1800, 4000),
+      List(40000, 30000, 30000, 2)
     )
     // CleanTable.beginStory(0)
     // Cleaning.beginStory(0)

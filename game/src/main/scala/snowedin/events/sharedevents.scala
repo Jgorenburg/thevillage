@@ -395,16 +395,16 @@ object CleanTable extends Story {
     commonState = startState.copy()
     trips = 6
   }
+  val sonCleanLoc =
+    (bottomRight._1 - 12 * boxSize, bottomRight._2 + 6 * boxSize)
+  val daughtCleanLoc = (
+    bottomLeft._1 + 8.5f * boxSize,
+    bottomLeft._2 + 9 * boxSize
+  )
 
   def setStartLocations(): Unit = {
-    Son.setDestination(
-      bottomRight._1 - 12 * boxSize,
-      bottomRight._2 + 6 * boxSize
-    )
-    Daughter.setDestination(
-      bottomRight._1 - 5 * boxSize,
-      bottomRight._2 + 7 * boxSize
-    )
+    Son.setDestination(sonCleanLoc)
+    Daughter.setDestination(daughtCleanLoc)
     sonsDest = Table
     daughtDest = Table
   }
@@ -424,8 +424,7 @@ object CleanTable extends Story {
         sonsDest = Table
         trips -= 1
         Son.setDestination(
-          bottomRight._1 - 12 * boxSize,
-          bottomRight._2 + 6 * boxSize
+          sonCleanLoc
         )
       }
     }
@@ -441,8 +440,7 @@ object CleanTable extends Story {
         daughtDest = Table
         trips -= 1
         Daughter.setDestination(
-          bottomRight._1 - 5 * boxSize,
-          bottomRight._2 + 7 * boxSize
+          daughtCleanLoc
         )
       }
     }

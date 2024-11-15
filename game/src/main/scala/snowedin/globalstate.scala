@@ -11,8 +11,8 @@ object GlobalVars {
   var brokenDoor: Boolean = true
   var secsPerTick = 2
   val bedLoc = (
-    bottomLeft._1 + 1 * boxSize,
-    bottomLeft._2 + 5 * boxSize
+    bottomLeft._1 - 1,
+    bottomLeft._2 + 4 * boxSize
   )
 }
 
