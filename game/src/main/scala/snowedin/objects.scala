@@ -307,8 +307,21 @@ object Table extends Actor with Spaces {
     vacate()
   }
 
-  def log() = commonState.toString() +
-    s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity}"
+  def log() = {
+    val status = {
+      if (readyForDinner) {
+        "Ready for Dinner"
+      } else if (readyForLunch) {
+        "Ready for Lunch"
+      } else if (readyToClear) {
+        "Ready to Clear"
+      } else {
+        "Not Food Related"
+      }
+    }
+    commonState.toString() +
+      s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity} Status: ${status}"
+  }
 
 }
 
@@ -401,7 +414,6 @@ object Dishwasher extends Actor {
   var readyToWash = false
   var running = false
   var clean = false
-  var unloaded = false
   room = Kitchen
   def actorSpecificBeginning(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {
@@ -410,27 +422,30 @@ object Dishwasher extends Actor {
       case StartDishwasher => {
         running = true
         dirty = false
+        readyToWash = false
       }
-      case RunDishwasher => clean = true
+      case RunDishwasher => {
+        running = false
+        clean = true
+      }
       case UnloadDishwasher => {
-        unloaded = true
         dirty = true
+        clean = false
       }
       case _: Story =>
   }
   def actorSpecificInterrupt(tick: Int): Unit = {}
   def log(): String = {
     var frag = commonState.toString() + ", State: "
-    if (unloaded) {
-      frag += "Unloaded"
-    } else if (clean) {
+
+    if (clean) {
       frag += "Clean"
     } else if (running) {
       frag += "Running"
     } else if (readyToWash) {
       frag += "Loaded"
     } else {
-      frag += "Untouched"
+      frag += "Empty"
     }
     return frag
   }
@@ -440,7 +455,6 @@ object Dishwasher extends Actor {
     readyToWash = false
     running = false
     clean = false
-    unloaded = false
     commonState = (Vibe, 0)
   }
   def tick(tick: Int): Unit = {}

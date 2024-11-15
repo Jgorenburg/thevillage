@@ -41,7 +41,8 @@ trait Pausable {
   }
   def proceed() = amountleft -= 1
   def pause() = {
-    self.commonState.duration = amountleft + restartTime
+    self.commonState.duration =
+      math.min(amountleft + restartTime, self.commonState.duration)
     isPaused = true
   }
   def beginAnew() = {
@@ -120,7 +121,6 @@ trait Story extends Subject[Story] with Listener {
       started && (shouldEnd ||
         commonState.duration != -1 && tick >= commonState.startTime + commonState.duration)
     ) {
-      endStory(tick)
       return true
     }
     return false

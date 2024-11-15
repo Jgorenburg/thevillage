@@ -138,7 +138,7 @@ class SnowedIn extends ApplicationAdapter {
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
-    ControlRoom.setup(43200, true, "movement")
+    ControlRoom.setup(43200, true, "full")
     // CleanTable.beginStory(0)
     // Cleaning.beginStory(0)
   }

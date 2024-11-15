@@ -138,7 +138,7 @@ object Snack extends Story with Occupy with Delay {
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
-      () => GameManager.tick - 180 > Son.lastAte,
+      () => GameManager.tick - 9000 > Son.lastAte,
       () => readyToRepeat(),
       () => Importance.interrupt(Son.getCurStoryImportance(), importance),
       () => locationIsFree()

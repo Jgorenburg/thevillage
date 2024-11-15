@@ -87,7 +87,7 @@ object Snowcrash extends Story {
     active = false
     commonState = startState.copy()
   }
-  val startState: Base.StoryCommonState = (false, -1, false, 900)
+  val startState: Base.StoryCommonState = (false, -1, false, 300)
 
   var commonState: Base.StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {

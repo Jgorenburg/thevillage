@@ -27,7 +27,10 @@ object RunDishwasher extends Story with Pausable {
     active = false
     beginAnew()
   }
-  def storySpecificBeginning(tick: Int): Unit = { begin() }
+  def storySpecificBeginning(tick: Int): Unit = {
+    begin()
+    arrived = true
+  }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = { pause() }
 }

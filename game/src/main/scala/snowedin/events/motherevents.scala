@@ -44,7 +44,9 @@ object Code extends Story with Occupy with Delay {
     Mother.setDestination(Table.getLoc3())
   }
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Mother.room = DiningRoom
+  }
   def storySpecificEnding(tick: Int): Unit = { setEndTime(tick) }
 
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -63,7 +65,7 @@ object Music extends Story {
       () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
-  val startState = (false, -1, false, 2700)
+  val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
   def progress(tick: Int): Boolean = return false
@@ -71,7 +73,9 @@ object Music extends Story {
   def storySpecificBeginning(tick: Int): Unit = {
     arrived = true
   }
-  def storySpecificEnding(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    Mother.tools.remove(Tambourine)
+  }
 
   def storySpecificInterrupt(tick: Int): Unit = {}
 
@@ -122,6 +126,7 @@ object Art extends Story with Occupy with Delay {
 
 object Cleaning extends Story with Pausable with Delay {
   lazy val actors = HashSet(Mother)
+  repeatsLeft = 6
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
@@ -129,7 +134,7 @@ object Cleaning extends Story with Pausable with Delay {
     )
   var active: Boolean = false
   val startState = (false, -1, true, 1800)
-  val delay = 600
+  val delay = 3600
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -186,7 +191,10 @@ object Cleaning extends Story with Pausable with Delay {
 object NoticeBrokenDoor extends Story {
   lazy val actors = HashSet(Mother)
   var conditions: List[() => Boolean] =
-    List(() => Mother.noticedBrokenDoor, () => Location.areClose(Mother, Door))
+    List(
+      () => !Mother.noticedBrokenDoor,
+      () => Mother.room == Location.Door
+    )
 
   var active: Boolean = false
   val startState = (false, -1, true, 0)

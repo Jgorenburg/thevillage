@@ -20,6 +20,7 @@ import Snowedin.PositionConstants.bottomLeft
 import Snowedin.PositionConstants.boxSize
 import Snowedin.PositionConstants.bottomRight
 import Snowedin.PositionConstants.topRight
+import Snowedin.Tools.Tambourine
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -184,14 +185,14 @@ object CookDinner extends Story {
   }
 }
 
-// Father and Son, TODO: Daughter Optional
+// Father and Son, Daughter Optional
 object Movie extends Story with Occupy with Pausable {
   val size = 2
   var needToSeat = size
   var active: Boolean = false
   lazy val actors = HashSet(Son, Father)
   val people: HashSet[Person] = HashSet(Son, Father)
-  val startState = (false, -1, false, 6600)
+  val startState = (false, -1, false, 5400)
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
@@ -270,7 +271,7 @@ object JoinMovie extends Story with Occupy {
   var conditions: List[() => Boolean] = List(
     () => Movie.active,
     () => Movie.arrived,
-    () => GameManager.tick - 2 >= Movie.commonState.startTime,
+    () => GameManager.tick - 600 >= Movie.commonState.startTime,
     () => Importance.interrupt(Daughter.getCurStoryImportance(), importance),
     () => livingRoomHasSpace(),
     () => Location.areClose(Daughter, LivingRoom)
@@ -354,7 +355,7 @@ object Gossip extends Story with Delay {
     repeatsLeft = 2
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    Daughter.room = Son.room
+    Son.room = Daughter.room
   }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
@@ -363,11 +364,12 @@ object Gossip extends Story with Delay {
 
 }
 
-object CleanTable extends Story with Pausable {
+object CleanTable extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Son, Daughter, Table, Dishwasher)
-  val startState = (false, -1, true, 900)
+  val startState = (false, -1, true, -1)
   var commonState = startState.copy()
+  var trips = 6
 
   var conditions: List[() => Boolean] =
     List(
@@ -384,7 +386,7 @@ object CleanTable extends Story with Pausable {
   def reset(): Unit = {
     active = false
     commonState = startState.copy()
-    beginAnew()
+    trips = 6
   }
 
   def setStartLocations(): Unit = {
@@ -413,6 +415,7 @@ object CleanTable extends Story with Pausable {
         )
       } else {
         sonsDest = Table
+        trips -= 1
         Son.setDestination(
           bottomRight._1 - 12 * boxSize,
           bottomRight._2 + 6 * boxSize
@@ -429,28 +432,27 @@ object CleanTable extends Story with Pausable {
 
       } else {
         daughtDest = Table
+        trips -= 1
         Daughter.setDestination(
           bottomRight._1 - 5 * boxSize,
           bottomRight._2 + 7 * boxSize
         )
       }
     }
-    proceed()
-    return false
+    return trips <= 0
   }
 
   def storySpecificBeginning(tick: Int): Unit = {
-    begin()
     Son.room = DiningRoom
     Daughter.room = DiningRoom
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = false
-    beginAnew()
     Son.room = Kitchen
     Daughter.room = Kitchen
+    trips = 6
   }
-  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+  def storySpecificInterrupt(tick: Int): Unit = {}
 
 }
 
@@ -495,7 +497,7 @@ object Lunch extends Story with Pausable with Occupy {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    if (Importance.interrupt(Son.getCurStoryImportance(), importance)) {
+    if (Importance.interrupt(Son.getCurStoryImportance(), Importance.Event)) {
       actors.add(Son)
       StoryRunner.stories.remove(Son.commonState.curStory)
       Son.beginStory(this, tick)
@@ -506,6 +508,7 @@ object Lunch extends Story with Pausable with Occupy {
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = true
+    Table.readyForLunch = false
     Son.lastAte = tick
   }
   def storySpecificInterrupt(tick: Int): Unit = {
@@ -560,6 +563,7 @@ object Dinner extends Story with Pausable with Occupy {
   }
   def storySpecificEnding(tick: Int): Unit = {
     Table.readyToClear = true
+    Table.readyForDinner = false
     Son.lastAte = tick
   }
   def storySpecificInterrupt(tick: Int): Unit = {
@@ -572,18 +576,19 @@ object Dinner extends Story with Pausable with Occupy {
 object Singalong extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Mother)
-  val potentialSingers = List(Father, Daughter, Son)
+  var potentialSingers = HashSet(Father, Daughter, Son)
+  var singingRooms: HashSet[Location.Room] = HashSet()
   val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
   var conditions: List[() => Boolean] =
     List(
       () => Music.active,
-      () => Dinner.commonState.completed
+      () => Dinner.commonState.completed,
+      () => potentialSingers.exists(Location.areClose(Mother, _))
     )
 
   var importance = Importance.Interrupt
-  var joinInImportance = Importance.Event
   def setStartLocations(): Unit = {
     actors
       .asInstanceOf[HashSet[Person]]
@@ -592,7 +597,10 @@ object Singalong extends Story {
   def progress(tick: Int): Boolean = {
     potentialSingers
       .filter(person =>
-        Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
+        Importance.interrupt(
+          person.getCurStoryImportance(),
+          importance
+        ) && singingRooms.exists(room => Location.areClose(person.room, room))
       )
       .foreach(person => join(person, tick))
     return false
@@ -602,22 +610,31 @@ object Singalong extends Story {
     commonState = startState.copy()
   }
   def storySpecificBeginning(tick: Int): Unit = {
-    commonState.completed = true
-    Music.commonState.completed = true
+    singingRooms = HashSet(Mother.room)
     potentialSingers
       .filter(person =>
-        Importance.interrupt(person.getCurStoryImportance(), joinInImportance)
+        Importance.interrupt(
+          person.getCurStoryImportance(),
+          importance
+        ) && singingRooms.exists(room => Location.areClose(person.room, room))
       )
       .foreach(person => join(person, tick))
     arrived = true
   }
-  def join(person: Actor, tick: Int): Unit = {
+  def join(person: Person, tick: Int): Unit = {
     actors.add(person)
-    StoryRunner.stories.remove(person.commonState.curStory)
+    potentialSingers.remove(person)
+    singingRooms.add(person.room)
+    StoryRunner.interruptStory(person.commonState.curStory)
     person.beginStory(this, tick)
   }
-  def storySpecificEnding(tick: Int): Unit = {}
-  def storySpecificInterrupt(tick: Int): Unit = {}
+  def storySpecificEnding(tick: Int): Unit = {
+    Mother.tools.remove(Tambourine)
+  }
+  def storySpecificInterrupt(tick: Int): Unit = {
+    Mother.tools.remove(Tambourine)
+    commonState.completed = true
+  }
 
 }
 
@@ -663,7 +680,7 @@ object Boardgame extends Story with Occupy with Pausable {
   }
 
   var active: Boolean = false
-  val startState = (false, -1, false, 5400)
+  val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
@@ -788,11 +805,12 @@ object Breakfast extends Story {
     commonState = startState.copy()
     active = false
   }
-  def progress(tick: Int): Boolean = return false
+  def progress(tick: Int): Boolean = return true
   def setStartLocations(): Unit = {}
   val startState: Base.StoryCommonState = (false, -1, true, 0)
   var commonState: StoryCommonState = startState.copy()
   def storySpecificBeginning(tick: Int): Unit = {
+    arrived = true
     val willEat = eaters.filter(person =>
       Importance.interrupt(person.getCurStoryImportance(), importance)
     )

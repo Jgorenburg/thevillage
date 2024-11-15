@@ -125,7 +125,7 @@ object FixDoor extends Story {
 
 }
 
-object Construction extends Story with Pausable with Delay {
+object Construction extends Story with Delay {
   lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] = List(
     () => readyToRepeat(),
@@ -141,14 +141,12 @@ object Construction extends Story with Pausable with Delay {
   var importance: Importance.Importance = Importance.Base
 
   def storySpecificBeginning(tick: Int): Unit = {
-    begin()
     Father.room = Workroom
   }
   def setStartLocations(): Unit =
     Father.setDestination(topRight._1 - 3 * boxSize, topLeft._2 - 4 * boxSize)
 
   def progress(tick: Int): Boolean = {
-    proceed()
     if (!arrived) {
       arrived = Father.walk()
     }
@@ -156,14 +154,12 @@ object Construction extends Story with Pausable with Delay {
   }
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
-    beginAnew()
   }
-  def storySpecificInterrupt(tick: Int): Unit = { pause() }
+  def storySpecificInterrupt(tick: Int): Unit = { setEndTime(tick) }
 
   def reset(): Unit = {
     active = false
     commonState = startState.copy()
-    beginAnew()
     endTime = 0
   }
 }

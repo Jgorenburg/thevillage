@@ -109,15 +109,8 @@ object Father extends Person {
   var noticedBrokenDoor = false
   var tools: HashSet[Tools.Tools] = HashSet()
 
-  def actorSpecificBeginning(tick: Int): Unit = {
-    commonState._1 match
-      case NoticeBrokenDoor => noticedBrokenDoor = true
-      case _: Story         =>
-  }
-  def tick(tick: Int): Unit = {
-    commonState._1 match
-      case _: Story =>
-  }
+  def actorSpecificBeginning(tick: Int): Unit = {}
+  def tick(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {
     if (
       noticedBrokenDoor &&
@@ -128,8 +121,6 @@ object Father extends Person {
       tools.add(Screwdriver)
       Worktable.tools.remove(Screwdriver)
     }
-    commonState._1 match
-      case _: Story =>
   }
 
   def actorSpecificInterrupt(tick: Int): Unit = {
@@ -142,8 +133,6 @@ object Father extends Person {
       tools.add(Screwdriver)
       Worktable.tools.remove(Screwdriver)
     }
-    commonState._1 match
-      case _: Story =>
   }
 
   def reset() = {

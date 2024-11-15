@@ -23,7 +23,12 @@ object StoryRunner extends Updater {
   }
 
   def runStories(): Unit = {
-    stories.filter(_.tick(GameManager.tick)).foreach(stories.remove(_))
+    stories.filter(_.tick(GameManager.tick)).foreach(endStory(_))
+  }
+
+  def endStory(story: Story): Unit = {
+    story.endStory(GameManager.tick)
+    stories.remove(story)
   }
 
   def interruptStory(story: Story): Unit = {

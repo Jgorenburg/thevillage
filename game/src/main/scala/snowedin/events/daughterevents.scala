@@ -51,7 +51,7 @@ object Read extends Story with Occupy {
 
   var importance: Base.Importance.Importance = Importance.Base
   def progress(tick: Int): Boolean = {
-    if (tick - commonState.startTime > 15) {
+    if (tick - commonState.startTime > 2700) {
       importance = Importance.Vibe
     }
     if (!arrived) {
@@ -87,7 +87,9 @@ object Watercolor extends Story with Occupy with Delay {
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
 
-  def storySpecificBeginning(tick: Int): Unit = {}
+  def storySpecificBeginning(tick: Int): Unit = {
+    Daughter.room = LivingRoom
+  }
   def storySpecificEnding(tick: Int): Unit = {
     importance = Importance.Base
     setEndTime(tick)
@@ -161,7 +163,7 @@ object UnloadDishwasher extends Story with Pausable {
       )
   )
   var importance: Base.Importance.Importance = Importance.Event
-  def setStartLocations(): Unit = Son.setDestination(
+  def setStartLocations(): Unit = Daughter.setDestination(
     bottomRight._1 - 4 * boxSize,
     bottomRight._2 + 4 * boxSize
   )
