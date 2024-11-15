@@ -23,7 +23,8 @@ object Laundry extends Story {
   var conditions: List[() => Boolean] =
     List(
       () => GameManager.tick > 3,
-      () => Importance.interrupt(Father.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, false, 900)
@@ -59,8 +60,9 @@ object Nap extends Story with Occupy with Delay {
   var conditions: List[() => Boolean] = List(
     () => readyToRepeat(),
     () => Couch.curCapacity == 2,
-    () => Importance.interrupt(Father.getCurStoryImportance(), importance),
-    () => Importance.interrupt(Couch.getCurStoryImportance(), importance)
+    () =>
+      Importance.shouldInterrupt(Father.getCurStoryImportance(), importance),
+    () => Importance.shouldInterrupt(Couch.getCurStoryImportance(), importance)
   )
 
   val delay = 10800 // 3 hours
@@ -98,7 +100,7 @@ object FixDoor extends Story {
   var conditions: List[() => Boolean] = List(
     () => Father.noticedBrokenDoor,
     () => Father.tools.contains(Screwdriver),
-    () => Importance.interrupt(Father.getCurStoryImportance(), importance)
+    () => Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
   val startState = (false, -1, false, 900)
@@ -129,8 +131,10 @@ object Construction extends Story with Delay {
   lazy val actors = HashSet(Father, Worktable)
   var conditions: List[() => Boolean] = List(
     () => readyToRepeat(),
-    () => Importance.interrupt(Father.getCurStoryImportance(), importance),
-    () => Importance.interrupt(Worktable.getCurStoryImportance(), importance)
+    () =>
+      Importance.shouldInterrupt(Father.getCurStoryImportance(), importance),
+    () =>
+      Importance.shouldInterrupt(Worktable.getCurStoryImportance(), importance)
   )
   var active: Boolean = false
   val startState = (false, -1, true, -1)

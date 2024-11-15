@@ -19,9 +19,10 @@ case class StoryCommonState(
 }
 object Importance extends Enumeration {
   type Importance = Value
-  val Vibe, Base, Event, Interrupt, Critical, Instantaneous = Value
-  def interrupt(cur: Importance, other: Importance): Boolean = {
-    if (other == Instantaneous) return true
+  val Vibe, Base, Event, Interrupt, Critical, Instantaneous, Override = Value
+  def shouldInterrupt(cur: Importance, other: Importance): Boolean = {
+    if (cur == Override) return false
+    if (other == Override || other == Instantaneous) return true
     if (cur == Critical) return false
     if (other >= Interrupt) return true
     return other > cur

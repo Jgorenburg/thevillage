@@ -35,7 +35,7 @@ object Chat extends Story with Delay {
       () => Location.areClose(Mother.room, Father.room),
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -81,7 +81,9 @@ object CookLunch extends Story {
     )
 
   def fatherAvailible(): Boolean = {
-    if (Importance.interrupt(Father.getCurStoryImportance(), importance)) {
+    if (
+      Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
+    ) {
       actors.add(Father)
       cook = Father
       actors.remove(Mother)
@@ -94,7 +96,7 @@ object CookLunch extends Story {
   def motherAvailible(): Boolean = {
     if (
       !actors.contains(Father) &&
-      Importance.interrupt(Mother.getCurStoryImportance(), importance)
+      Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     ) {
       actors.add(Mother)
       cook = Mother
@@ -152,7 +154,7 @@ object CookDinner extends Story {
       () => GameManager.tick >= GameManager.ending * 3 / 4,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -199,7 +201,7 @@ object Movie extends Story with Occupy with Pausable {
       () => Lunch.commonState.completed,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         ),
       () => livingRoomHasSpace()
     )
@@ -211,7 +213,9 @@ object Movie extends Story with Occupy with Pausable {
     var toFind = size
     while (iterator.hasNext) {
       val seating = iterator.next()
-      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+      if (
+        Importance.shouldInterrupt(seating.getCurStoryImportance(), importance)
+      ) {
         toFind -= seating.curCapacity
         if (seating.curCapacity > 0) {
           actors.add(seating)
@@ -272,7 +276,8 @@ object JoinMovie extends Story with Occupy {
     () => Movie.active,
     () => Movie.arrived,
     () => GameManager.tick - 600 >= Movie.commonState.startTime,
-    () => Importance.interrupt(Daughter.getCurStoryImportance(), importance),
+    () =>
+      Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance),
     () => livingRoomHasSpace(),
     () => Location.areClose(Daughter, LivingRoom)
   )
@@ -283,7 +288,9 @@ object JoinMovie extends Story with Occupy {
     val iterator = livingRoomSeating.iterator
     while (iterator.hasNext) {
       val seating = iterator.next()
-      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+      if (
+        Importance.shouldInterrupt(seating.getCurStoryImportance(), importance)
+      ) {
         actors.add(seating)
         return true
       }
@@ -329,7 +336,7 @@ object Gossip extends Story with Delay {
       () => Location.areClose(Daughter, Son),
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -377,7 +384,7 @@ object CleanTable extends Story {
       () => Table.readyToClear,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -469,7 +476,7 @@ object Lunch extends Story with Pausable with Occupy {
       () => Table.readyForLunch,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -497,7 +504,9 @@ object Lunch extends Story with Pausable with Occupy {
   }
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
-    if (Importance.interrupt(Son.getCurStoryImportance(), Importance.Event)) {
+    if (
+      Importance.shouldInterrupt(Son.getCurStoryImportance(), Importance.Event)
+    ) {
       actors.add(Son)
       StoryRunner.stories.remove(Son.commonState.curStory)
       Son.beginStory(this, tick)
@@ -533,7 +542,7 @@ object Dinner extends Story with Pausable with Occupy {
       () => Table.readyForDinner,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
 
@@ -597,7 +606,7 @@ object Singalong extends Story {
   def progress(tick: Int): Boolean = {
     potentialSingers
       .filter(person =>
-        Importance.interrupt(
+        Importance.shouldInterrupt(
           person.getCurStoryImportance(),
           importance
         ) && singingRooms.exists(room => Location.areClose(person.room, room))
@@ -613,7 +622,7 @@ object Singalong extends Story {
     singingRooms = HashSet(Mother.room)
     potentialSingers
       .filter(person =>
-        Importance.interrupt(
+        Importance.shouldInterrupt(
           person.getCurStoryImportance(),
           importance
         ) && singingRooms.exists(room => Location.areClose(person.room, room))
@@ -648,14 +657,16 @@ object Boardgame extends Story with Occupy with Pausable {
       () => !Table.readyToClear,
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         ),
       () => fatherAvailible() | motherAvailible()
     )
 
   def fatherAvailible(): Boolean = {
     actors.remove(Father)
-    if (Importance.interrupt(Father.getCurStoryImportance(), importance)) {
+    if (
+      Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
+    ) {
       actors.add(Father)
       return true
     } else {
@@ -664,7 +675,9 @@ object Boardgame extends Story with Occupy with Pausable {
   }
   def motherAvailible(): Boolean = {
     actors.remove(Mother)
-    if (Importance.interrupt(Mother.getCurStoryImportance(), importance)) {
+    if (
+      Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
+    ) {
       actors.add(Mother)
       return true
     } else {
@@ -724,14 +737,14 @@ object FixSomething extends Story with Occupy with Pausable {
       // TODO: come up with how/why something breaks
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         ),
       () => daughterAvailible() || sonAvailible()
     )
 
   def sonAvailible(): Boolean = {
     actors.remove(Son)
-    if (Importance.interrupt(Son.getCurStoryImportance(), importance)) {
+    if (Importance.shouldInterrupt(Son.getCurStoryImportance(), importance)) {
       actors.add(Son)
       helper = Son
       return true
@@ -741,7 +754,9 @@ object FixSomething extends Story with Occupy with Pausable {
   }
   def daughterAvailible(): Boolean = {
     actors.remove(Daughter)
-    if (Importance.interrupt(Daughter.getCurStoryImportance(), importance)) {
+    if (
+      Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance)
+    ) {
       actors.add(Daughter)
       helper = Daughter
       return true
@@ -794,10 +809,11 @@ object Breakfast extends Story {
     List(
       () => GameManager.tick <= GameManager.ending / 6,
       () => Table.curCapacity > 0,
-      () => Importance.interrupt(Table.getCurStoryImportance(), importance),
+      () =>
+        Importance.shouldInterrupt(Table.getCurStoryImportance(), importance),
       () =>
         eaters.exists(person =>
-          Importance.interrupt(person.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(person.getCurStoryImportance(), importance)
         )
     )
   var importance: Base.Importance.Importance = Importance.Event
@@ -812,7 +828,7 @@ object Breakfast extends Story {
   def storySpecificBeginning(tick: Int): Unit = {
     arrived = true
     val willEat = eaters.filter(person =>
-      Importance.interrupt(person.getCurStoryImportance(), importance)
+      Importance.shouldInterrupt(person.getCurStoryImportance(), importance)
     )
     willEat.foreach(eater => StoryRunner.addStory(new IndivBreakfast(eater)))
     eaters --= willEat

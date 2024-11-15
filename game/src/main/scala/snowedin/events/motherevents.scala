@@ -28,7 +28,8 @@ object Code extends Story with Occupy with Delay {
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
-      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, false, 13200)
@@ -62,7 +63,8 @@ object Music extends Story {
   var conditions: List[() => Boolean] =
     List(
       () => Mother.tools.contains(Tambourine),
-      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, true, 2700)
@@ -93,7 +95,8 @@ object Art extends Story with Occupy with Delay {
     List(
       () => readyToRepeat(),
       () => Easle.curCapacity >= size,
-      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, true, -1)
@@ -130,7 +133,8 @@ object Cleaning extends Story with Pausable with Delay {
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
-      () => Importance.interrupt(Mother.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, true, 1800)

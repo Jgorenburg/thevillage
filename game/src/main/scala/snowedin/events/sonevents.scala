@@ -32,7 +32,7 @@ object Knit extends Story with Pausable with Delay with Occupy {
     List(
       () => readyToRepeat(),
       () => livingRoomHasSpace(),
-      () => Importance.interrupt(Son.getCurStoryImportance(), importance)
+      () => Importance.shouldInterrupt(Son.getCurStoryImportance(), importance)
     )
 
   val livingRoomSeating = List(Sofachair, Couch)
@@ -41,7 +41,9 @@ object Knit extends Story with Pausable with Delay with Occupy {
     val iterator = livingRoomSeating.iterator
     while (iterator.hasNext) {
       val seating = iterator.next()
-      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+      if (
+        Importance.shouldInterrupt(seating.getCurStoryImportance(), importance)
+      ) {
         actors.add(seating)
         return true
       }
@@ -92,7 +94,7 @@ object Woodworking extends Story with Pausable with Delay {
       () => Worktable.tools.contains(Knife) || Son.tools.contains(Knife),
       () =>
         actors.forall(actor =>
-          Importance.interrupt(actor.getCurStoryImportance(), importance)
+          Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
         )
     )
   var importance: Base.Importance.Importance = Importance.Base
@@ -140,7 +142,7 @@ object Snack extends Story with Occupy with Delay {
     List(
       () => GameManager.tick - 9000 > Son.lastAte,
       () => readyToRepeat(),
-      () => Importance.interrupt(Son.getCurStoryImportance(), importance),
+      () => Importance.shouldInterrupt(Son.getCurStoryImportance(), importance),
       () => locationIsFree()
     )
 
@@ -152,7 +154,7 @@ object Snack extends Story with Occupy with Delay {
   def locationIsFree(): Boolean = {
     actors --= List(Table, Sofachair, Couch)
     if (
-      Table.hasSpace(Snack) && Importance.interrupt(
+      Table.hasSpace(Snack) && Importance.shouldInterrupt(
         Table.getCurStoryImportance(),
         importance
       )
@@ -162,7 +164,7 @@ object Snack extends Story with Occupy with Delay {
       return true
     }
     if (
-      Sofachair.hasSpace(Snack) && Importance.interrupt(
+      Sofachair.hasSpace(Snack) && Importance.shouldInterrupt(
         Sofachair.getCurStoryImportance(),
         importance
       )
@@ -172,7 +174,7 @@ object Snack extends Story with Occupy with Delay {
       return true
     }
     if (
-      Couch.hasSpace(Snack) && Importance.interrupt(
+      Couch.hasSpace(Snack) && Importance.shouldInterrupt(
         Couch.getCurStoryImportance(),
         importance
       )
@@ -227,7 +229,7 @@ object GiveScarf extends Story {
   lazy val actors = HashSet(Son)
   var conditions: List[() => Boolean] = List(
     () => Knit.commonState.completed,
-    () => Importance.interrupt(Son.getCurStoryImportance(), importance),
+    () => Importance.shouldInterrupt(Son.getCurStoryImportance(), importance),
     () => availibleRecipient()
   )
   // TODO: add daughter
@@ -238,7 +240,10 @@ object GiveScarf extends Story {
     while (iterator.hasNext) {
       val person = iterator.next()
       if (
-        Importance.interrupt(person.getCurStoryImportance(), importance) &&
+        Importance.shouldInterrupt(
+          person.getCurStoryImportance(),
+          importance
+        ) &&
         Location.areClose(Son, person)
       ) {
         actors.add(person)
@@ -288,7 +293,7 @@ object StartDishwasher extends Story {
     () => Dishwasher.readyToWash,
     () =>
       actors.forall(actor =>
-        Importance.interrupt(actor.getCurStoryImportance(), importance)
+        Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
       )
   )
   var importance: Base.Importance.Importance = Importance.Interrupt

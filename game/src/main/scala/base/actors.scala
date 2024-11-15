@@ -1,6 +1,6 @@
 package Base
 
-import Base.Importance.interrupt
+import Base.Importance.shouldInterrupt
 import Snowedin.Couch.maxCapacity
 import Snowedin.Couch.curCapacity
 import scala.collection.mutable.HashMap

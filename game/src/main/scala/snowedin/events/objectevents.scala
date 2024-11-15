@@ -13,7 +13,8 @@ object RunDishwasher extends Story with Pausable {
   var commonState: Base.StoryCommonState = startState.copy()
   var conditions: List[() => Boolean] = List(
     () => Dishwasher.running,
-    () => Importance.interrupt(Dishwasher.getCurStoryImportance(), importance)
+    () =>
+      Importance.shouldInterrupt(Dishwasher.getCurStoryImportance(), importance)
   )
 
   def setStartLocations(): Unit = {}

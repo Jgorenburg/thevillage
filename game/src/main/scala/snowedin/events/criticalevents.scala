@@ -58,7 +58,7 @@ object Snowcrash extends Story {
 
   def getActors(): Boolean = {
     val potential = GameManager.characters.filter(person =>
-      Importance.interrupt(person.getCurStoryImportance(), importance)
+      Importance.shouldInterrupt(person.getCurStoryImportance(), importance)
     )
     if (potential.length < numParticipants) {
       return false

@@ -20,7 +20,9 @@ object Read extends Story with Occupy {
   var commonState = startState.copy()
   var conditions: List[() => Boolean] =
     List(
-      () => Importance.interrupt(Daughter.getCurStoryImportance(), importance),
+      () =>
+        Importance
+          .shouldInterrupt(Daughter.getCurStoryImportance(), importance),
       () => livingRoomHasSpace()
     )
 
@@ -31,7 +33,9 @@ object Read extends Story with Occupy {
     val iterator = livingRoomSeating.iterator
     while (iterator.hasNext) {
       val seating = iterator.next()
-      if (Importance.interrupt(seating.getCurStoryImportance(), importance)) {
+      if (
+        Importance.shouldInterrupt(seating.getCurStoryImportance(), importance)
+      ) {
         actors.add(seating)
         seat = seating
         return true
@@ -80,7 +84,8 @@ object Watercolor extends Story with Occupy with Delay {
     List(
       () => readyToRepeat(),
       () => Easle.curCapacity >= size,
-      () => Importance.interrupt(Daughter.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, true, 1800)
@@ -122,7 +127,8 @@ object StartFire extends Story {
   var conditions: List[() => Boolean] =
     List(
       () => GameManager.tick > GameManager.ending * 5 / 6,
-      () => Importance.interrupt(Daughter.getCurStoryImportance(), importance)
+      () =>
+        Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance)
     )
   var active: Boolean = false
   val startState = (false, -1, false, 600)
@@ -159,7 +165,7 @@ object UnloadDishwasher extends Story with Pausable {
     () => Dishwasher.clean,
     () =>
       actors.forall(actor =>
-        Importance.interrupt(actor.getCurStoryImportance(), importance)
+        Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
       )
   )
   var importance: Base.Importance.Importance = Importance.Event
