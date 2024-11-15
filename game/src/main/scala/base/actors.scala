@@ -158,6 +158,11 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 }
 
 trait Person extends Actor {
+  var wakeTime: Double = 0
+  var bedTime = GameManager.ending
+  def timeForBed(): Boolean = {
+    return GameManager.tick >= bedTime
+  }
   var location: (Float, Float) =
     (topRight._1 - 8 * boxSize, topRight._2 - 8f * boxSize)
   var destination: (Float, Float) = location

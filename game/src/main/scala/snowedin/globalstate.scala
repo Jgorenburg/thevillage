@@ -3,11 +3,17 @@ package Snowedin
 import Base.Actor
 import scala.collection.mutable.HashMap
 import com.badlogic.gdx.Gdx
+import Snowedin.PositionConstants.bottomLeft
+import Snowedin.PositionConstants.boxSize
 
 // global vars
 object GlobalVars {
   var brokenDoor: Boolean = true
-  val secsPerTick = 2
+  var secsPerTick = 2
+  val bedLoc = (
+    bottomLeft._1 + 1 * boxSize,
+    bottomLeft._2 + 5 * boxSize
+  )
 }
 
 object Tools extends Enumeration {

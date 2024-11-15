@@ -27,11 +27,14 @@ import Base.GameManager.log
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.graphics.Color
+import Base.Person
 
 object ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
   val stories: List[Story] =
     List(
+      GoToBed,
+      WakingUp,
       Laundry,
       Nap,
       NoticeBrokenDoor,
@@ -67,7 +70,7 @@ object ControlRoom {
       Snowcrash,
       KitchenFire
     )
-  val characters: List[Actor] = List(Father, Mother, Son, Daughter)
+  val characters: List[Person] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =
     List(Couch, Sofachair, Table, Worktable, Easle, Stove, Dishwasher)
   val statics: List[Static] =
@@ -91,9 +94,20 @@ object ControlRoom {
       gameLen: Int = 720,
       logging: Boolean = false,
       loggerFile: String = "unnamed"
+  )(
+      secsPerTick: Int = 2,
+      wakeupTimes: List[Int] = List.fill(characters.length)(0),
+      bedTimes: List[Int] = List.fill(characters.length)(0)
   ) = {
+    GlobalVars.secsPerTick = secsPerTick
     endTick = gameLen
     isLogging = logging
+    wakeupTimes
+      .zip(characters)
+      .foreach((time, person) => person.wakeTime = time)
+    bedTimes
+      .zip(characters)
+      .foreach((time, person) => person.bedTime = gameLen - time)
     GameManager.setup(gameLen, updaters, stories, characters, objects)
     if (logging) {
       MyLogger.setFile(loggerFile)
@@ -138,7 +152,11 @@ class SnowedIn extends ApplicationAdapter {
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
-    ControlRoom.setup(43200, true, "full")
+    ControlRoom.setup(43200, true, "full")(
+      // 2,
+      // List(60, 120, 1800, 4000),
+      // List(4000, 3500, 100, 2)
+    )
     // CleanTable.beginStory(0)
     // Cleaning.beginStory(0)
   }

@@ -7,9 +7,16 @@ import Snowedin.Tools.Tambourine
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.Color
 import Snowedin.PositionConstants.boxSize
+import Snowedin.Location.Bedroom
 
 object Daughter extends Person {
+
+  override def timeForBed(): Boolean = {
+    Dinner.commonState.completed && super.timeForBed()
+  }
   def render(shapeRenderer: ShapeRenderer) = {
+    if (room == Bedroom) return
+
     shapeRenderer.setColor(Color.GREEN)
     shapeRenderer.circle(location._1, location._2, boxSize / 2)
     shapeRenderer.setColor(0, 0, 0, 1)
@@ -33,7 +40,12 @@ object Daughter extends Person {
 }
 
 object Son extends Person {
+  override def timeForBed(): Boolean = {
+    Dinner.commonState.completed && super.timeForBed()
+  }
   def render(shapeRenderer: ShapeRenderer) = {
+    if (room == Bedroom) return
+
     shapeRenderer.setColor(Color.PURPLE)
     shapeRenderer.circle(location._1, location._2, boxSize / 2)
     shapeRenderer.setColor(0, 0, 0, 1)
@@ -63,7 +75,11 @@ object Son extends Person {
 }
 
 object Mother extends Person {
+  override def timeForBed(): Boolean = {
+    Dinner.commonState.completed && super.timeForBed()
+  }
   def render(shapeRenderer: ShapeRenderer) = {
+    if (room == Bedroom) return
     shapeRenderer.setColor(Color.BLUE)
     shapeRenderer.circle(location._1, location._2, boxSize / 2)
     shapeRenderer.setColor(0, 0, 0, 1)
@@ -99,7 +115,11 @@ object Mother extends Person {
 }
 
 object Father extends Person {
+  override def timeForBed(): Boolean = {
+    Dinner.commonState.completed && super.timeForBed()
+  }
   def render(shapeRenderer: ShapeRenderer) = {
+    if (room == Bedroom) return
     shapeRenderer.setColor(Color.RED)
     shapeRenderer.circle(location._1, location._2, boxSize / 2)
     shapeRenderer.setColor(0, 0, 0, 1)
