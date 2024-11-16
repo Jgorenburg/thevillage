@@ -8,20 +8,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.Color
 import Snowedin.PositionConstants.boxSize
 import Snowedin.Location.Bedroom
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 object Daughter extends Person {
 
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
-  def render(shapeRenderer: ShapeRenderer) = {
-    if (room == Bedroom) return
-
-    shapeRenderer.setColor(Color.GREEN)
-    shapeRenderer.circle(location._1, location._2, boxSize / 2)
-    shapeRenderer.setColor(0, 0, 0, 1)
-  }
-  // var tools: HashSet[Tools.Tools] = HashSet()
+  val color = Color.GREEN
 
   def actorSpecificBeginning(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {}
@@ -43,13 +38,7 @@ object Son extends Person {
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
-  def render(shapeRenderer: ShapeRenderer) = {
-    if (room == Bedroom) return
-
-    shapeRenderer.setColor(Color.PURPLE)
-    shapeRenderer.circle(location._1, location._2, boxSize / 2)
-    shapeRenderer.setColor(0, 0, 0, 1)
-  }
+  val color = Color.PURPLE
   var tools: HashSet[Tools.Tools] = HashSet()
   var lastAte = 0
 
@@ -72,18 +61,21 @@ object Son extends Person {
       case Snack    => lastAte = tick
       case _: Story =>
   }
+  override def report(
+      font: BitmapFont,
+      batch: SpriteBatch,
+      loc: (Float, Float),
+      indivPortion: String = ""
+  ): Unit = {
+    super.report(font, batch, loc, s"\n\tLast Ate: ${lastAte}")
+  }
 }
 
 object Mother extends Person {
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
-  def render(shapeRenderer: ShapeRenderer) = {
-    if (room == Bedroom) return
-    shapeRenderer.setColor(Color.BLUE)
-    shapeRenderer.circle(location._1, location._2, boxSize / 2)
-    shapeRenderer.setColor(0, 0, 0, 1)
-  }
+  val color = Color.BLUE
   var noticedBrokenDoor = false
 
   var tools: HashSet[Tools.Tools] = HashSet()
@@ -112,18 +104,30 @@ object Mother extends Person {
     ", Tools: " + tools.mkString(", ") +
     s", Aware of Door: ${noticedBrokenDoor}" +
     ", Location: " + room
+
+  override def report(
+      font: BitmapFont,
+      batch: SpriteBatch,
+      loc: (Float, Float),
+      indivPortion: String = ""
+  ): Unit = {
+    val toollist = if (tools.isEmpty) "None" else tools.mkString(", ")
+
+    super.report(
+      font,
+      batch,
+      loc,
+      s"\n\tTools: ${toollist}\n\tNoticed Door: ${noticedBrokenDoor}"
+    )
+  }
 }
 
 object Father extends Person {
+  val color = Color.RED
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
-  def render(shapeRenderer: ShapeRenderer) = {
-    if (room == Bedroom) return
-    shapeRenderer.setColor(Color.RED)
-    shapeRenderer.circle(location._1, location._2, boxSize / 2)
-    shapeRenderer.setColor(0, 0, 0, 1)
-  }
+
   lazy val myEvents: Array[Any] = Array(Vibe, Nap, Laundry, NoticeBrokenDoor)
 
   var noticedBrokenDoor = false
@@ -166,5 +170,21 @@ object Father extends Person {
     ", Tools: " + tools.mkString(", ") +
     s", Aware of Door: ${noticedBrokenDoor}" +
     ", Location: " + room
+
+  override def report(
+      font: BitmapFont,
+      batch: SpriteBatch,
+      loc: (Float, Float),
+      indivPortion: String = ""
+  ): Unit = {
+    val toollist = if (tools.isEmpty) "None" else tools.mkString(", ")
+
+    super.report(
+      font,
+      batch,
+      loc,
+      s"\n\tTools: ${toollist}\n\tNoticed Door: ${noticedBrokenDoor}"
+    )
+  }
 
 }

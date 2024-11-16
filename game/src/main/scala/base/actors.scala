@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import Snowedin.PositionConstants.*
 import com.badlogic.gdx.Game
 import Snowedin.GlobalVars
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.Color
+import Snowedin.Location.Bedroom
 
 case class curStory(
     var curStory: Story,
@@ -204,4 +208,30 @@ trait Person extends Actor {
     destination = pos
   }
   def setSpeed(newSpeed: Float) = speed = newSpeed
+
+  val color: Color
+
+  def render(shapeRenderer: ShapeRenderer) = {
+    if (room == Bedroom) return
+    shapeRenderer.setColor(color)
+    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.setColor(0, 0, 0, 1)
+  }
+
+  def report(
+      font: BitmapFont,
+      batch: SpriteBatch,
+      loc: (Float, Float),
+      indivPortion: String = ""
+  ): Unit = {
+    def simpleName(obj: Any) = obj.getClass.getSimpleName.stripSuffix("$")
+    font.draw(
+      batch,
+      s"[#${color}]${simpleName(this)}:[BLACK]\n\tCurrent Story: ${simpleName(
+          this.commonState.curStory
+        )}\n\tLocation: ${this.location}\n\tRoom: ${this.room}" + indivPortion,
+      loc._1,
+      loc._2
+    )
+  }
 }

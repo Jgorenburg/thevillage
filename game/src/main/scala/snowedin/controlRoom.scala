@@ -214,35 +214,17 @@ class SnowedIn extends ApplicationAdapter {
       50,
       50
     )
-    font.draw(
-      batch,
-      s"Father:\n\tCurrent Story: ${Father.commonState.curStory.getClass.getSimpleName
-          .stripSuffix("$")}\n\tLocation: ${Father.location}\n\tDestination: ${Father.destination}\n\tColor: Red",
-      50,
-      HEIGHT - 100
-    )
-    font.draw(
-      batch,
-      s"Mother:\n\tCurrent Story: ${Mother.commonState.curStory.getClass.getSimpleName
-          .stripSuffix("$")}\n\tLocation: ${Mother.location}\n\tDestination: ${Mother.destination}:\n\tColor: Blue",
-      50,
-      HEIGHT - 300
-    )
-    font.draw(
-      batch,
-      s"Son:\n\tCurrent Story: ${Son.commonState.curStory.getClass.getSimpleName
-          .stripSuffix("$")}\n\tLocation: ${Son.location}\n\tDestination: ${Son.destination}\n\tColor: Purple",
-      50,
-      HEIGHT - 500
-    )
 
-    font.draw(
-      batch,
-      s"Daughter:\n\tCurrent Story: ${Daughter.commonState.curStory.getClass.getSimpleName
-          .stripSuffix("$")}\n\tLocation: ${Daughter.location}\n\tDestination: ${Daughter.destination}\n\tColor: Green",
-      50,
-      HEIGHT - 700
-    )
+    characters
+      .zip(
+        List(
+          (50f, HEIGHT - 100),
+          (50f, HEIGHT - 300),
+          (50f, HEIGHT - 500),
+          (50f, HEIGHT - 700)
+        )
+      )
+      .foreach((person, loc) => person.report(font, batch, loc))
 
     batch.end()
   }
