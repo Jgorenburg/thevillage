@@ -143,6 +143,7 @@ class SnowedIn extends ApplicationAdapter {
     batch = new SpriteBatch()
     font = new BitmapFont()
 
+    font.getData().markupEnabled = true
     font.setColor(0, 0, 0, 1)
     font.getData.setScale(1.0f)
 
@@ -179,25 +180,25 @@ class SnowedIn extends ApplicationAdapter {
     shapeRenderer.begin(ShapeType.Line)
 
     // temp grid for object placement
-    // shapeRenderer.setColor(.7f, .7f, .7f, 1)
-    // (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(boxSize))
-    //   .foreach(x =>
-    //     shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
-    //   )
-    // (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(boxSize))
-    //   .foreach(y =>
-    //     shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
-    //   )
-    // shapeRenderer.setColor(1, 0, 0, .5f)
-    // (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(5 * boxSize))
-    //   .foreach(x =>
-    //     shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
-    //   )
-    // (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(5 * boxSize))
-    //   .foreach(y =>
-    //     shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
-    //   )
-    // shapeRenderer.setColor(0, 0, 0, 1)
+    shapeRenderer.setColor(.7f, .7f, .7f, 1)
+    (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(boxSize))
+      .foreach(x =>
+        shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
+      )
+    (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(boxSize))
+      .foreach(y =>
+        shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
+      )
+    shapeRenderer.setColor(1, 0, 0, .5f)
+    (BigDecimal(houseX) to BigDecimal(topRight._1) by BigDecimal(5 * boxSize))
+      .foreach(x =>
+        shapeRenderer.line(x.toFloat, houseY, x.toFloat, houseY + HouseHeight)
+      )
+    (BigDecimal(houseY) to BigDecimal(topRight._2) by BigDecimal(5 * boxSize))
+      .foreach(y =>
+        shapeRenderer.line(houseX, y.toFloat, houseX + HouseWidth, y.toFloat)
+      )
+    shapeRenderer.setColor(0, 0, 0, 1)
 
     statics.foreach(_.render(shapeRenderer))
     objects.foreach(_.render(shapeRenderer))
