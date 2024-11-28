@@ -10,7 +10,7 @@ import Base.Pausable
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Kitchen
 import Base.Actor
-import Snowedin.PositionConstants.*
+import Snowedin.SnowedInPositionConstants.*
 
 object Read extends Story with Occupy {
   val size = 1

@@ -13,12 +13,8 @@ import Snowedin.Location.DiningRoom
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Kitchen
 import Snowedin.Location.Door
-import Snowedin.PositionConstants.bottomLeft
-import Snowedin.PositionConstants.boxSize
-import Snowedin.PositionConstants.topLeft
-import Snowedin.PositionConstants.bottomRight
-import scala.collection.immutable.HashMap
-import Snowedin.PositionConstants.topRight
+import Snowedin.SnowedInPositionConstants.*
+import scala.collection.mutable.HashMap
 
 object Code extends Story with Occupy with Delay {
 

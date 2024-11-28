@@ -13,12 +13,8 @@ import Snowedin.Location.Workroom
 import Snowedin.Location.Room
 import Snowedin.Location.Bedroom
 import Snowedin.Location.Kitchen
-import Snowedin.PositionConstants.topLeft
-import Snowedin.PositionConstants.boxSize
-import Snowedin.PositionConstants.topRight
-import Snowedin.PositionConstants.bottomLeft
+import Snowedin.SnowedInPositionConstants.*
 import Base.Person
-import Snowedin.PositionConstants.bottomRight
 import Snowedin.Location.LivingRoom
 
 object Knit extends Story with Pausable with Delay with Occupy {

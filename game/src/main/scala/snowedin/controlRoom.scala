@@ -14,15 +14,9 @@ import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import Snowedin.ControlRoom.{statics, objects, characters, stories}
-import Snowedin.PositionConstants.HouseWidth
-import Snowedin.PositionConstants.HouseHeight
-import Snowedin.PositionConstants.houseX
-import Snowedin.PositionConstants.boxSize
-import Snowedin.PositionConstants.topRight
-import Snowedin.PositionConstants.houseY
+import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import Snowedin.PositionConstants.HEIGHT
 import Base.GameManager.log
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application

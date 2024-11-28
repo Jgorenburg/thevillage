@@ -9,7 +9,7 @@ import Base.StoryCommonState
 import Base.Importance.Critical
 import Snowedin.Location.Kitchen
 import Base.Person
-import Snowedin.PositionConstants.*
+import Snowedin.SnowedInPositionConstants.*
 
 object KitchenFire extends Story {
   var active: Boolean = false

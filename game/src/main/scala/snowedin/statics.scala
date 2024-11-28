@@ -2,7 +2,7 @@ package Snowedin
 
 import Base.Static
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import PositionConstants.*
+import SnowedInPositionConstants.*
 import Snowedin.GlobalVars.bedLoc
 
 object House extends Static {

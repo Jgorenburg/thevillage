@@ -3,8 +3,9 @@ package Snowedin
 import Base.Actor
 import scala.collection.mutable.HashMap
 import com.badlogic.gdx.Gdx
-import Snowedin.PositionConstants.bottomLeft
-import Snowedin.PositionConstants.boxSize
+import Snowedin.SnowedInPositionConstants.bottomLeft
+import Snowedin.SnowedInPositionConstants.boxSize
+import Base.PositionConstants
 
 // global vars
 object GlobalVars {
@@ -74,12 +75,12 @@ object Location extends Enumeration {
   }
 }
 
-object PositionConstants {
-  lazy val WIDTH: Float = Gdx.graphics.getWidth().toFloat
-  lazy val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
+object SnowedInPositionConstants extends PositionConstants {
   def heightToWidth(h: Float) = h * 8.5f / 11
   def widthToHeight(w: Float) = w * 11 / 8.5f
   val size: Float = WIDTH / 2.8f
+  val horizBoxes: Int = (size / boxSize).toInt
+  val vertBoxes: Int = (widthToHeight(size) / boxSize).toInt
   // House will always be centered on the X axis and slightly high on the Y
   val HouseBase: (Float, Float) =
     ((WIDTH - size) / 2, (HEIGHT - widthToHeight(size)) / 2)

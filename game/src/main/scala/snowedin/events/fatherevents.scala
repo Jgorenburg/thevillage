@@ -13,9 +13,7 @@ import Base.Delay
 import Snowedin.Location.Workroom
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.Door
-import Snowedin.PositionConstants.topRight
-import Snowedin.PositionConstants.boxSize
-import Snowedin.PositionConstants.topLeft
+import Snowedin.SnowedInPositionConstants.*
 
 // Father only
 object Laundry extends Story {

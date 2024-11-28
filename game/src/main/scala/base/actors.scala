@@ -7,12 +7,12 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import Snowedin.PositionConstants.*
 import com.badlogic.gdx.Game
 import Snowedin.GlobalVars
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Color
+import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Location.Bedroom
 
 case class curStory(
@@ -66,7 +66,6 @@ trait Spaces {
 
 trait Renderable {
   var location: (Float, Float)
-  // should only be called within Shaperenderer
   def render(shapeRenderer: ShapeRenderer): Unit
 }
 

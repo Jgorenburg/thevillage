@@ -16,10 +16,7 @@ import Snowedin.Location.LivingRoom
 import Snowedin.Location.DiningRoom
 import Snowedin.Location.Workroom
 import Base.Person
-import Snowedin.PositionConstants.bottomLeft
-import Snowedin.PositionConstants.boxSize
-import Snowedin.PositionConstants.bottomRight
-import Snowedin.PositionConstants.topRight
+import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Tools.Tambourine
 
 // Father and Mother

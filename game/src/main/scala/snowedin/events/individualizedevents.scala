@@ -9,8 +9,7 @@ import Base.StoryRunner
 import Base.Person
 import Base.Occupy
 import Snowedin.Location.DiningRoom
-import Snowedin.PositionConstants.bottomLeft
-import Snowedin.PositionConstants.boxSize
+import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Location.Bedroom
 import Snowedin.GlobalVars.bedLoc
 

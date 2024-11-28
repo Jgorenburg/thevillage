@@ -6,7 +6,7 @@ import Snowedin.Tools.Screwdriver
 import Snowedin.Tools.Tambourine
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.Color
-import Snowedin.PositionConstants.boxSize
+import Snowedin.SnowedInPositionConstants.boxSize
 import Snowedin.Location.Bedroom
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch

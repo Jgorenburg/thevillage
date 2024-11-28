@@ -9,11 +9,8 @@ import Snowedin.Location.Kitchen
 import Snowedin.Location.LivingRoom
 import Snowedin.Location.DiningRoom
 import Snowedin.Location.Workroom
-import Snowedin.PositionConstants.topRight
-import Snowedin.PositionConstants.HouseWidth
-import Snowedin.PositionConstants.HouseHeight
+import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import Snowedin.PositionConstants.*
 
 object Worktable extends Actor {
   val location = (topRight._1 - 2 * boxSize, topRight._2 - 5 * boxSize)
