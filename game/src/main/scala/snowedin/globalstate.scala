@@ -6,15 +6,13 @@ import com.badlogic.gdx.Gdx
 import Snowedin.SnowedInPositionConstants.bottomLeft
 import Snowedin.SnowedInPositionConstants.boxSize
 import Base.PositionConstants
+import Base.BoxCoords
 
 // global vars
 object GlobalVars {
   var brokenDoor: Boolean = true
   var secsPerTick = 2
-  val bedLoc = (
-    bottomLeft._1 - 1,
-    bottomLeft._2 + 4 * boxSize
-  )
+  val bedLoc: BoxCoords = bottomLeft + (-1, 4)
 }
 
 object Tools extends Enumeration {
@@ -79,8 +77,10 @@ object SnowedInPositionConstants extends PositionConstants {
   def heightToWidth(h: Float) = h * 8.5f / 11
   def widthToHeight(w: Float) = w * 11 / 8.5f
   val size: Float = WIDTH / 2.8f
-  val horizBoxes: Int = (size / boxSize).toInt
-  val vertBoxes: Int = (widthToHeight(size) / boxSize).toInt
+  val boxSize = size / 17
+
+  val HorizBoxes: Int = (size / boxSize).toInt
+  val VertBoxes: Int = (widthToHeight(size) / boxSize).toInt
   // House will always be centered on the X axis and slightly high on the Y
   val HouseBase: (Float, Float) =
     ((WIDTH - size) / 2, (HEIGHT - widthToHeight(size)) / 2)
@@ -89,9 +89,8 @@ object SnowedInPositionConstants extends PositionConstants {
 
   val HouseWidth: Float = size
   val HouseHeight: Float = widthToHeight(size)
-  def bottomLeft = HouseBase
-  def bottomRight = (houseX + HouseWidth, houseY)
-  def topLeft = (houseX, houseY + HouseHeight)
-  def topRight = (houseX + HouseWidth, houseY + HouseHeight)
-  val boxSize = size / 17
+  val bottomLeft: BoxCoords = new BoxCoords(0, 0)
+  val bottomRight: BoxCoords = new BoxCoords(HorizBoxes, 0)
+  val topLeft: BoxCoords = new BoxCoords(0, VertBoxes)
+  val topRight: BoxCoords = new BoxCoords(HorizBoxes, VertBoxes)
 }

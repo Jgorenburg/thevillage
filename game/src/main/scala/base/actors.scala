@@ -65,7 +65,9 @@ trait Spaces {
 }
 
 trait Renderable {
-  var location: (Float, Float)
+  var location: BoxCoords
+  var interactLoc: BoxCoords
+  def rloc() = location.toRealLocation()
   def render(shapeRenderer: ShapeRenderer): Unit
 }
 
@@ -166,11 +168,10 @@ trait Person extends Actor {
   def timeForBed(): Boolean = {
     return GameManager.tick >= bedTime
   }
-  var location: (Float, Float) =
-    (topRight._1 - 8 * boxSize, topRight._2 - 8f * boxSize)
-  var destination: (Float, Float) = location
-  var speed: Float =
-    boxSize * GlobalVars.secsPerTick / 8 // (2 * GlobalVars.secsPerTick)
+  var location = topRight - BoxCoords(8, 8)
+  var interactLoc = location
+  var destination: BoxCoords = location
+  var speed: Float = GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
   var traveling: Boolean = false
 
   // returns true if person has reached their destination
@@ -197,7 +198,7 @@ trait Person extends Actor {
     traveling = true
     // Squares draw from bottom left but circles from the center,
     // the 0.5 fixes the disconnect
-    destination = (x + 0.5f * boxSize, y + 0.5f * boxSize)
+    destination = (x + 0.5f, y + 0.5f)
   }
   def setDestination(pos: (Float, Float)): Unit = {
     setDestination(pos._1, pos._2)
@@ -213,7 +214,7 @@ trait Person extends Actor {
   def render(shapeRenderer: ShapeRenderer) = {
     if (room == Bedroom) return
     shapeRenderer.setColor(color)
-    shapeRenderer.circle(location._1, location._2, boxSize / 2)
+    shapeRenderer.circle(rloc()._1, rloc()._2, boxSize / 2)
     shapeRenderer.setColor(0, 0, 0, 1)
   }
 

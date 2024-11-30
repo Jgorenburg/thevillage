@@ -115,10 +115,7 @@ object CookLunch extends Story {
     }
     return false
   }
-  def setStartLocations(): Unit = cook.setDestination(
-    bottomLeft._1 + 7 * boxSize,
-    bottomLeft._2 + 3 * boxSize
-  )
+  def setStartLocations(): Unit = cook.setDestination(Stove.interactLoc)
 
   def storySpecificBeginning(tick: Int): Unit = {
     actors.foreach(_.room = Kitchen)
@@ -160,10 +157,7 @@ object CookDinner extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Interrupt
-  def setStartLocations(): Unit = cook.setDestination(
-    bottomLeft._1 + 7 * boxSize,
-    bottomLeft._2 + 3 * boxSize
-  )
+  def setStartLocations(): Unit = cook.setDestination(Stove.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
@@ -392,12 +386,8 @@ object CleanTable extends Story {
     commonState = startState.copy()
     trips = 6
   }
-  val sonCleanLoc =
-    (bottomRight._1 - 12 * boxSize, bottomRight._2 + 6 * boxSize)
-  val daughtCleanLoc = (
-    bottomLeft._1 + 8.5f * boxSize,
-    bottomLeft._2 + 9 * boxSize
-  )
+  val sonCleanLoc = Table.getLoc4()
+  val daughtCleanLoc = Table.getLoc1()
 
   def setStartLocations(): Unit = {
     Son.setDestination(sonCleanLoc)
@@ -413,10 +403,7 @@ object CleanTable extends Story {
       arrived = true
       if (sonsDest == Table) {
         sonsDest = Dishwasher
-        Son.setDestination(
-          bottomRight._1 - 4 * boxSize,
-          bottomRight._2 + 4 * boxSize
-        )
+        Son.setDestination(Dishwasher.interactLoc - (0, 1))
       } else {
         sonsDest = Table
         trips -= 1
@@ -428,10 +415,7 @@ object CleanTable extends Story {
     if (Daughter.walk()) {
       if (daughtDest == Table) {
         daughtDest = Dishwasher
-        Daughter.setDestination(
-          bottomRight._1 - 4 * boxSize,
-          bottomRight._2 + 5 * boxSize
-        )
+        Daughter.setDestination(Dishwasher.interactLoc)
 
       } else {
         daughtDest = Table
@@ -767,8 +751,8 @@ object FixSomething extends Story with Occupy with Pausable {
 
   var importance: Importance.Importance = Importance.Event
   def setStartLocations(): Unit = {
-    Father.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 4 * boxSize)
-    helper.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 3 * boxSize)
+    Father.setDestination(Worktable.interactLoc)
+    helper.setDestination(Worktable.interactLoc + (0,1))
   }
 
   def storySpecificBeginning(tick: Int): Unit = {

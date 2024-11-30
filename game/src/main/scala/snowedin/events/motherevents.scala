@@ -98,7 +98,7 @@ object Art extends Story with Occupy with Delay {
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
-  def setStartLocations(): Unit = Mother.setDestination(Easle.location)
+  def setStartLocations(): Unit = Mother.setDestination(Easle.interactLoc)
 
   def storySpecificBeginning(tick: Int): Unit = { Mother.room = LivingRoom }
   def progress(tick: Int): Boolean = {
@@ -140,10 +140,10 @@ object Cleaning extends Story with Pausable with Delay {
   var importance: Importance.Importance = Importance.Event
   var rooms: Array[Room] = Array(DiningRoom, LivingRoom, Kitchen, Door)
   var locs: HashMap[Room, (Float, Float)] = HashMap(
-    DiningRoom -> (bottomLeft._1 + 9 * boxSize, bottomLeft._2 + 12 * boxSize),
-    LivingRoom -> (topLeft._1 + 3 * boxSize, topLeft._2 - 10 * boxSize),
-    Kitchen -> (bottomRight._1 - 4 * boxSize, bottomRight._2 + 6 * boxSize),
-    Door -> (topRight._1 - 8 * boxSize, topRight._2 - 1 * boxSize)
+    DiningRoom -> (bottomLeft + (9, 12)),
+    LivingRoom -> (topLeft + (3, -10)),
+    Kitchen -> (bottomRight + (-4, 6)),
+    Door -> (topRight - (8, 1))
   )
   var cleansSoFar = 0
 

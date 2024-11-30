@@ -11,16 +11,19 @@ import Snowedin.Location.DiningRoom
 import Snowedin.Location.Workroom
 import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import Base.BoxCoords
 
 object Worktable extends Actor {
-  val location = (topRight._1 - 2 * boxSize, topRight._2 - 5 * boxSize)
+  val location = topRight - (2, 5)
+  var interactLoc = location + (-1, 1)
+
   def render(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     shapeRenderer.rect(
-      location._1,
-      location._2,
+      rloc()._1,
+      rloc()._2,
       2 * boxSize,
       4 * boxSize
     )
@@ -57,68 +60,68 @@ object Worktable extends Actor {
 object Couch extends Actor with Spaces {
 
   // TODO other objects should have this method
-  def getSeatLoc(): (Float, Float) = {
+  def getSeatLoc(): BoxCoords = {
     if (curCapacity == 1) {
       seat2Loc
     } else {
       seat1Loc
     }
   }
-  val seat1Loc = (topLeft._1 + 4 * boxSize, topLeft._2 - 8 * boxSize)
-  val seat2Loc = (topLeft._1 + 4 * boxSize, topLeft._2 - 6 * boxSize)
-  val location =
-    (topLeft._1 + 4 * boxSize, topLeft._2 - 9 * boxSize)
+  val seat1Loc = topLeft + (4, -8)
+  val seat2Loc = topLeft + (4, -6)
+  val location = topLeft + (4, -9)
+  var interactLoc = location
 
   def render(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     val vertices = Array(
-      location._1,
-      location._2,
-      location._1 + 2 * boxSize,
-      location._2,
-      location._1 + 2 * boxSize,
-      location._2 + 5 * boxSize,
-      location._1,
-      location._2 + 5 * boxSize,
-      location._1,
-      location._2 + 4 * boxSize,
-      location._1 + 1 * boxSize,
-      location._2 + 4 * boxSize,
-      location._1 + 1 * boxSize,
-      location._2 + 1 * boxSize,
-      location._1,
-      location._2 + 1 * boxSize
+      rloc()._1,
+      rloc()._2,
+      rloc()._1 + 2 * boxSize,
+      rloc()._2,
+      rloc()._1 + 2 * boxSize,
+      rloc()._2 + 5 * boxSize,
+      rloc()._1,
+      rloc()._2 + 5 * boxSize,
+      rloc()._1,
+      rloc()._2 + 4 * boxSize,
+      rloc()._1 + 1 * boxSize,
+      rloc()._2 + 4 * boxSize,
+      rloc()._1 + 1 * boxSize,
+      rloc()._2 + 1 * boxSize,
+      rloc()._1,
+      rloc()._2 + 1 * boxSize
     )
 
     shapeRenderer.polygon(vertices)
     shapeRenderer.line(
-      location._1,
-      location._2 + 2.5f * boxSize,
-      location._1 + boxSize,
-      location._2 + 2.5f * boxSize
+      rloc()._1,
+      rloc()._2 + 2.5f * boxSize,
+      rloc()._1 + boxSize,
+      rloc()._2 + 2.5f * boxSize
     )
     shapeRenderer.curve(
-      location._1,
-      location._2 + 4 * boxSize,
-      location._1 - .2f * boxSize,
-      location._2 + 3.8f * boxSize,
-      location._1 - .2f * boxSize,
-      location._2 + 2.7f * boxSize,
-      location._1,
-      location._2 + 2.5f * boxSize,
+      rloc()._1,
+      rloc()._2 + 4 * boxSize,
+      rloc()._1 - .2f * boxSize,
+      rloc()._2 + 3.8f * boxSize,
+      rloc()._1 - .2f * boxSize,
+      rloc()._2 + 2.7f * boxSize,
+      rloc()._1,
+      rloc()._2 + 2.5f * boxSize,
       100
     )
     shapeRenderer.curve(
-      location._1,
-      location._2 + 1 * boxSize,
-      location._1 - .2f * boxSize,
-      location._2 + 1.2f * boxSize,
-      location._1 - .2f * boxSize,
-      location._2 + 2.3f * boxSize,
-      location._1,
-      location._2 + 2.5f * boxSize,
+      rloc()._1,
+      rloc()._2 + 1 * boxSize,
+      rloc()._1 - .2f * boxSize,
+      rloc()._2 + 1.2f * boxSize,
+      rloc()._1 - .2f * boxSize,
+      rloc()._2 + 2.3f * boxSize,
+      rloc()._1,
+      rloc()._2 + 2.5f * boxSize,
       100
     )
 
@@ -171,41 +174,42 @@ object Couch extends Actor with Spaces {
 }
 
 object Sofachair extends Actor with Spaces {
-  val location = (topLeft._1 + 3.5f * boxSize, topLeft._2 - 3.5f * boxSize)
-  val seatingLoc = (topLeft._1 + 2 * boxSize, topLeft._2 - 3.5f * boxSize)
+  val location = topLeft + (3.5f, -3.5f)
+  var interactLoc = location
+  val seatingLoc = topLeft + (2f, -3.5f)
   def getSeatingLoc() = seatingLoc
   def render(shapeRenderer: ShapeRenderer): Unit = {
 
     val vertices: Array[Float] =
       Array(
-        location._1,
-        location._2,
-        location._1,
-        location._2 + 1.5f * boxSize,
-        location._1 - 2 * boxSize,
-        location._2 + 1.5f * boxSize,
-        location._1 - 2 * boxSize,
-        location._2,
-        location._1 - 1.5f * boxSize,
-        location._2,
-        location._1 - 1.5f * boxSize,
-        location._2 + 1.0f * boxSize,
-        location._1 - 0.5f * boxSize,
-        location._2 + 1.0f * boxSize,
-        location._1 - 0.5f * boxSize,
-        location._2
+        rloc()._1,
+        rloc()._2,
+        rloc()._1,
+        rloc()._2 + 1.5f * boxSize,
+        rloc()._1 - 2 * boxSize,
+        rloc()._2 + 1.5f * boxSize,
+        rloc()._1 - 2 * boxSize,
+        rloc()._2,
+        rloc()._1 - 1.5f * boxSize,
+        rloc()._2,
+        rloc()._1 - 1.5f * boxSize,
+        rloc()._2 + 1.0f * boxSize,
+        rloc()._1 - 0.5f * boxSize,
+        rloc()._2 + 1.0f * boxSize,
+        rloc()._1 - 0.5f * boxSize,
+        rloc()._2
       )
 
     shapeRenderer.polygon(vertices)
     shapeRenderer.curve(
-      location._1 - 0.5f * boxSize,
-      location._2,
-      location._1 - 0.7f * boxSize,
-      location._2 - 0.2f * boxSize,
-      location._1 - 1.3f * boxSize,
-      location._2 - 0.2f * boxSize,
-      location._1 - 1.5f * boxSize,
-      location._2,
+      rloc()._1 - 0.5f * boxSize,
+      rloc()._2,
+      rloc()._1 - 0.7f * boxSize,
+      rloc()._2 - 0.2f * boxSize,
+      rloc()._1 - 1.3f * boxSize,
+      rloc()._2 - 0.2f * boxSize,
+      rloc()._1 - 1.5f * boxSize,
+      rloc()._2,
       100
     )
   }
@@ -257,13 +261,14 @@ object Sofachair extends Actor with Spaces {
 }
 
 object Table extends Actor with Spaces {
-  val location = (bottomLeft._1 + 6 * boxSize, bottomLeft._2 + 5 * boxSize)
-  def getLoc1() = (bottomLeft._1 + 7 * boxSize, bottomLeft._2 + 9 * boxSize)
-  def getLoc2() = (bottomLeft._1 + 10 * boxSize, bottomLeft._2 + 9 * boxSize)
-  def getLoc3() = (bottomLeft._1 + 10 * boxSize, bottomLeft._2 + 4 * boxSize)
-  def getLoc4() = (bottomLeft._1 + 7 * boxSize, bottomLeft._2 + 4 * boxSize)
+  val location = bottomLeft + (6, 5)
+  var interactLoc = location
+  def getLoc1() = bottomLeft + (7, 9)
+  def getLoc2() = bottomLeft + (10, 9)
+  def getLoc3() = bottomLeft + (10, 4)
+  def getLoc4() = bottomLeft + (7, 4)
   def render(shapeRenderer: ShapeRenderer) = {
-    shapeRenderer.rect(location._1, location._2, 6 * boxSize, 4 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 6 * boxSize, 4 * boxSize)
   }
 
   var readyToClear: Boolean = false
@@ -323,9 +328,10 @@ object Table extends Actor with Spaces {
 }
 
 object Easle extends Actor with Spaces {
-  val location = (topLeft._1 + 6 * boxSize, topLeft._2 - 2 * boxSize)
+  val location = topLeft + (6, -2)
+  var interactLoc = location
   def render(shapeRenderer: ShapeRenderer) = {
-    shapeRenderer.rect(location._1, location._2, boxSize, boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, boxSize, boxSize)
   }
   val maxCapacity = 1
   var curCapacity = maxCapacity
@@ -365,9 +371,10 @@ object Easle extends Actor with Spaces {
 }
 
 object Stove extends Actor {
-  val location = (bottomLeft._1 + 6 * boxSize, bottomLeft._2 + boxSize)
+  val location = bottomLeft + (6, 1)
+  var interactLoc = location + (1, 2)
   def render(shapeRenderer: ShapeRenderer) = {
-    shapeRenderer.rect(location._1, location._2, 3 * boxSize, 2 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 3 * boxSize, 2 * boxSize)
   }
   lazy val myEvents: Array[Any] = Array(CookLunch, CookDinner)
   var unattended = false
@@ -402,9 +409,10 @@ object Stove extends Actor {
 }
 
 object Dishwasher extends Actor {
-  val location = (bottomRight._1 - 3 * boxSize, bottomRight._2 + 3 * boxSize)
+  val location = bottomRight + (-3, 3)
+  var interactLoc = location + (-1, 1)
   def render(shapeRenderer: ShapeRenderer) = {
-    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 3 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 2 * boxSize, 3 * boxSize)
   }
 
   var dirty = true

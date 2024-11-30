@@ -29,10 +29,7 @@ object KitchenFire extends Story {
   def setStartLocations(): Unit = {
     people
       .foreach(
-        _.setDestination(
-          bottomLeft._1 + 8 * boxSize,
-          bottomLeft._2 + 4 * boxSize
-        )
+        _.setDestination(Stove.interactLoc)
       )
   }
   def progress(tick: Int): Boolean = {
@@ -70,7 +67,7 @@ object Snowcrash extends Story {
   def setStartLocations(): Unit = {
     actors
       .asInstanceOf[HashSet[Person]]
-      .foreach(_.setDestination(FrontDoor.location))
+      .foreach(_.setDestination(FrontDoor.interactLoc))
   }
 
   def progress(tick: Int): Boolean = {

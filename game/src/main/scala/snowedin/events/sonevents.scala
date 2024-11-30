@@ -115,7 +115,7 @@ object Woodworking extends Story with Pausable with Delay {
     Son.room = Workroom
   }
   def setStartLocations(): Unit =
-    Son.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 3 * boxSize)
+    Son.setDestination(Worktable.interactLoc)
 
   def storySpecificEnding(tick: Int): Unit = {
     Son.tools.remove(Knife)
@@ -210,7 +210,7 @@ object Snack extends Story with Occupy with Delay {
     reachedSeating = false
   }
   def setStartLocations(): Unit =
-    Son.setDestination(bottomLeft._1 + 4 * boxSize, bottomLeft._2 + 3 * boxSize)
+    Son.setDestination(Fridge.interactLoc)
   def storySpecificEnding(tick: Int): Unit = {
     setEndTime(tick)
     reachedFridge = false
@@ -297,10 +297,7 @@ object StartDishwasher extends Story {
     commonState = startState.copy()
     active = false
   }
-  def setStartLocations(): Unit = Son.setDestination(
-    bottomRight._1 - 4 * boxSize,
-    bottomRight._2 + 4 * boxSize
-  )
+  def setStartLocations(): Unit = Son.setDestination(Dishwasher.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {

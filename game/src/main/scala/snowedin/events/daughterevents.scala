@@ -104,7 +104,7 @@ object Watercolor extends Story with Occupy with Delay {
     importance = Importance.Base
   }
 
-  def setStartLocations(): Unit = Daughter.setDestination(Easle.location)
+  def setStartLocations(): Unit = Daughter.setDestination(Easle.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
@@ -135,7 +135,7 @@ object StartFire extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
-  def setStartLocations(): Unit = Daughter.setDestination(Fireplace.location)
+  def setStartLocations(): Unit = Daughter.setDestination(Fireplace.interactLoc)
   def progress(tick: Int): Boolean = {
     if (!arrived) {
       arrived = Daughter.walk()
@@ -169,10 +169,8 @@ object UnloadDishwasher extends Story with Pausable {
       )
   )
   var importance: Base.Importance.Importance = Importance.Event
-  def setStartLocations(): Unit = Daughter.setDestination(
-    bottomRight._1 - 4 * boxSize,
-    bottomRight._2 + 4 * boxSize
-  )
+  def setStartLocations(): Unit =
+    Daughter.setDestination(Dishwasher.interactLoc)
 
   def progress(tick: Int): Boolean = {
     proceed()

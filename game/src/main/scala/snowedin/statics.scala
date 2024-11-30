@@ -6,15 +6,17 @@ import SnowedInPositionConstants.*
 import Snowedin.GlobalVars.bedLoc
 
 object House extends Static {
-  val location = HouseBase
+  val location = bottomLeft
+  var interactLoc = location
   def render(shapeRenderer: ShapeRenderer): Unit = {
+
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     shapeRenderer.rect(
-      location._1,
-      location._2,
+      rloc()._1,
+      rloc()._2,
       HouseWidth,
       HouseHeight
     )
@@ -22,22 +24,26 @@ object House extends Static {
 }
 
 object Counter extends Static {
-  val location = (houseX + 5 * boxSize, houseY)
+  val location = bottomLeft + (5, 0)
+  var interactLoc = location
   def render(shapeRenderer: ShapeRenderer): Unit = {
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
+    val br = bottomRight.toRealLocation()
+    val loc = location.toRealLocation()
+
     val vertices = Array(
-      location._1,
-      location._2,
-      bottomRight._1,
-      bottomRight._2,
-      bottomRight._1,
-      bottomRight._2 + 7 * boxSize,
-      bottomRight._1 - 3 * boxSize,
-      bottomRight._2 + 7 * boxSize,
-      bottomRight._1 - 3 * boxSize,
-      bottomRight._2 + 3 * boxSize,
+      loc._1,
+      loc._2,
+      br._1,
+      br._2,
+      br._1,
+      br._2 + 7 * boxSize,
+      br._1 - 3 * boxSize,
+      br._2 + 7 * boxSize,
+      br._1 - 3 * boxSize,
+      br._2 + 3 * boxSize,
       houseX + 5 * boxSize,
       houseY + 3 * boxSize
     )
@@ -46,16 +52,18 @@ object Counter extends Static {
 }
 
 object CoffeeTable extends Static {
-  val location =
-    (topLeft._1 + 2 * boxSize, topLeft._2 - 8 * boxSize)
+  val location = (topLeft + (2, -8))
+  var interactLoc = location
   def render(shapeRenderer: ShapeRenderer): Unit = {
+    val loc = location.toRealLocation()
+
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     shapeRenderer.rect(
-      location._1,
-      location._2,
+      loc._1,
+      loc._2,
       1 * boxSize,
       3 * boxSize
     )
@@ -63,16 +71,18 @@ object CoffeeTable extends Static {
 }
 
 object LivingRoomTable extends Static {
-  val location =
-    (topLeft._1 + 4 * boxSize, topLeft._2 - 11 * boxSize)
+  val location = (topLeft + (4, -11))
+  var interactLoc = location
   def render(shapeRenderer: ShapeRenderer): Unit = {
+    val loc = location.toRealLocation()
+
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
     shapeRenderer.rect(
-      location._1,
-      location._2,
+      loc._1,
+      loc._2,
       2 * boxSize,
       2 * boxSize
     )
@@ -80,59 +90,71 @@ object LivingRoomTable extends Static {
 }
 
 object WorkroomWall extends Static {
-  val location = (bottomRight._1, bottomRight._2 + 11 * boxSize)
+  val location = bottomRight + (0, 11)
+  var interactLoc = location
+  val BR = bottomRight.toRealLocation()
   def render(shapeRenderer: ShapeRenderer): Unit = {
+    val loc = location.toRealLocation()
+    val BR = bottomRight.toRealLocation()
+
     // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
 
     val vertices = Array(
-      location._1,
-      location._2,
-      bottomRight._1 - 5 * boxSize,
-      location._2,
-      bottomRight._1 - 5 * boxSize,
-      location._2 + 3 * boxSize
+      loc._1,
+      loc._2,
+      BR._1 - 5 * boxSize,
+      loc._2,
+      BR._1 - 5 * boxSize,
+      loc._2 + 3 * boxSize
     )
     shapeRenderer.polyline(vertices)
   }
 }
 
 object FrontDoor extends Static {
-  val location = (topRight._1 - 8 * boxSize, topRight._2 - 0.5f * boxSize)
+  val location = topRight - (8f, 0.5f)
+  var interactLoc = location + (0.5f, 0f)
   def render(shapeRenderer: ShapeRenderer): Unit = {
-    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 0.5f * boxSize)
+    val loc = location.toRealLocation()
+    shapeRenderer.rect(loc._1, loc._2, 2 * boxSize, 0.5f * boxSize)
   }
 }
 
 object BedroomDoor extends Static {
-  val location = (bedLoc._1 + 1, bedLoc._2 - 1 * boxSize)
+  val location = bedLoc + (1, -1)
+  var interactLoc = location + (0, 1)
   def render(shapeRenderer: ShapeRenderer): Unit = {
-    shapeRenderer.rect(location._1, location._2, 0.5f * boxSize, 2 * boxSize)
+    val loc = location.toRealLocation()
+    shapeRenderer.rect(loc._1, loc._2, 0.5f * boxSize, 2 * boxSize)
   }
 }
 
 object Fireplace extends Static {
-  val location = (topLeft._1, topLeft._2 - 8 * boxSize)
+  val location = topLeft - (0, 8)
+  var interactLoc = location + (0.5f, 1f)
   def render(shapeRenderer: ShapeRenderer): Unit = {
-    shapeRenderer.rect(location._1, location._2, 0.5f * boxSize, 3 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 0.5f * boxSize, 3 * boxSize)
   }
 }
 
 object Fridge extends Static {
-  val location = (bottomLeft._1 + 3 * boxSize, bottomLeft._2)
+  val location = bottomLeft + (3, 0)
+  var interactLoc = location + (0, 4)
   def render(shapeRenderer: ShapeRenderer): Unit = {
-    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 3 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 2 * boxSize, 3 * boxSize)
   }
 }
 
 object WashingMachine extends Static {
-  val location = (topRight._1 - 4 * boxSize, topRight._2 - 11 * boxSize)
+  val location = topRight - (4, 11)
+  var interactLoc = location + (2, 2)
   def render(shapeRenderer: ShapeRenderer): Unit = {
-    shapeRenderer.rect(location._1, location._2, 2 * boxSize, 2 * boxSize)
+    shapeRenderer.rect(rloc()._1, rloc()._2, 2 * boxSize, 2 * boxSize)
 
     shapeRenderer.rect(
-      location._1 + 2 * boxSize,
-      location._2,
+      rloc()._1 + 2 * boxSize,
+      rloc()._2,
       2 * boxSize,
       2 * boxSize
     )

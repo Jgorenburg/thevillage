@@ -17,12 +17,12 @@ trait PositionConstants {
   val size: Float
   val boxSize: Float
 
-  val horizBoxes: Int
-  val vertBoxes: Int
+  val HorizBoxes: Int
+  val VertBoxes: Int
 
   def boxInBounds(loc: (Int, Int)): Boolean = {
     if (loc._1 < 0 || loc._2 < 0) return false
-    else if (loc._1 >= horizBoxes) return false
-    else return loc._2 < vertBoxes
+    else if (loc._1 >= HorizBoxes) return false
+    else return loc._2 < VertBoxes
   }
 }

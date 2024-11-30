@@ -30,7 +30,7 @@ object Laundry extends Story {
 
   var importance: Importance.Importance = Importance.Event
   def setStartLocations(): Unit =
-    Father.setDestination(topRight._1 - 3 * boxSize, topRight._2 - 9 * boxSize)
+    Father.setDestination(WashingMachine.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
@@ -105,7 +105,7 @@ object FixDoor extends Story {
   var commonState = startState.copy()
 
   var importance: Importance.Importance = Importance.Event
-  def setStartLocations(): Unit = Father.setDestination(FrontDoor.location)
+  def setStartLocations(): Unit = Father.setDestination(FrontDoor.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
@@ -146,7 +146,7 @@ object Construction extends Story with Delay {
     Father.room = Workroom
   }
   def setStartLocations(): Unit =
-    Father.setDestination(topRight._1 - 3 * boxSize, topLeft._2 - 4 * boxSize)
+    Father.setDestination(Worktable.interactLoc)
 
   def progress(tick: Int): Boolean = {
     if (!arrived) {
