@@ -1,0 +1,162 @@
+Left -> Right, Bottom -> Top
+
+***This may be inaccurate, will need to do again***
+
+Can Move Down
+
+Take 2
+
+00000000000000000
+11100000000000000
+11100000000000000
+01100000000000000
+01111111111111000
+01111100000011000
+11111100000011000
+11111100000011000
+11111100000011111
+11111100000011111
+11111111111111111
+11110011111100000
+11110011111110000
+11110011111110000
+01010011111111111
+01010011111111111
+01010011111111111
+01010011111111100
+11111111111111100
+10101111111111100
+10001111111111100
+11111111111111100
+00000000000000000
+
+Array(
+    Array(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false),
+    Array(false, true, true, true, true, true, false, false, false, false, false, false, true, true, false, false, false),
+    Array(true, true, true, true, true, true, false, false, false, false, false, false, true, true, false, false, false),
+    Array(true, true, true, true, true, true, false, false, false, false, false, false, true, true, false, false, false),
+    Array(true, true, true, true, true, true, false, false, false, false, false, false, true, true, true, true, true),
+    Array(true, true, true, true, true, true, false, false, false, false, false, false, true, true, true, true, true),
+    Array(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true),
+    Array(true, true, true, true, false, false, true, true, true, true, true, true, false, false, false, false, false),
+    Array(true, true, true, true, false, false, true, true, true, true, true, true, true, false, false, false, false),
+    Array(true, true, true, true, false, false, true, true, true, true, true, true, true, false, false, false, false),
+    Array(false, true, false, true, false, false, true, true, true, true, true, true, true, true, true, true, true),
+    Array(false, true, false, true, false, false, true, true, true, true, true, true, true, true, true, true, true),
+    Array(false, true, false, true, false, false, true, true, true, true, true, true, true, true, true, true, true),
+    Array(false, true, false, true, false, false, true, true, true, true, true, true, true, true, true, false, false),
+    Array(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false),
+    Array(true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, false, false),
+    Array(true, false, false, false, true, true, true, true, true, true, true, true, true, true, true, false, false),
+    Array(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false),
+    Array(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)
+)
+
+Take 1
+
+00000000000000000
+11100000000000000
+11100000000000000
+01100000000000000
+01111100000011000
+01111100000011000 false,true,true,true,true,true,false,false,false,false,false,false,true,true,false,false,false
+11111100000011000 true,true,true,true,true,true,false,false,false,false,false,false,true,true,false,false,false
+11111100000011000 true,true,true,true,true,true,false,false,false,false,false,false,true,true,false,false,false
+11111100000011111 true,true,true,true,true,true,false,false,false,false,false,false,true,true,true,true,true
+11111100000011111 true,true,true,true,true,true,false,false,false,false,false,false,true,true,true,true,true
+11111111111111111 true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true
+11110011111100000 true,true,true,true,false, false, true,true,true,true,true,true,false,false,false,false,false
+11110011111110000 true,true,true,true,false, false, true,true,true,true,true,true,true,false,false,false,false
+11110011111110000 true,true,true,true,false, false, true,true,true,true,true,true,true,false,false,false,false
+11110011111111111 true,true,true,true,false, false, true,true,true,true,true,true,true,true,true,true,true
+01010011111111111 false,true,false,true,false,false,true,true,true,true,true,true,true,true,true,true,true
+01010011111111111 false,true,false,true,false,false,true,true,true,true,true,true,true,true,true,true,true
+01010011111111111 false,true,false,true,false,false,true,true,true,true,true,true,true,true,true,true,true
+11110011111111100 true,true,true,true,false,false,true,true,true,true,true,true,true,true,true,false,false
+10001111111111100 true,false,false,false,true,true,true,true,true,true,true,true,true,true,true,false,false
+10001111111111100 true,false,false,false,true,true,true,true,true,true,true,true,true,true,true,false,false
+11111011111111100 true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,false,false
+00000000000000000 false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+
+
+Can Move Left
+
+
+Take 2
+
+011000000000000000
+011000000000000000
+011000000000000000
+011111111111110000
+011111111111110000
+011111000000010000
+011111000000010000
+011111000000011110
+011111000000011110
+011111111111111110
+011111111111111110
+011100011111000000
+011100011111000000
+011100011111011110
+010010011111111110
+010010011111111110
+010010011111111110
+011100011111111000
+010001111111111000
+010001111111111000
+011111001111111000
+011111111000111110
+
+Array(
+    Array(false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false),
+    Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false),
+    Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false),
+    Array(false, true, true, true, true, true, false, false, false, false, false, false, false, true, false, false, false, false),
+    Array(false, true, true, true, true, true, false, false, false, false, false, false, false, true, false, false, false, false),
+    Array(false, true, true, true, true, true, false, false, false, false, false, false, false, true, true, true, true, false),
+    Array(false, true, true, true, true, true, false, false, false, false, false, false, false, true, true, true, true, false),
+    Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false),
+    Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false),
+    Array(false, true, true, true, false, false, false, true, true, true, true, true, false, false, false, false, false, false),
+    Array(false, true, true, true, false, false, false, true, true, true, true, true, false, false, false, false, false, false),
+    Array(false, true, true, true, false, false, false, true, true, true, true, true, false, true, true, true, true, false),
+    Array(false, true, false, false, true, false, false, true, true, true, true, true, true, true, true, true, true, false),
+    Array(false, true, false, false, true, false, false, true, true, true, true, true, true, true, true, true, true, false),
+    Array(false, true, false, false, true, false, false, true, true, true, true, true, true, true, true, true, true, false),
+    Array(false, true, true, true, false, false, false, true, true, true, true, true, true, true, true, false, false, false),
+    Array(false, true, false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false),
+    Array(false, true, false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false),
+    Array(false, true, true, true, true, true, false, false, true, true, true, true, true, true, true, false, false, false),
+    Array(false, true, true, true, true, true, true, true, true, false, false, false, true, true, true, true, true, false)
+)
+ 
+
+Take 1
+
+011000000000000000
+011000000000000000
+011000000000000000
+011111111111110000
+011111111111110000
+011111000000010000
+011111000000010000
+011111000000011110
+011111000000011110
+011111111111111110
+011111111111111110
+011100011111000000
+011100011111000000
+011100011111011110
+010010011111111110
+010010011111111110
+010010011111111110
+000001111111111000
+000001111111111000
+011111001111111000
+011111111000111110

@@ -22,7 +22,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.graphics.Color
 import Base.Person
+import Base.GameMap
 import Base.BoxCoords
+import Base.AStar
+import Base.Position
+import Base.Direction.*
 
 object ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
@@ -94,6 +98,7 @@ object ControlRoom {
       wakeupTimes: List[Int] = List.fill(characters.length)(0),
       bedTimes: List[Int] = List.fill(characters.length)(0)
   ) = {
+
     GlobalVars.secsPerTick = secsPerTick
     endTick = gameLen
     isLogging = logging
@@ -103,7 +108,14 @@ object ControlRoom {
     bedTimes
       .zip(characters)
       .foreach((time, person) => person.bedTime = gameLen - time)
-    GameManager.setup(gameLen, updaters, stories, characters, objects)
+    GameManager.setup(
+      gameLen,
+      updaters,
+      stories,
+      characters,
+      objects,
+      SnowedInPositionConstants
+    )
     if (logging) {
       MyLogger.setFile(loggerFile)
       MyLogger.printHeader(GameManager.characters ::: GameManager.objects)
@@ -115,7 +127,14 @@ object ControlRoom {
       logging: Boolean = false,
       loggerFile: String = "unnamed"
   ) = {
-    GameManager.setup(gameLen, updaters, stories, characters, objects)
+    GameManager.setup(
+      gameLen,
+      updaters,
+      stories,
+      characters,
+      objects,
+      SnowedInPositionConstants
+    )
     if (logging) {
       MyLogger.setFile(loggerFile)
       MyLogger.printHeader(GameManager.characters ::: GameManager.objects)
@@ -155,8 +174,6 @@ class SnowedIn extends ApplicationAdapter {
       List(60, 120, 1800, 4000),
       List(40000, 30000, 30000, 2)
     )
-    // CleanTable.beginStory(0)
-    // Cleaning.beginStory(0)
   }
 
   override def render(): Unit = {
@@ -176,46 +193,49 @@ class SnowedIn extends ApplicationAdapter {
     // Begin shape rendering
     shapeRenderer.begin(ShapeType.Line)
 
-    // temp grid for object placement
-    shapeRenderer.setColor(.7f, .7f, .7f, 1)
-    val TR = topRight.toRealLocation()
-    (BigDecimal(houseX) to BigDecimal(TR._1) by BigDecimal(boxSize))
-      .foreach(x =>
-        shapeRenderer.line(
-          x.toFloat,
-          houseY,
-          x.toFloat,
-          houseY + VertBoxes * boxSize
+    // Toggle to show grid
+    if (false) {
+      // temp grid for object placement
+      shapeRenderer.setColor(.7f, .7f, .7f, 1)
+      val TR = topRight.toRealLocation()
+      (BigDecimal(houseX) to BigDecimal(TR._1) by BigDecimal(boxSize))
+        .foreach(x =>
+          shapeRenderer.line(
+            x.toFloat,
+            houseY,
+            x.toFloat,
+            houseY + VertBoxes * boxSize
+          )
         )
-      )
-    (BigDecimal(houseY) to BigDecimal(TR._2) by BigDecimal(boxSize))
-      .foreach(y =>
-        shapeRenderer.line(
-          houseX,
-          y.toFloat,
-          houseX + HorizBoxes * boxSize,
-          y.toFloat
+      (BigDecimal(houseY) to BigDecimal(TR._2) by BigDecimal(boxSize))
+        .foreach(y =>
+          shapeRenderer.line(
+            houseX,
+            y.toFloat,
+            houseX + HorizBoxes * boxSize,
+            y.toFloat
+          )
         )
-      )
-    shapeRenderer.setColor(1, 0, 0, .5f)
-    (BigDecimal(houseX) to BigDecimal(TR._1) by BigDecimal(5 * boxSize))
-      .foreach(x =>
-        shapeRenderer.line(
-          x.toFloat,
-          houseY,
-          x.toFloat,
-          houseY + VertBoxes * boxSize
+      shapeRenderer.setColor(1, 0, 0, .5f)
+      (BigDecimal(houseX) to BigDecimal(TR._1) by BigDecimal(5 * boxSize))
+        .foreach(x =>
+          shapeRenderer.line(
+            x.toFloat,
+            houseY,
+            x.toFloat,
+            houseY + VertBoxes * boxSize
+          )
         )
-      )
-    (BigDecimal(houseY) to BigDecimal(TR._2) by BigDecimal(5 * boxSize))
-      .foreach(y =>
-        shapeRenderer.line(
-          houseX,
-          y.toFloat,
-          houseX + HorizBoxes * boxSize,
-          y.toFloat
+      (BigDecimal(houseY) to BigDecimal(TR._2) by BigDecimal(5 * boxSize))
+        .foreach(y =>
+          shapeRenderer.line(
+            houseX,
+            y.toFloat,
+            houseX + HorizBoxes * boxSize,
+            y.toFloat
+          )
         )
-      )
+    }
     shapeRenderer.setColor(0, 0, 0, 1)
 
     statics.foreach(_.render(shapeRenderer))

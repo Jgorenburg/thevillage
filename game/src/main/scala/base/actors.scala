@@ -1,8 +1,6 @@
 package Base
 
 import Base.Importance.shouldInterrupt
-import Snowedin.Couch.maxCapacity
-import Snowedin.Couch.curCapacity
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
@@ -12,8 +10,11 @@ import Snowedin.GlobalVars
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Color
+import Base.BoxCoords.boxSize
 import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Location.Bedroom
+import Snowedin.ControlRoom
+import Snowedin.GlobalVars.bedLoc
 
 case class curStory(
     var curStory: Story,
@@ -162,50 +163,90 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 
 }
 
-trait Person extends Actor {
+trait Movement {
+
+  var location = bedLoc
+  var destination: BoxCoords = location
+  var speed: Float = GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
+
+  def move(dir: Direction.Dir, percent: Float) = {
+    val mpercent = math.min(percent, 1f)
+    dir match
+      case Direction.Left  => moveLeft(mpercent)
+      case Direction.Right => moveRight(mpercent)
+      case Direction.Down  => moveDown(mpercent)
+      case Direction.Up    => moveUp(mpercent)
+  }
+  def moveLeft(percent: Float): Unit = location =
+    (location._1 - percent, location._2)
+  def moveRight(percent: Float): Unit = location =
+    (location._1 + percent, location._2)
+  def moveDown(percent: Float): Unit = location =
+    (location._1, location._2 - percent)
+  def moveUp(percent: Float): Unit = location =
+    (location._1, location._2 + percent)
+
+  var movementStack: List[Direction.Dir] = List()
+  var stepPercent: Float = 0
+}
+
+trait Person extends Actor with Movement {
   var wakeTime: Double = 0
   var bedTime = GameManager.ending
   def timeForBed(): Boolean = {
     return GameManager.tick >= bedTime
   }
-  var location = topRight - BoxCoords(8, 8)
   var interactLoc = location
-  var destination: BoxCoords = location
-  var speed: Float = GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
   var traveling: Boolean = false
 
-  // returns true if person has reached their destination
   def walk(): Boolean = {
-    if (!traveling) return true
-    val dx = destination._1 - location._1
-    val dy = destination._2 - location._2
-    val total_distance = math.sqrt((math.pow(dx, 2) + math.pow(dy, 2)))
-
-    if (total_distance < speed) {
-      location = destination
-      traveling = false
-
-    } else {
-      val norm = speed / total_distance
-      val x = location._1 + (dx * norm)
-      val y = location._2 + (dy * norm)
-      location = (x.toFloat, y.toFloat)
-      traveling = true
+    var stepSpeed = speed
+    while (stepSpeed > 0) {
+      if (movementStack.isEmpty) {
+        location = destination
+        return true
+      }
+      val step = movementStack.head
+      var moveSpeed = math.min(stepSpeed, 1f - stepPercent)
+      move(step, moveSpeed)
+      stepPercent += moveSpeed
+      if (stepPercent >= 1) {
+        movementStack = movementStack.drop(1)
+        stepPercent = 0f
+      }
+      stepSpeed -= moveSpeed
     }
-    return !traveling
+
+    return false
   }
-  def setDestination(x: Float, y: Float): Unit = {
-    traveling = true
-    // Squares draw from bottom left but circles from the center,
-    // the 0.5 fixes the disconnect
-    destination = (x + 0.5f, y + 0.5f)
+
+  def adjustForStart(): Unit = {
+    location = (location.x.toInt, location.y.toInt)
+    stepPercent = 0
   }
-  def setDestination(pos: (Float, Float)): Unit = {
-    setDestination(pos._1, pos._2)
+
+  def makePathFromLocToDest(): Unit = {
+    movementStack = makePath(location, destination)
+    adjustForStart()
   }
-  def setDestinationNoAdjust(pos: (Float, Float)): Unit = {
-    traveling = true
+
+  def makePath(
+      start: BoxCoords,
+      end: BoxCoords
+  ): List[Direction.Dir] = {
+    GameManager.pathfinder.makePath(location, destination)
+  }
+
+  def setDestination(pos: BoxCoords): Unit = {
     destination = pos
+    makePathFromLocToDest()
+
+  }
+
+  // TODO: Is this still possible?
+  // Current - just apes setDestination
+  def setDestinationNoAdjust(pos: BoxCoords): Unit = {
+    setDestination(pos)
   }
   def setSpeed(newSpeed: Float) = speed = newSpeed
 
@@ -214,7 +255,13 @@ trait Person extends Actor {
   def render(shapeRenderer: ShapeRenderer) = {
     if (room == Bedroom) return
     shapeRenderer.setColor(color)
-    shapeRenderer.circle(rloc()._1, rloc()._2, boxSize / 2)
+    // Squares draw from bottom left but circles from the center,
+    // the 0.5 fixes the disconnect
+    shapeRenderer.circle(
+      rloc()._1 + 0.5f * boxSize,
+      rloc()._2 + 0.5f * boxSize,
+      boxSize / 2
+    )
     shapeRenderer.setColor(0, 0, 0, 1)
   }
 

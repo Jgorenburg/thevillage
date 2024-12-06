@@ -25,5 +25,6 @@ object DesktopLauncher extends App {
   config.setForegroundFPS(120)
 
 //   config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode())
+
   new Lwjgl3Application(new SnowedIn, config)
 }

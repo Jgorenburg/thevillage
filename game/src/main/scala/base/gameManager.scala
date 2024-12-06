@@ -2,6 +2,8 @@ package Base
 
 import MyLogger.MyLogger
 import Snowedin.GlobalVars
+import scala.compiletime.uninitialized
+import Snowedin.SnowedInPositionConstants.HorizBoxes
 
 trait Updater {
   def tick(): Unit
@@ -15,21 +17,27 @@ object GameManager {
   var characters: List[Actor] = List()
   var objects: List[Actor] = List()
 
+  var pathfinder: AStar = uninitialized
+
   var tick: Int = 0
   var ending: Int = 0
+  // var pathfinder: Pathfinder = uninitialized
 
   def setup(
       endTick: Int,
       ups: List[Updater],
       stors: List[Story],
       chars: List[Actor],
-      objs: List[Actor]
+      objs: List[Actor],
+      constants: PositionConstants
   ) = {
+
     ending = endTick
     updaters = ups
     stories = stors
     characters = chars
     objects = objs
+    pathfinder = AStar(constants.HorizBoxes, constants.VertBoxes, stage)
   }
 
   def runGame(endTick: Int, logging: Boolean = false): Unit = {

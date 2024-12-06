@@ -16,7 +16,7 @@ object Daughter extends Person {
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
-  val color = Color.GREEN
+  val color = Color.ORANGE
 
   def actorSpecificBeginning(tick: Int): Unit = {}
   def actorSpecificEnding(tick: Int): Unit = {}

@@ -12,7 +12,7 @@ import Base.BoxCoords
 object GlobalVars {
   var brokenDoor: Boolean = true
   var secsPerTick = 2
-  val bedLoc: BoxCoords = bottomLeft + (-1, 4)
+  val bedLoc: BoxCoords = bottomLeft + (0, 3)
 }
 
 object Tools extends Enumeration {

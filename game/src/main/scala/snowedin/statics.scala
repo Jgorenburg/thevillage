@@ -122,7 +122,7 @@ object FrontDoor extends Static {
 }
 
 object BedroomDoor extends Static {
-  val location = bedLoc + (1, -1)
+  val location = bedLoc
   var interactLoc = location + (0, 1)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     val loc = location.toRealLocation()
@@ -148,7 +148,7 @@ object Fridge extends Static {
 
 object WashingMachine extends Static {
   val location = topRight - (4, 11)
-  var interactLoc = location + (2, 2)
+  var interactLoc = location + (1, 2)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.rect(rloc()._1, rloc()._2, 2 * boxSize, 2 * boxSize)
 

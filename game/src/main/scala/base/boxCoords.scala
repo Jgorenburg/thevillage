@@ -51,10 +51,10 @@ object BoxCoords {
   implicit def tupleFloatToPos(pos: (Float, Float)): BoxCoords =
     new BoxCoords(pos._1, pos._2)
 
-  var horizMax = 1e200 * 1e200
-  var vertMax = 1e200 * 1e200
-  var housePos = (0f, 0f)
-  var boxSize = 1f
+  var horizMax: Int = (1e200 * 1e200).toInt
+  var vertMax: Int = (1e200 * 1e200).toInt
+  var housePos: (Float, Float) = (0f, 0f)
+  var boxSize: Float = 1f
 
   def setup(
       house: (Float, Float),
@@ -73,4 +73,10 @@ object BoxCoords {
       BoxCoords.housePos._1 + (pos.x * BoxCoords.boxSize),
       BoxCoords.housePos._2 + (pos.y * BoxCoords.boxSize)
     )
+
+  def boxInBounds(loc: BoxCoords): Boolean = {
+    if (loc._1 < 0 || loc._2 < 0) return false
+    else if (loc._1 >= horizMax) return false
+    else return loc._2 < vertMax
+  }
 }
