@@ -7,12 +7,11 @@ import Snowedin.SnowedInPositionConstants.bottomLeft
 import Snowedin.SnowedInPositionConstants.boxSize
 import Base.PositionConstants
 import Base.BoxCoords
+import Base.Globals
 
 // global vars
 object GlobalVars {
   var brokenDoor: Boolean = true
-  var secsPerTick = 2
-  val bedLoc: BoxCoords = bottomLeft + (0, 3)
 }
 
 object Tools extends Enumeration {

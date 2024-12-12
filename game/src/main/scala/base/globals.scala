@@ -2,6 +2,11 @@ package Base
 
 import com.badlogic.gdx.Gdx
 
+object Globals {
+  var secsPerTick = 1
+  var bedloc: BoxCoords = (0, 0)
+}
+
 object Direction extends Enumeration {
   type Dir = Value
   val Left, Right, Down, Up = Value

@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import Snowedin.SnowedIn
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import Snowedin.ControlRoom
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 
 object DesktopLauncher extends App {

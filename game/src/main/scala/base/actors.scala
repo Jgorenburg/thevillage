@@ -6,15 +6,12 @@ import scala.collection.mutable.LinkedHashMap
 import Snowedin.Location
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.Game
-import Snowedin.GlobalVars
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Color
 import Base.BoxCoords.boxSize
-import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Location.Bedroom
-import Snowedin.ControlRoom
-import Snowedin.GlobalVars.bedLoc
+import Base.ControlRoom
 
 case class curStory(
     var curStory: Story,
@@ -165,9 +162,11 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 
 trait Movement {
 
-  var location = bedLoc
+  var location: BoxCoords = Globals.bedloc
   var destination: BoxCoords = location
-  var speed: Float = GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
+  lazy val speed: Float =
+    println(Globals.secsPerTick)
+    Globals.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
 
   def move(dir: Direction.Dir, percent: Float) = {
     val mpercent = math.min(percent, 1f)
@@ -248,7 +247,6 @@ trait Person extends Actor with Movement {
   def setDestinationNoAdjust(pos: BoxCoords): Unit = {
     setDestination(pos)
   }
-  def setSpeed(newSpeed: Float) = speed = newSpeed
 
   val color: Color
 

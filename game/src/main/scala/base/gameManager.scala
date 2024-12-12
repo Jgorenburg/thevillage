@@ -48,7 +48,7 @@ object GameManager {
   }
 
   def step(logging: Boolean = false): Int = {
-    tick += GlobalVars.secsPerTick
+    tick += Globals.secsPerTick
     updaters.foreach(_.tick())
     if (logging) { log() }
     return tick

@@ -3,7 +3,7 @@ package Snowedin
 import Base.Static
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import SnowedInPositionConstants.*
-import Snowedin.GlobalVars.bedLoc
+import Base.Globals.bedloc
 
 object House extends Static {
   val location = bottomLeft
@@ -122,7 +122,7 @@ object FrontDoor extends Static {
 }
 
 object BedroomDoor extends Static {
-  val location = bedLoc
+  val location = bedloc
   var interactLoc = location + (0, 1)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     val loc = location.toRealLocation()

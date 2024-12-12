@@ -11,7 +11,7 @@ import Base.Occupy
 import Snowedin.Location.DiningRoom
 import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Location.Bedroom
-import Snowedin.GlobalVars.bedLoc
+import Base.Globals.bedloc
 
 object Breakfast extends Story {
   var active: Boolean = false
@@ -105,7 +105,7 @@ object WakingUp extends Story {
     arrived = true
     sleepers.foreach(person => StoryRunner.addStory(new IndivSleep(person)))
     sleepers.foreach(_.room = Bedroom)
-    sleepers.foreach(_.location = bedLoc)
+    sleepers.foreach(_.location = bedloc)
   }
   def storySpecificEnding(tick: Int): Unit = {}
   def storySpecificInterrupt(tick: Int): Unit = {}
@@ -146,7 +146,7 @@ class IndivSleep(sleeper: Person) extends Story {
   def reset(): Unit = {}
   val startState: Base.StoryCommonState = (false, -1, false, -1)
   var commonState: StoryCommonState = startState.copy()
-  def setStartLocations(): Unit = { sleeper.setDestination(bedLoc) }
+  def setStartLocations(): Unit = { sleeper.setDestination(bedloc) }
 
   def progress(tick: Int): Boolean = {
     if (!arrived) arrived = sleeper.walk()
@@ -155,7 +155,7 @@ class IndivSleep(sleeper: Person) extends Story {
   }
   def storySpecificBeginning(tick: Int): Unit = {}
   def storySpecificEnding(tick: Int): Unit = {
-    sleeper.location = bedLoc
+    sleeper.location = bedloc
     sleeper.wakeTime = Double.PositiveInfinity
   }
   def storySpecificInterrupt(tick: Int): Unit = {}

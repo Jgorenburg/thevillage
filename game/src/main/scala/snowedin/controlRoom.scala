@@ -13,7 +13,7 @@ import com.badlogic.gdx.{ApplicationAdapter, Gdx}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import Snowedin.ControlRoom.{statics, objects, characters, stories}
+import Snowedin.SnowedInControls.{statics, objects, characters, stories}
 import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -27,9 +27,10 @@ import Base.BoxCoords
 import Base.AStar
 import Base.Position
 import Base.Direction.*
+import Base.ControlRoom
+import Base.Globals
 
-object ControlRoom {
-  val updaters: List[Updater] = List(StoryRunner)
+object SnowedInControls extends ControlRoom {
   val stories: List[Story] =
     List(
       GoToBed,
@@ -86,9 +87,6 @@ object ControlRoom {
       Fridge
     )
 
-  var endTick = 0
-  var isLogging = false
-
   def setup(
       gameLen: Int = 720,
       logging: Boolean = false,
@@ -99,7 +97,8 @@ object ControlRoom {
       bedTimes: List[Int] = List.fill(characters.length)(0)
   ) = {
 
-    GlobalVars.secsPerTick = secsPerTick
+    Globals.secsPerTick = secsPerTick
+    Globals.bedloc = bottomLeft + (0, 3)
     endTick = gameLen
     isLogging = logging
     wakeupTimes
@@ -169,16 +168,17 @@ class SnowedIn extends ApplicationAdapter {
     camera.setToOrtho(false)
     BoxCoords.setup(HouseBase, boxSize, HorizBoxes, VertBoxes)
 
-    ControlRoom.setup(43200, true, "full")(
-      4,
+    SnowedInControls.setup(43200, true, "full")(
+      2,
       List(60, 120, 1800, 4000),
       List(40000, 30000, 30000, 2)
     )
   }
 
   override def render(): Unit = {
-    if (tick < ControlRoom.endTick) {
-      tick = GameManager.step(ControlRoom.isLogging)
+    println(Father.speed)
+    if (tick < SnowedInControls.endTick) {
+      tick = GameManager.step(SnowedInControls.isLogging)
     }
 
     // Laundry.tick(0)
