@@ -159,10 +159,10 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 
 trait Movement {
 
-  var location: BoxCoords = Globals.bedloc
+  var location: BoxCoords = GlobalVars.bedloc
   var destination: BoxCoords = location
   lazy val speed: Float =
-    Globals.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
+    GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
 
   def move(dir: Direction.Dir, percent: Float) = {
     val mpercent = math.min(percent, 1f)

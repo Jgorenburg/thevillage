@@ -3,7 +3,7 @@ package Snowedin
 import Base.Static
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import SnowedInPositionConstants.*
-import Base.Globals.bedloc
+import Base.GlobalVars.bedloc
 
 object House extends Static {
   val location = bottomLeft

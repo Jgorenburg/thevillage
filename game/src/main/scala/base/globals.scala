@@ -7,7 +7,7 @@ object Room {
   case object Bedroom extends Room
 }
 
-object Globals {
+object GlobalVars {
   var secsPerTick = 1
   var bedloc: BoxCoords = (0, 0)
 }

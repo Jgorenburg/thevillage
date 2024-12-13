@@ -8,10 +8,10 @@ import Base.StoryCommonState
 import Base.StoryRunner
 import Base.Person
 import Base.Occupy
-import Snowedin.SIRoom.*
+import SIRoom.*
 import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
-import Base.Globals.bedloc
+import Base.GlobalVars.bedloc
 
 object Breakfast extends Story {
   var active: Boolean = false

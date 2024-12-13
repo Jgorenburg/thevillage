@@ -28,7 +28,7 @@ import Base.AStar
 import Base.Position
 import Base.Direction.*
 import Base.ControlRoom
-import Base.Globals
+import Base.GlobalVars
 
 object SnowedInControls extends ControlRoom {
   val stories: List[Story] =
@@ -97,8 +97,8 @@ object SnowedInControls extends ControlRoom {
       bedTimes: List[Int] = List.fill(characters.length)(0)
   ) = {
 
-    Globals.secsPerTick = secsPerTick
-    Globals.bedloc = bottomLeft + (0, 3)
+    GlobalVars.secsPerTick = secsPerTick
+    GlobalVars.bedloc = bottomLeft + (0, 3)
     endTick = gameLen
     isLogging = logging
     wakeupTimes

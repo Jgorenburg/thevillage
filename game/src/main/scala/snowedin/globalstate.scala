@@ -7,7 +7,7 @@ import Snowedin.SnowedInPositionConstants.bottomLeft
 import Snowedin.SnowedInPositionConstants.boxSize
 import Base.PositionConstants
 import Base.BoxCoords
-import Base.Globals
+import Base.GlobalVars
 import Base.Room
 
 // global vars
