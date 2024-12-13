@@ -1,17 +1,14 @@
 package Base
 
 import Base.Importance.shouldInterrupt
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.LinkedHashMap
-import Snowedin.Location
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import scala.collection.mutable.{HashMap, LinkedHashMap}
 import com.badlogic.gdx.Game
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Color
 import Base.BoxCoords.boxSize
-import Snowedin.Location.Bedroom
-import Base.ControlRoom
+import Base.Room.Bedroom
 
 case class curStory(
     var curStory: Story,
@@ -80,7 +77,7 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
   var commonState: curStory = (Vibe, 0)
   var interrupted: curStory = commonState.copy()
 
-  var room: Location.Room = Location.Bedroom
+  var room: Room = Room.Bedroom
 
   lazy val myEvents: Array[Any]
 
@@ -144,7 +141,7 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
   def defaultReset(): Unit = {
     commonState = (Vibe, 0)
     interrupted = (Vibe, 0)
-    room = Location.Bedroom
+    room = Room.Bedroom
   }
 
   def log(): String
@@ -165,7 +162,6 @@ trait Movement {
   var location: BoxCoords = Globals.bedloc
   var destination: BoxCoords = location
   lazy val speed: Float =
-    println(Globals.secsPerTick)
     Globals.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
 
   def move(dir: Direction.Dir, percent: Float) = {

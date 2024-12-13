@@ -9,13 +9,11 @@ import Base.Occupy
 import Base.GameManager
 import Base.StoryCommonState
 import Base.Delay
-import Snowedin.Location.Workroom
-import Snowedin.Location.Room
-import Snowedin.Location.Bedroom
-import Snowedin.Location.Kitchen
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
+import Base.Room
 import Snowedin.SnowedInPositionConstants.*
 import Base.Person
-import Snowedin.Location.LivingRoom
 
 object Knit extends Story with Pausable with Delay with Occupy {
   var active: Boolean = false
@@ -240,7 +238,7 @@ object GiveScarf extends Story {
           person.getCurStoryImportance(),
           importance
         ) &&
-        Location.areClose(Son, person)
+        SIRoom.areClose(Son, person)
       ) {
         actors.add(person)
         recipient = person
@@ -252,7 +250,7 @@ object GiveScarf extends Story {
     return false
   }
   var importance: Base.Importance.Importance = Importance.Event
-  var room = Bedroom
+  var room: Room = Bedroom
   def reset(): Unit = {
     active = false
     commonState = startState.copy()

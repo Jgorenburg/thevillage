@@ -1,7 +1,6 @@
 package Base
 
-import scala.collection.mutable.Queue
-import scala.collection.mutable.HashSet
+import scala.collection.mutable.{HashSet, Queue}
 
 object StoryRunner extends Updater {
   val stories = HashSet[Story]()

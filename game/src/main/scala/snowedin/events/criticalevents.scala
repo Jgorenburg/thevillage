@@ -4,10 +4,10 @@ import Base.Story
 import scala.collection.mutable.HashSet
 import Base.Importance
 import Base.GameManager
-import Snowedin.Location.Door
 import Base.StoryCommonState
 import Base.Importance.Critical
-import Snowedin.Location.Kitchen
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
 import Base.Person
 import Snowedin.SnowedInPositionConstants.*
 
@@ -60,7 +60,7 @@ object Snowcrash extends Story {
     if (potential.length < numParticipants) {
       return false
     }
-    actors ++= Location.closest(Door, numParticipants, potential)
+    actors ++= SIRoom.closest(Door, numParticipants, potential)
     return true
   }
 

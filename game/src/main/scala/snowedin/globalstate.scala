@@ -8,6 +8,7 @@ import Snowedin.SnowedInPositionConstants.boxSize
 import Base.PositionConstants
 import Base.BoxCoords
 import Base.Globals
+import Base.Room
 
 // global vars
 object GlobalVars {
@@ -19,9 +20,25 @@ object Tools extends Enumeration {
   val Screwdriver, Tambourine, Knife = Value
 }
 
-object Location extends Enumeration {
-  type Room = Value
-  val Bedroom, Workroom, LivingRoom, Kitchen, DiningRoom, Door = Value
+object SIRoom {
+  import Room.Bedroom
+
+  case object Workroom extends Room
+  case object LivingRoom extends Room
+  case object Kitchen extends Room
+  case object DiningRoom extends Room
+  case object Door extends Room
+
+  val allRooms = List(Bedroom, Workroom, LivingRoom, Kitchen, DiningRoom, Door)
+
+  implicit val roomOrdering: Ordering[Room] = Ordering.by {
+    case Bedroom    => 0
+    case Workroom   => 1
+    case LivingRoom => 2
+    case Kitchen    => 3
+    case DiningRoom => 4
+    case Door       => 5
+  }
 
   def areClose(l1: Room, l2: Room): Boolean = {
     if (l1 == Bedroom || l2 == Bedroom) return false
@@ -45,7 +62,8 @@ object Location extends Enumeration {
 
   def distanceFrom(actor: Actor, loc: Room): Double = {
     val rooms: (Room, Room) =
-      if (loc.id <= actor.room.id) (loc, actor.room)
+      if (allRooms.indexOf(loc) <= allRooms.indexOf(actor.room))
+        (loc, actor.room)
       else (actor.room, loc)
 
     if (!distances.contains(rooms)) {
@@ -57,7 +75,7 @@ object Location extends Enumeration {
         close = List(rooms._2)
       }
       while (!close.contains(rooms._2)) {
-        close = close.flatMap(l => values.filter(v => areClose(l, v)))
+        close = close.flatMap(l => allRooms.filter(v => areClose(l, v)))
         dist += 1
       }
       distances += rooms -> dist

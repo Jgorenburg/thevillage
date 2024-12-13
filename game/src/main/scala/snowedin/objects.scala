@@ -5,10 +5,8 @@ import Snowedin.Tools.Screwdriver
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Knife
 import Base.Occupy
-import Snowedin.Location.Kitchen
-import Snowedin.Location.LivingRoom
-import Snowedin.Location.DiningRoom
-import Snowedin.Location.Workroom
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import Base.BoxCoords

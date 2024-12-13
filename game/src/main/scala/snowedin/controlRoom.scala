@@ -160,9 +160,6 @@ class SnowedIn extends ApplicationAdapter {
     font.setColor(0, 0, 0, 1)
     font.getData.setScale(1.0f)
 
-    println(HorizBoxes)
-    println(VertBoxes)
-
     // Set up the camera
     camera = new OrthographicCamera()
     camera.setToOrtho(false)
@@ -176,7 +173,6 @@ class SnowedIn extends ApplicationAdapter {
   }
 
   override def render(): Unit = {
-    println(Father.speed)
     if (tick < SnowedInControls.endTick) {
       tick = GameManager.step(SnowedInControls.isLogging)
     }

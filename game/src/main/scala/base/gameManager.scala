@@ -1,9 +1,7 @@
 package Base
 
 import MyLogger.MyLogger
-import Snowedin.GlobalVars
 import scala.compiletime.uninitialized
-import Snowedin.SnowedInPositionConstants.HorizBoxes
 
 trait Updater {
   def tick(): Unit

@@ -10,9 +10,8 @@ import Snowedin.Tools.Screwdriver
 import Base.Pausable
 import Base.Occupy
 import Base.Delay
-import Snowedin.Location.Workroom
-import Snowedin.Location.LivingRoom
-import Snowedin.Location.Door
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
 
 // Father only

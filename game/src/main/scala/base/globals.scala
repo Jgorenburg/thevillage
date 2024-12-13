@@ -2,6 +2,11 @@ package Base
 
 import com.badlogic.gdx.Gdx
 
+trait Room
+object Room {
+  case object Bedroom extends Room
+}
+
 object Globals {
   var secsPerTick = 1
   var bedloc: BoxCoords = (0, 0)

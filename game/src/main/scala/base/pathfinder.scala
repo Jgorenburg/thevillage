@@ -74,7 +74,6 @@ class AStar(width: Int, height: Int, stage: GameMap) {
         def reconstructPath(node: Node): List[Direction.Dir] =
           (node.parent, node.moveTo) match {
             case (Some(parent), Some(move)) =>
-              println(parent.pos)
               reconstructPath(parent) :+ move
             case _ => List()
           }

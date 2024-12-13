@@ -8,9 +8,9 @@ import Base.StoryCommonState
 import Base.StoryRunner
 import Base.Person
 import Base.Occupy
-import Snowedin.Location.DiningRoom
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
-import Snowedin.Location.Bedroom
 import Base.Globals.bedloc
 
 object Breakfast extends Story {

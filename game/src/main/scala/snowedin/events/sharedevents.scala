@@ -11,10 +11,9 @@ import Base.Delay
 import Base.StoryRunner
 import Base.Actor
 import Base.StoryCommonState
-import Snowedin.Location.Kitchen
-import Snowedin.Location.LivingRoom
-import Snowedin.Location.DiningRoom
-import Snowedin.Location.Workroom
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
+import Base.Room
 import Base.Person
 import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Tools.Tambourine
@@ -29,7 +28,7 @@ object Chat extends Story with Delay {
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
-      () => Location.areClose(Mother.room, Father.room),
+      () => SIRoom.areClose(Mother.room, Father.room),
       () =>
         actors.forall(actor =>
           Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
@@ -270,7 +269,7 @@ object JoinMovie extends Story with Occupy {
     () =>
       Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance),
     () => livingRoomHasSpace(),
-    () => Location.areClose(Daughter, LivingRoom)
+    () => SIRoom.areClose(Daughter, LivingRoom)
   )
 
   val livingRoomSeating = List(Sofachair, Couch)
@@ -324,7 +323,7 @@ object Gossip extends Story with Delay {
   var conditions: List[() => Boolean] =
     List(
       () => readyToRepeat(),
-      () => Location.areClose(Daughter, Son),
+      () => SIRoom.areClose(Daughter, Son),
       () =>
         actors.forall(actor =>
           Importance.shouldInterrupt(actor.getCurStoryImportance(), importance)
@@ -565,7 +564,7 @@ object Singalong extends Story {
   var active: Boolean = false
   lazy val actors = HashSet(Mother)
   var potentialSingers = HashSet(Father, Daughter, Son)
-  var singingRooms: HashSet[Location.Room] = HashSet()
+  var singingRooms: HashSet[Room] = HashSet()
   val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
@@ -573,7 +572,7 @@ object Singalong extends Story {
     List(
       () => Music.active,
       () => Dinner.commonState.completed,
-      () => potentialSingers.exists(Location.areClose(Mother, _))
+      () => potentialSingers.exists(SIRoom.areClose(Mother, _))
     )
 
   var importance = Importance.Interrupt
@@ -588,7 +587,7 @@ object Singalong extends Story {
         Importance.shouldInterrupt(
           person.getCurStoryImportance(),
           importance
-        ) && singingRooms.exists(room => Location.areClose(person.room, room))
+        ) && singingRooms.exists(room => SIRoom.areClose(person.room, room))
       )
       .foreach(person => join(person, tick))
     return false
@@ -604,7 +603,7 @@ object Singalong extends Story {
         Importance.shouldInterrupt(
           person.getCurStoryImportance(),
           importance
-        ) && singingRooms.exists(room => Location.areClose(person.room, room))
+        ) && singingRooms.exists(room => SIRoom.areClose(person.room, room))
       )
       .foreach(person => join(person, tick))
     arrived = true
@@ -752,7 +751,7 @@ object FixSomething extends Story with Occupy with Pausable {
   var importance: Importance.Importance = Importance.Event
   def setStartLocations(): Unit = {
     Father.setDestination(Worktable.interactLoc)
-    helper.setDestination(Worktable.interactLoc + (0,1))
+    helper.setDestination(Worktable.interactLoc + (0, 1))
   }
 
   def storySpecificBeginning(tick: Int): Unit = {

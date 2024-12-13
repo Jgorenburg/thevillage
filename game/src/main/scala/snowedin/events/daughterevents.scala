@@ -7,8 +7,8 @@ import Base.Importance
 import Base.Delay
 import Base.GameManager
 import Base.Pausable
-import Snowedin.Location.LivingRoom
-import Snowedin.Location.Kitchen
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
 import Base.Actor
 import Snowedin.SnowedInPositionConstants.*
 

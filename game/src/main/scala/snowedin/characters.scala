@@ -7,7 +7,6 @@ import Snowedin.Tools.Tambourine
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.Color
 import Snowedin.SnowedInPositionConstants.boxSize
-import Snowedin.Location.Bedroom
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
@@ -139,7 +138,7 @@ object Father extends Person {
     if (
       noticedBrokenDoor &&
       !tools.contains(Screwdriver) &&
-      room == Location.Workroom &&
+      room == SIRoom.Workroom &&
       Worktable.tools.contains(Screwdriver)
     ) {
       tools.add(Screwdriver)
@@ -151,7 +150,7 @@ object Father extends Person {
     if (
       noticedBrokenDoor &&
       !tools.contains(Screwdriver) &&
-      room == Location.Workroom &&
+      room == SIRoom.Workroom &&
       Worktable.tools.contains(Screwdriver)
     ) {
       tools.add(Screwdriver)

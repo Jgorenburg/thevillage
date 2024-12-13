@@ -7,12 +7,10 @@ import Snowedin.Tools.Tambourine
 import Base.Pausable
 import Base.Occupy
 import Base.Delay
-import Snowedin.Location.Room
 import scala.collection.mutable.Queue
-import Snowedin.Location.DiningRoom
-import Snowedin.Location.LivingRoom
-import Snowedin.Location.Kitchen
-import Snowedin.Location.Door
+import Snowedin.SIRoom.*
+import Base.Room.Bedroom
+import Base.Room
 import Snowedin.SnowedInPositionConstants.*
 import scala.collection.mutable.HashMap
 
@@ -193,7 +191,7 @@ object NoticeBrokenDoor extends Story {
   var conditions: List[() => Boolean] =
     List(
       () => !Mother.noticedBrokenDoor,
-      () => Mother.room == Location.Door
+      () => Mother.room == Door
     )
 
   var active: Boolean = false
