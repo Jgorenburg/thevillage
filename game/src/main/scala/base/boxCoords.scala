@@ -31,8 +31,8 @@ class BoxCoords(var x: Float, var y: Float) {
 
   def toRealLocation(): (Float, Float) =
     return (
-      BoxCoords.housePos._1 + (x * BoxCoords.boxSize),
-      BoxCoords.housePos._2 + (y * BoxCoords.boxSize)
+      BoxCoords.stagePos._1 + (x * BoxCoords.boxSize),
+      BoxCoords.stagePos._2 + (y * BoxCoords.boxSize)
     )
 
   override def toString(): String =
@@ -53,16 +53,16 @@ object BoxCoords {
 
   var horizMax: Int = (1e200 * 1e200).toInt
   var vertMax: Int = (1e200 * 1e200).toInt
-  var housePos: (Float, Float) = (0f, 0f)
+  var stagePos: (Float, Float) = (0f, 0f)
   var boxSize: Float = 1f
 
   def setup(
-      house: (Float, Float),
+      stage: (Float, Float),
       boxes: Float,
       horizBoxes: Int,
       vertBoxes: Int
   ): Unit = {
-    housePos = house
+    stagePos = stage
     boxSize = boxes
     horizMax = horizBoxes
     vertMax = vertBoxes
@@ -70,8 +70,8 @@ object BoxCoords {
 
   def posToRealLocation(pos: BoxCoords): (Float, Float) =
     (
-      BoxCoords.housePos._1 + (pos.x * BoxCoords.boxSize),
-      BoxCoords.housePos._2 + (pos.y * BoxCoords.boxSize)
+      stagePos._1 + (pos.x * BoxCoords.boxSize),
+      stagePos._2 + (pos.y * BoxCoords.boxSize)
     )
 
   def boxInBounds(loc: BoxCoords): Boolean = {
