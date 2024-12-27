@@ -19,7 +19,6 @@ import scala.util.matching.Regex
 
 object DesktopLauncher {
   def main(args: Array[String]): Unit = {
-    println(args)
     val DateNightPattern: Regex = """(?i)date.*""".r
     val SnowedInPattern: Regex = """(?i)snow.*""".r
     var game: ApplicationAdapter = new DateNight

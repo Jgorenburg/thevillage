@@ -57,10 +57,7 @@ object CoffeeTable extends Static {
   def render(shapeRenderer: ShapeRenderer): Unit = {
     val loc = location.toRealLocation()
 
-    // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
-
-    // Draw the box
     shapeRenderer.rect(
       loc._1,
       loc._2,
@@ -76,10 +73,7 @@ object LivingRoomTable extends Static {
   def render(shapeRenderer: ShapeRenderer): Unit = {
     val loc = location.toRealLocation()
 
-    // Set color (RGBA)
     shapeRenderer.setColor(0, 0, 0, 1)
-
-    // Draw the box
     shapeRenderer.rect(
       loc._1,
       loc._2,

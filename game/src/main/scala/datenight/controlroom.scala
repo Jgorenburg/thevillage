@@ -40,10 +40,9 @@ object DateNightControls extends ControlRoom {
     )
   val characters: List[Person] = List(Partner)
   val objects: List[Actor] =
-    List()
+    List(PicnicBlanket, Bench, Shop, Restuarant, Theater)
   val statics: List[Static] =
-    List(
-    )
+    List(Park, Road, StatueArea, ParkPaths, River)
 
   def setup(
       gameLen: Int = 720,
@@ -84,7 +83,7 @@ class DateNight extends GameTemplate {
   override def create(): Unit = {
     // Initialize the shape renderer
     super.create()
-    BoxCoords.setup(RoomBase, boxSize, HorizBoxes, VertBoxes)
+    BoxCoords.setup(StageBase, boxSize, HorizBoxes, VertBoxes)
 
     DateNightControls.setup(43200, true)()
   }
@@ -111,49 +110,49 @@ class DateNight extends GameTemplate {
       // temp grid for object placement
       shapeRenderer.setColor(.7f, .7f, .7f, 1)
       val TR = topRight.toRealLocation()
-      (BigDecimal(roomX) to BigDecimal(TR._1) by BigDecimal(boxSize))
+      (BigDecimal(stageX) to BigDecimal(TR._1) by BigDecimal(boxSize))
         .foreach(x =>
           shapeRenderer.line(
             x.toFloat,
-            roomY,
+            stageY,
             x.toFloat,
-            roomY + VertBoxes * boxSize
+            stageY + VertBoxes * boxSize
           )
         )
-      (BigDecimal(roomY) to BigDecimal(TR._2) by BigDecimal(boxSize))
+      (BigDecimal(stageY) to BigDecimal(TR._2) by BigDecimal(boxSize))
         .foreach(y =>
           shapeRenderer.line(
-            roomX,
+            stageX,
             y.toFloat,
-            roomX + HorizBoxes * boxSize,
+            stageX + HorizBoxes * boxSize,
             y.toFloat
           )
         )
       shapeRenderer.setColor(1, 0, 0, .5f)
-      (BigDecimal(roomX) to BigDecimal(TR._1) by BigDecimal(5 * boxSize))
+      (BigDecimal(stageX) to BigDecimal(TR._1) by BigDecimal(5 * boxSize))
         .foreach(x =>
           shapeRenderer.line(
             x.toFloat,
-            roomY,
+            stageY,
             x.toFloat,
-            roomY + VertBoxes * boxSize
+            stageY + VertBoxes * boxSize
           )
         )
-      (BigDecimal(roomY) to BigDecimal(TR._2) by BigDecimal(5 * boxSize))
+      (BigDecimal(stageY) to BigDecimal(TR._2) by BigDecimal(5 * boxSize))
         .foreach(y =>
           shapeRenderer.line(
-            roomX,
+            stageX,
             y.toFloat,
-            roomX + HorizBoxes * boxSize,
+            stageX + HorizBoxes * boxSize,
             y.toFloat
           )
         )
     }
     shapeRenderer.setColor(0, 0, 0, 1)
 
-    // statics.foreach(_.render(shapeRenderer))
-    // objects.foreach(_.render(shapeRenderer))
-    // characters.foreach(_.render(shapeRenderer))
+    statics.foreach(_.render(shapeRenderer))
+    objects.foreach(_.render(shapeRenderer))
+    characters.foreach(_.render(shapeRenderer))
 
     // End shape rendering
     shapeRenderer.end()
