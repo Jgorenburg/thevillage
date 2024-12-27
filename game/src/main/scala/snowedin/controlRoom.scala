@@ -9,6 +9,7 @@ import Base.Static
 import MyLogger.MyLogger
 import scala.compiletime.uninitialized
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.{ApplicationAdapter, Gdx}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -29,6 +30,7 @@ import Base.Position
 import Base.Direction.*
 import Base.ControlRoom
 import Base.Globals
+import com.badlogic.gdx.graphics.Texture
 
 object SnowedInControls extends ControlRoom {
   val stories: List[Story] =
@@ -147,7 +149,9 @@ class SnowedIn extends ApplicationAdapter {
   private var camera: OrthographicCamera = uninitialized
   private var font: BitmapFont = uninitialized
   private var batch: SpriteBatch = uninitialized
+  private var texture: Texture | Null = null
 
+  var realTime = 0f
   var tick = 0
 
   override def create(): Unit = {
@@ -170,6 +174,8 @@ class SnowedIn extends ApplicationAdapter {
       List(60, 120, 1800, 4000),
       List(40000, 30000, 30000, 2)
     )
+
+    texture = new Texture("table.png")
   }
 
   override def render(): Unit = {
@@ -241,6 +247,7 @@ class SnowedIn extends ApplicationAdapter {
     // End shape rendering
     shapeRenderer.end()
 
+    realTime += Gdx.graphics.getDeltaTime
     batch.begin()
 
     font.draw(
@@ -260,6 +267,8 @@ class SnowedIn extends ApplicationAdapter {
         )
       )
       .foreach((person, loc) => person.report(font, batch, loc))
+
+    Table.animate(batch, realTime, tick)
 
     batch.end()
   }

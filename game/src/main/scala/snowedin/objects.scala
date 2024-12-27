@@ -10,6 +10,11 @@ import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import Base.BoxCoords
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.utils
 
 object Worktable extends Actor {
   val location = topRight - (2, 5)
@@ -266,7 +271,30 @@ object Table extends Actor with Spaces {
   def getLoc3() = bottomLeft + (10, 4)
   def getLoc4() = bottomLeft + (7, 4)
   def render(shapeRenderer: ShapeRenderer) = {
-    shapeRenderer.rect(rloc()._1, rloc()._2, 6 * boxSize, 4 * boxSize)
+    // shapeRenderer.rect(rloc()._1, rloc()._2, 6 * boxSize, 4 * boxSize)
+  }
+
+  // var texture = new Texture("table.png")
+
+  var texture = new Texture("boardgame.png")
+  val frames = new utils.Array[TextureRegion]
+  TextureRegion.split(texture, 96, 72).foreach(_.foreach(frames.add(_)))
+
+  var animation: Animation[TextureRegion] =
+    new Animation(2f, frames)
+
+  var actionStart = 0
+
+  def animate(batch: SpriteBatch, realTime: Float, tick: Int) = {
+    var currentFrame: TextureRegion = animation.getKeyFrame(realTime, true)
+
+    batch.draw(
+      currentFrame,
+      SnowedInPositionConstants.houseX + boxSize * 6,
+      SnowedInPositionConstants.houseY + boxSize * 4.5f,
+      boxSize * 6,
+      boxSize * 4.5f
+    )
   }
 
   var readyToClear: Boolean = false
