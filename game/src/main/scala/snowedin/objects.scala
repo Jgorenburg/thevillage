@@ -264,6 +264,8 @@ object Sofachair extends Actor with Spaces {
 }
 
 object Table extends Actor with Spaces {
+
+  val pixelDimensions = (96, 72)
   val location = bottomLeft + (6, 5)
   var interactLoc = location
   def getLoc1() = bottomLeft + (7, 9)
@@ -277,16 +279,36 @@ object Table extends Actor with Spaces {
   // var texture = new Texture("table.png")
 
   var texture = new Texture("boardgame.png")
-  val frames = new utils.Array[TextureRegion]
-  TextureRegion.split(texture, 96, 72).foreach(_.foreach(frames.add(_)))
+  // val frames = new utils.Array[TextureRegion]
+  // TextureRegion.split(texture, 96, 72).foreach(_.foreach(frames.add(_)))
 
-  var animation: Animation[TextureRegion] =
-    new Animation(2f, frames)
+  // var animation: Animation[TextureRegion] =
+  //   new Animation(2f, frames)
 
   var actionStart = 0
 
   def animate(batch: SpriteBatch, realTime: Float, tick: Int) = {
-    var currentFrame: TextureRegion = animation.getKeyFrame(realTime, true)
+    var currentFrame: TextureRegion =
+      if (commonState.curStory == Vibe || !commonState.curStory.started)
+        new TextureRegion(
+          Texture("table.png"),
+          pixelDimensions._1,
+          pixelDimensions._2
+        )
+      else {
+        commonState.curStory match
+          case Boardgame =>
+            Boardgame.animation.getKeyFrame(
+              (tick - commonState.startTime).toFloat,
+              true
+            )
+          case _ =>
+            new TextureRegion(
+              Texture("table.png"),
+              pixelDimensions._1,
+              pixelDimensions._2
+            )
+      }
 
     batch.draw(
       currentFrame,
@@ -307,6 +329,9 @@ object Table extends Actor with Spaces {
   lazy val myEvents: Array[Any] = Array(Snack)
 
   def actorSpecificBeginning(tick: Int): Unit = {
+    // Animation action
+    actionStart = tick
+
     if (commonState.curStory != Boardgame && Boardgame.isPaused) {
       Boardgame.beginAnew()
     }

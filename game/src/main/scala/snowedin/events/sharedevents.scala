@@ -17,6 +17,11 @@ import Base.Room
 import Base.Person
 import Snowedin.SnowedInPositionConstants.*
 import Snowedin.Tools.Tambourine
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.utils
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.Animation
 
 // Father and Mother
 object Chat extends Story with Delay {
@@ -674,7 +679,7 @@ object Boardgame extends Story with Occupy with Pausable {
   val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
 
-  var importance: Importance.Importance = Importance.Event
+  var importance: Importance.Importance = Importance.Critical
 
   def storySpecificBeginning(tick: Int): Unit = {
     begin()
@@ -697,6 +702,15 @@ object Boardgame extends Story with Occupy with Pausable {
     proceed()
     return false
   }
+
+  var texture = new Texture("boardgame.png")
+  val frames = new utils.Array[TextureRegion]
+  TextureRegion
+    .split(texture, Table.pixelDimensions._1, Table.pixelDimensions._2)
+    .foreach(_.foreach(frames.add(_)))
+
+  var animation: Animation[TextureRegion] =
+    new Animation(commonState.duration / 12f, frames)
 
   def reset(): Unit = {
     active = false
