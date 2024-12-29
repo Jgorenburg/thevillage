@@ -25,7 +25,7 @@ object Code extends Story with Occupy with Delay {
       () =>
         Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
+
   val startState = (false, -1, false, 13200)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
@@ -60,7 +60,7 @@ object Music extends Story {
       () =>
         Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
+
   val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Event
@@ -92,7 +92,7 @@ object Art extends Story with Occupy with Delay {
       () =>
         Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
+
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
@@ -130,7 +130,7 @@ object Cleaning extends Story with Pausable with Delay {
       () =>
         Importance.shouldInterrupt(Mother.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
+
   val startState = (false, -1, true, 1800)
   val delay = 3600
   var commonState = startState.copy()
@@ -194,7 +194,6 @@ object NoticeBrokenDoor extends Story {
       () => Mother.room == Door
     )
 
-  var active: Boolean = false
   val startState = (false, -1, true, 0)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Instantaneous

@@ -14,7 +14,6 @@ import Snowedin.SnowedInPositionConstants.*
 
 object Read extends Story with Occupy {
   val size = 1
-  var active: Boolean = false
   lazy val actors = HashSet(Daughter)
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
@@ -87,7 +86,6 @@ object Watercolor extends Story with Occupy with Delay {
       () =>
         Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
   val startState = (false, -1, true, 1800)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Base
@@ -130,7 +128,6 @@ object StartFire extends Story {
       () =>
         Importance.shouldInterrupt(Daughter.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
   val startState = (false, -1, false, 600)
   var commonState = startState.copy()
 
@@ -156,7 +153,6 @@ object StartFire extends Story {
 }
 
 object UnloadDishwasher extends Story with Pausable {
-  var active: Boolean = false
   lazy val actors = HashSet(Daughter, Dishwasher)
   val startState: Base.StoryCommonState = (false, -1, false, 1200)
 

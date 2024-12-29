@@ -16,7 +16,7 @@ import Snowedin.SnowedInPositionConstants.*
 import Base.Person
 
 object Knit extends Story with Pausable with Delay with Occupy {
-  var active: Boolean = false
+
   var delay = 7200
   var size = 1
   lazy val actors = HashSet(Son)
@@ -77,7 +77,7 @@ object Knit extends Story with Pausable with Delay with Occupy {
 }
 
 object Woodworking extends Story with Pausable with Delay {
-  var active: Boolean = false
+
   var delay = 10800
   lazy val actors = HashSet(Son, Worktable)
   val startState = (false, -1, true, 14400)
@@ -128,7 +128,7 @@ object Woodworking extends Story with Pausable with Delay {
 
 object Snack extends Story with Occupy with Delay {
   val size = 1
-  var active: Boolean = false
+
   lazy val actors = HashSet(Son)
   val startState = (false, -1, true, 900)
   var commonState = startState.copy()
@@ -217,7 +217,7 @@ object Snack extends Story with Occupy with Delay {
 }
 
 object GiveScarf extends Story {
-  var active: Boolean = false
+
   var location: (Float, Float) = (0, 0)
   var recipient: Person = Son
   lazy val actors = HashSet(Son)
@@ -278,7 +278,7 @@ object GiveScarf extends Story {
 }
 
 object StartDishwasher extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Son, Dishwasher)
   val startState: Base.StoryCommonState = (false, -1, false, 60)
 

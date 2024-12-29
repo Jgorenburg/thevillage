@@ -23,7 +23,7 @@ object Laundry extends Story {
       () =>
         Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
     )
-  var active: Boolean = false
+
   val startState = (false, -1, false, 900)
   var commonState = startState.copy()
 
@@ -63,7 +63,6 @@ object Nap extends Story with Occupy with Delay {
   )
 
   val delay = 10800 // 3 hours
-  var active: Boolean = false
 
   val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
@@ -99,7 +98,7 @@ object FixDoor extends Story {
     () => Father.tools.contains(Screwdriver),
     () => Importance.shouldInterrupt(Father.getCurStoryImportance(), importance)
   )
-  var active: Boolean = false
+
   val startState = (false, -1, false, 900)
   var commonState = startState.copy()
 
@@ -133,7 +132,7 @@ object Construction extends Story with Delay {
     () =>
       Importance.shouldInterrupt(Worktable.getCurStoryImportance(), importance)
   )
-  var active: Boolean = false
+
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
 

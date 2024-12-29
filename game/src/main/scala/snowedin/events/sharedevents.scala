@@ -20,7 +20,7 @@ import Snowedin.Tools.Tambourine
 
 // Father and Mother
 object Chat extends Story with Delay {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Mother, Father)
   val startState = (false, -1, true, 1800)
   var commonState = startState.copy()
@@ -102,7 +102,7 @@ object CookLunch extends Story {
       return false
     }
   }
-  var active: Boolean = false
+
   val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
 
@@ -151,7 +151,6 @@ object CookDinner extends Story {
         )
     )
 
-  var active: Boolean = false
   val startState = (false, -1, false, 3600)
   var commonState = startState.copy()
 
@@ -181,7 +180,7 @@ object CookDinner extends Story {
 object Movie extends Story with Occupy with Pausable {
   val size = 2
   var needToSeat = size
-  var active: Boolean = false
+
   lazy val actors = HashSet(Son, Father)
   val people: HashSet[Person] = HashSet(Son, Father)
   val startState = (false, -1, false, 5400)
@@ -257,7 +256,7 @@ object Movie extends Story with Occupy with Pausable {
 
 object JoinMovie extends Story with Occupy {
   val size = 1
-  var active: Boolean = false
+
   lazy val actors = HashSet(Daughter)
   val startState = (false, -1, true, -1)
 
@@ -315,7 +314,7 @@ object JoinMovie extends Story with Occupy {
 
 // Son and Daughter
 object Gossip extends Story with Delay {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Son, Daughter)
   val startState = (false, -1, true, 2700)
   var commonState = startState.copy()
@@ -362,7 +361,7 @@ object Gossip extends Story with Delay {
 }
 
 object CleanTable extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Son, Daughter, Table, Dishwasher)
   val startState = (false, -1, true, -1)
   var commonState = startState.copy()
@@ -444,7 +443,7 @@ object CleanTable extends Story {
 // Everybody
 object Lunch extends Story with Pausable with Occupy {
   var size = 3
-  var active: Boolean = false
+
   lazy val actors = HashSet(Father, Mother, Daughter, Table)
   val startState = (false, -1, false, 1800)
   var commonState = startState.copy()
@@ -508,7 +507,7 @@ object Lunch extends Story with Pausable with Occupy {
 
 object Dinner extends Story with Pausable with Occupy {
   val size = 4
-  var active: Boolean = false
+
   lazy val actors = HashSet(Father, Mother, Son, Daughter, Table)
   val startState = (false, -1, false, 3600)
   restartTime = 600
@@ -561,7 +560,7 @@ object Dinner extends Story with Pausable with Occupy {
 }
 
 object Singalong extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Mother)
   var potentialSingers = HashSet(Father, Daughter, Son)
   var singingRooms: HashSet[Room] = HashSet()
@@ -670,7 +669,6 @@ object Boardgame extends Story with Occupy with Pausable {
     if (actors.contains(Father)) Father.setDestination(Table.getLoc4())
   }
 
-  var active: Boolean = false
   val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
 
@@ -744,7 +742,7 @@ object FixSomething extends Story with Occupy with Pausable {
   }
 
   var helper: Person = Son
-  var active: Boolean = false
+
   val startState = (false, -1, false, 2700)
   var commonState = startState.copy()
 

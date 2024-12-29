@@ -14,7 +14,7 @@ import Snowedin.SnowedInPositionConstants.*
 import Base.GlobalVars.bedloc
 
 object Breakfast extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet()
   val eaters = HashSet(Father, Mother, Daughter, Son)
   var conditions: List[() => Boolean] =
@@ -51,7 +51,7 @@ object Breakfast extends Story {
 
 class IndivBreakfast(eater: Person) extends Story with Occupy {
   val size = 1
-  var active: Boolean = false
+
   lazy val actors = HashSet(eater, Table)
   var conditions: List[() => Boolean] =
     List(() => false)
@@ -87,7 +87,7 @@ class IndivBreakfast(eater: Person) extends Story with Occupy {
 }
 
 object WakingUp extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet()
   val sleepers = HashSet(Father, Mother, Daughter, Son)
   var conditions: List[() => Boolean] =
@@ -112,7 +112,7 @@ object WakingUp extends Story {
 }
 
 object GoToBed extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet()
   var potential = HashSet(Father, Mother, Daughter, Son)
   var conditions: List[() => Boolean] =
@@ -138,7 +138,7 @@ object GoToBed extends Story {
 }
 
 class IndivSleep(sleeper: Person) extends Story {
-  var active: Boolean = false
+
   lazy val actors = HashSet(sleeper)
   var conditions: List[() => Boolean] =
     List(() => false)

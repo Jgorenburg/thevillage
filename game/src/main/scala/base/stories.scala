@@ -81,7 +81,7 @@ trait Story extends Subject[Story] with Listener {
   lazy val universalConditions: List[() => Boolean] =
     List(() => !active && (commonState.repeatable || !commonState.completed))
   var conditions: List[() => Boolean]
-  var active: Boolean
+  var active: Boolean = false
   // common state:
   //    1: story done already
   //    2: start time (-1 if not active)
@@ -162,7 +162,7 @@ object Vibe extends Story {
   var conditions: List[() => Boolean] = List()
   val startState = (false, 0, true, -1)
   var commonState = startState.copy()
-  var active: Boolean = true
+  active = true
   val importance = Importance.Vibe
   override def canBegin: Boolean = true
   def progress(tick: Int): Boolean = false

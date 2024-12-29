@@ -12,7 +12,6 @@ import Base.Person
 import Snowedin.SnowedInPositionConstants.*
 
 object KitchenFire extends Story {
-  var active: Boolean = false
   lazy val actors = HashSet(Father, Mother, Son, Daughter, Stove)
   val people: HashSet[Person] = HashSet(Father, Mother, Son, Daughter)
   var conditions: List[() => Boolean] = List(
@@ -43,7 +42,6 @@ object KitchenFire extends Story {
 }
 
 object Snowcrash extends Story {
-  var active: Boolean = false
   val numParticipants = 2
   lazy val actors = HashSet()
   var conditions: List[() => Boolean] = List(

@@ -6,7 +6,7 @@ import scala.collection.mutable.HashSet
 import Base.Importance
 
 object RunDishwasher extends Story with Pausable {
-  var active: Boolean = false
+
   lazy val actors = HashSet(Dishwasher)
   val startState: Base.StoryCommonState = (false, -1, false, 5400)
 
