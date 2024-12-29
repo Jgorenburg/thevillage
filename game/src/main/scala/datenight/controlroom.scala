@@ -37,8 +37,9 @@ import DateNightControls.{statics, objects, characters, stories}
 object DateNightControls extends ControlRoom {
   val stories: List[Story] =
     List(
+      Exploring
     )
-  val characters: List[Person] = List(Partner)
+  val characters: List[Person] = List(Partner, Player)
   val objects: List[Actor] =
     List(PicnicBlanket, Bench, Shop, Restuarant, Theater)
   val statics: List[Static] =
@@ -75,6 +76,9 @@ object DateNightControls extends ControlRoom {
       MyLogger.setFile(loggerFile)
       MyLogger.printHeader(GameManager.characters ::: GameManager.objects)
     }
+
+    Gdx.input.setInputProcessor(DateNightInputProcessor);
+
   }
 
 }
@@ -89,11 +93,10 @@ class DateNight extends GameTemplate {
   }
 
   override def render(): Unit = {
-    // if (tick < DateNightControls.endTick) {
-    //   tick = GameManager.step(DateNightControls.isLogging)
-    // }
+    if (tick < DateNightControls.endTick) {
+      tick = GameManager.step(DateNightControls.isLogging)
+    }
 
-    // Laundry.tick(0)
     // Clear the screen
     Gdx.gl.glClearColor(255.0f, 255.0f, 255.0f, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)

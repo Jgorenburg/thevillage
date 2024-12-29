@@ -2,6 +2,15 @@ package DateNight
 
 import Base.PositionConstants
 import Base.BoxCoords
+import Base.Room
+
+object DNRoom {
+  import Room.Bedroom
+
+  case object Park extends Room
+
+  val allRooms = List(Bedroom, Park)
+}
 
 object DateNightPositionConstants extends PositionConstants {
   def heightToWidth(h: Float) = h

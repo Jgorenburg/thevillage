@@ -16,7 +16,7 @@ case class Position(x: Int, y: Int) {
 case class Node(
     pos: Position,
     parent: Option[Node],
-    moveTo: Option[Direction.Dir],
+    moveTo: Option[Direction.Direction],
     g: Int,
     h: Int
 ) {
@@ -27,7 +27,7 @@ case class GameMap(
     vertWalls: Array[Array[Boolean]],
     horizWalls: Array[Array[Boolean]]
 ) {
-  def validMove(place: Position, move: Direction.Dir): Boolean = {
+  def validMove(place: Position, move: Direction.Direction): Boolean = {
     move match
       case Down  => vertWalls(place.y)(place.x)
       case Up    => vertWalls(place.y + 1)(place.x)
@@ -38,7 +38,7 @@ case class GameMap(
 
 class AStar(width: Int, height: Int, stage: GameMap) {
   // Check if position is within grid bounds and not blocked
-  def isValid(pos: Position, move: Direction.Dir): Boolean =
+  def isValid(pos: Position, move: Direction.Direction): Boolean =
     pos.x >= 0 && pos.x < width &&
       pos.y >= 0 && pos.y < height &&
       stage.validMove(pos, move)
@@ -46,7 +46,7 @@ class AStar(width: Int, height: Int, stage: GameMap) {
   def makePath(
       start: BoxCoords,
       goal: BoxCoords
-  ): List[Direction.Dir] = {
+  ): List[Direction.Direction] = {
     makePath(
       Position(start.x.toInt, start.y.toInt),
       Position(goal.x.toInt, goal.y.toInt)
@@ -56,7 +56,7 @@ class AStar(width: Int, height: Int, stage: GameMap) {
   def makePath(
       start: Position,
       goal: Position
-  ): List[Direction.Dir] = {
+  ): List[Direction.Direction] = {
     // Priority queue ordered by f-score
     implicit val ordering: Ordering[Node] = Ordering.by[Node, Int](_.f).reverse
     var openSet = collection.mutable.PriorityQueue[Node](
@@ -71,7 +71,7 @@ class AStar(width: Int, height: Int, stage: GameMap) {
 
       if (current.pos == goal) {
         // Reconstruct path
-        def reconstructPath(node: Node): List[Direction.Dir] =
+        def reconstructPath(node: Node): List[Direction.Direction] =
           (node.parent, node.moveTo) match {
             case (Some(parent), Some(move)) =>
               reconstructPath(parent) :+ move

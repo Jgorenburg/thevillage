@@ -29,6 +29,13 @@ object Importance extends Enumeration {
   }
 }
 
+// For stories that involve the player
+trait PlayerBased {
+  self: Story =>
+
+  var canMove: Boolean
+}
+
 // for stories where progress is not lost when interrupted
 trait Pausable {
   self: Story =>
@@ -144,6 +151,7 @@ trait Story extends Subject[Story] with Listener {
   }
   def storySpecificInterrupt(tick: Int): Unit
 
+  // TODO: refactor
   def reset(): Unit
 
   implicit def storycommonState_to_tuple(

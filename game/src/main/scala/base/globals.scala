@@ -13,7 +13,7 @@ object GlobalVars {
 }
 
 object Direction extends Enumeration {
-  type Dir = Value
+  type Direction = Value
   val Left, Right, Down, Up = Value
 }
 

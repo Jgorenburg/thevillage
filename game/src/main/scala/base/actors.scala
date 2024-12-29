@@ -166,7 +166,7 @@ trait Movement {
   lazy val speed: Float =
     GlobalVars.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
 
-  def move(dir: Direction.Dir, percent: Float) = {
+  def move(dir: Direction.Direction, percent: Float) = {
     val mpercent = math.min(percent, 1f)
     dir match
       case Direction.Left  => moveLeft(mpercent)
@@ -183,7 +183,7 @@ trait Movement {
   def moveUp(percent: Float): Unit = location =
     (location._1, location._2 + percent)
 
-  var movementStack: List[Direction.Dir] = List()
+  var movementStack: List[Direction.Direction] = List()
   var stepPercent: Float = 0
 }
 
@@ -230,7 +230,7 @@ trait Person extends Actor with Movement {
   def makePath(
       start: BoxCoords,
       end: BoxCoords
-  ): List[Direction.Dir] = {
+  ): List[Direction.Direction] = {
     GameManager.pathfinder.makePath(location, destination)
   }
 
