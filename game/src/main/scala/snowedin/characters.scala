@@ -24,9 +24,7 @@ object Daughter extends Person {
     ", Importance: " + commonState.curStory.importance +
     ", Location: " + room
   lazy val myEvents: Array[Any] = Array()
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
-  }
+
   def tick(tick: Int): Unit = {
     commonState.curStory match
       case _: Story =>
@@ -50,10 +48,10 @@ object Son extends Person {
     s", Last Ate: ${lastAte}" +
     ", Location: " + room
   lazy val myEvents: Array[Any] = Array()
-  def reset(): Unit = {
+  override def reset(): Unit = {
     tools = HashSet()
     lastAte = 0
-    commonState = (Vibe, 0)
+    super.reset()
   }
   def tick(tick: Int): Unit = {
     commonState.curStory match
@@ -92,10 +90,10 @@ object Mother extends Person {
   }
   def actorSpecificInterrupt(tick: Int): Unit = {}
 
-  def reset() = {
-    commonState = (Vibe, 0)
+  override def reset() = {
     noticedBrokenDoor = false
     tools = HashSet()
+    super.reset()
   }
 
   def log() = commonState.toString() +
@@ -158,10 +156,10 @@ object Father extends Person {
     }
   }
 
-  def reset() = {
-    commonState = (Vibe, 0)
+  override def reset() = {
     noticedBrokenDoor = false
     tools = HashSet()
+    super.reset()
   }
 
   def log() = commonState.toString() +

@@ -136,12 +136,14 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 
   def actorSpecificInterrupt(tick: Int): Unit
 
-  // TODO: improve resets
-  def reset(): Unit = defaultReset()
-  def defaultReset(): Unit = {
+  def reset(): Unit = {
     commonState = (Vibe, 0)
     interrupted = (Vibe, 0)
     room = Room.Bedroom
+    this match {
+      case obj: Spaces => obj.vacate()
+      case _           =>
+    }
   }
 
   def log(): String

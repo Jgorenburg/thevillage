@@ -46,9 +46,9 @@ object Worktable extends Actor {
       case _: Story =>
   }
 
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
+  override def reset(): Unit = {
     tools = startingTools
+    super.reset()
   }
 
   def log() = commonState.toString() +
@@ -161,11 +161,6 @@ object Couch extends Actor with Spaces {
       case _: Story      =>
   }
 
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
-    vacate()
-  }
-
   def log() = commonState.toString() +
     s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity}"
 
@@ -248,11 +243,6 @@ object Sofachair extends Actor with Spaces {
       case _: Story      =>
   }
 
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
-    vacate()
-  }
-
   def log() = commonState.toString() +
     s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity}"
 
@@ -300,11 +290,6 @@ object Table extends Actor with Spaces {
     commonState.curStory match
       case story: Occupy => leave(story)
       case _: Story      =>
-  }
-
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
-    vacate()
   }
 
   def log() = {
@@ -358,11 +343,6 @@ object Easle extends Actor with Spaces {
       case _: Story      =>
   }
 
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
-    vacate()
-  }
-
   def log() = commonState.toString() +
     s"  Current Capacity: ${curCapacity}  Max Capacity: ${maxCapacity}"
 
@@ -396,10 +376,10 @@ object Stove extends Actor {
     leftAlone = tick
   }
 
-  def reset(): Unit = {
-    commonState = (Vibe, 0)
+  override def reset(): Unit = {
     unattended = false
     leftAlone = -1
+    super.reset()
   }
 
   def log() = commonState.toString() +
@@ -454,11 +434,11 @@ object Dishwasher extends Actor {
   }
   lazy val myEvents: Array[Any] =
     Array(CleanTable, StartDishwasher, RunDishwasher, UnloadDishwasher)
-  def reset(): Unit = {
+  override def reset(): Unit = {
     readyToWash = false
     running = false
     clean = false
-    commonState = (Vibe, 0)
+    super.reset()
   }
   def tick(tick: Int): Unit = {}
 
