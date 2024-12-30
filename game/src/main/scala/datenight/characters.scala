@@ -42,38 +42,48 @@ object Player extends Person {
   def log(): String = commonState.toString()
     + ", Location: " + room
 
-  var leftMove = false
-  var rightMove = false
-
-  val playerSpeed = speed * 8
+  val playerSpeed = speed * 64
+  var vertDir: Direction = null
+  var horizDir: Direction = null
+  var moving = false
 
   def updateMotion(): Unit = {
-    moveDir match
+    horizDir match
       case Left  => location.x -= playerSpeed * Gdx.graphics.getDeltaTime()
       case Right => location.x += playerSpeed * Gdx.graphics.getDeltaTime()
-      case Up    => location.y += playerSpeed * Gdx.graphics.getDeltaTime()
-      case Down  => location.y -= playerSpeed * Gdx.graphics.getDeltaTime()
-      case _     => throw new RuntimeException
-  }
+      case _     =>
 
-  var moveDir: Direction = null
-  var moving = false
+    vertDir match
+      case Up   => location.y += playerSpeed * Gdx.graphics.getDeltaTime()
+      case Down => location.y -= playerSpeed * Gdx.graphics.getDeltaTime()
+      case _    =>
+  }
 
   def startMoving(dir: Direction): Unit = {
     if (
       commonState.curStory.isInstanceOf[PlayerBased] &&
       commonState.curStory.asInstanceOf[PlayerBased].canMove
     ) {
-      moveDir = dir
+      dir match
+        case Left  => horizDir = Left
+        case Right => horizDir = Right
+        case Up    => vertDir = Up
+        case Down  => vertDir = Down
       moving = true
     }
   }
 
   def stopMoving(dir: Direction): Unit = {
-    if (dir == moveDir) {
-      moveDir = null
-      moving = false
+    if (dir == Right || dir == Left) {
+      if (dir == horizDir) {
+        horizDir = null
+      }
+    } else if (dir == vertDir) {
+      vertDir = null
     }
+
+    moving = horizDir != null || vertDir != null
+
   }
 
 }
