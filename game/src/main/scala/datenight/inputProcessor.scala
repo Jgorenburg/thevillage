@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputAdapter
 
 import Base.Direction.*
+import Base.DialogController
 
 object DateNightInputProcessor extends InputAdapter {
   override def keyDown(keycode: Int): Boolean = {
@@ -13,7 +14,9 @@ object DateNightInputProcessor extends InputAdapter {
       case Keys.D => Player.startMoving(Right)
       case Keys.W => Player.startMoving(Up)
       case Keys.S => Player.startMoving(Down)
-      case _      =>
+      case Keys.ENTER =>
+        if (DialogController.advancePlayerConversation()) Player.ping()
+      case _ =>
     return true;
   }
 

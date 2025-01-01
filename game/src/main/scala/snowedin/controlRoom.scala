@@ -70,6 +70,8 @@ object SnowedInControls extends ControlRoom {
       Snowcrash,
       KitchenFire
     )
+
+  val playerInitiatedStories = List()
   val characters: List[Person] = List(Father, Mother, Son, Daughter)
   val objects: List[Actor] =
     List(Couch, Sofachair, Table, Worktable, Easle, Stove, Dishwasher)

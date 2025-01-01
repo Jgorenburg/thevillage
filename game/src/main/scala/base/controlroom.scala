@@ -10,6 +10,7 @@ import scala.compiletime.uninitialized
 trait ControlRoom {
   val updaters: List[Updater] = List(StoryRunner)
   val stories: List[Story]
+  val playerInitiatedStories: List[Story]
   val characters: List[Person]
   val objects: List[Actor]
   val statics: List[Static]

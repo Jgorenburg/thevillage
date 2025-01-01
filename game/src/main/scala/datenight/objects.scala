@@ -7,6 +7,8 @@ import javax.swing.text.Position
 import Base.BoxCoords
 import Base.CurveRenderer
 import com.badlogic.gdx.math.Vector2
+import Base.Interactable
+import com.badlogic.gdx.graphics.Color
 
 object PicnicBlanket extends Actor {
   val location = bottomLeft + (4, 1)
@@ -25,12 +27,19 @@ object PicnicBlanket extends Actor {
   def log() = commonState.toString()
 }
 
-object Bench extends Actor {
+object Bench extends Actor with Interactable {
   val location = bottomLeft + (3, 8)
   var interactLoc = location
+
+  def canInteract(): Boolean = {
+    var distance = Player.location - location
+    return distance.x > 0f && distance.x < 2f && distance.y > -1f && distance.y < 3
+  }
   def render(shapeRenderer: ShapeRenderer) = {
     def renderLine(p1: (Float, Float), p2: (Float, Float)) =
       shapeRenderer.line(p1._1, p1._2, p2._1, p2._2)
+
+    if (canInteract()) shapeRenderer.setColor(Color.GOLD)
 
     renderLine(
       (location + (0.5f, 0f)).toRealLocation(),
@@ -44,6 +53,8 @@ object Bench extends Actor {
       (location + (0.5f, 2f)).toRealLocation(),
       (location + (1f, 2f)).toRealLocation()
     )
+
+    if (canInteract()) shapeRenderer.setColor(Color.BLACK)
   }
 
   lazy val myEvents: Array[Any] = Array()

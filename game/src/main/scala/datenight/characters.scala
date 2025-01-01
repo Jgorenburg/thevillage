@@ -6,6 +6,11 @@ import Base.Vibe
 import com.badlogic.gdx.Gdx
 import Base.Direction.*
 import Base.PlayerBased
+import _root_.DateNight.DateNightControls.playerInitiatedStories
+import Base.StoryRunner
+import Base.Story
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 object Partner extends Person {
 
@@ -25,6 +30,14 @@ object Partner extends Person {
 
 object Player extends Person {
 
+  var discoveredBench = false
+
+  def ping(): Unit = {
+    playerInitiatedStories.find(_.canBegin) match
+      case Some(event: Story) => StoryRunner.addStory(event)
+      case None               =>
+  }
+
   val color = Color.BLUE
   location = (4, 4)
   room = DNRoom.Park
@@ -41,6 +54,7 @@ object Player extends Person {
 
   def log(): String = commonState.toString()
     + ", Location: " + room
+    + ", Discovered Bench: " + discoveredBench
 
   val playerSpeed = speed * 64
   var vertDir: Direction = null
@@ -84,6 +98,20 @@ object Player extends Person {
 
     moving = horizDir != null || vertDir != null
 
+  }
+
+  override def report(
+      font: BitmapFont,
+      batch: SpriteBatch,
+      loc: (Float, Float),
+      indivPortion: String = ""
+  ): Unit = {
+    super.report(
+      font,
+      batch,
+      loc,
+      s"\n\tDiscovered Bench: ${discoveredBench}"
+    )
   }
 
 }

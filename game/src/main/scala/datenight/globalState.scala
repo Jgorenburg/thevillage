@@ -3,6 +3,13 @@ package DateNight
 import Base.PositionConstants
 import Base.BoxCoords
 import Base.Room
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.Gdx
+
+object DNGlobals {
+  val speechFont = new BitmapFont(Gdx.files.internal("bookantiqua.fnt"));
+
+}
 
 object DNRoom {
   import Room.Bedroom

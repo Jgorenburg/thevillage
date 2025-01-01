@@ -194,7 +194,7 @@ object NoticeBrokenDoor extends Story {
       () => Mother.room == Door
     )
 
-  val startState = (false, -1, true, 0)
+  val startState = (false, -1, false, 0)
   var commonState = startState.copy()
   var importance: Importance.Importance = Importance.Instantaneous
   def setStartLocations(): Unit = {}

@@ -1,6 +1,7 @@
 package Base
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 
 trait Room
 object Room {

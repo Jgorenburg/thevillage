@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Color
 import Base.BoxCoords.boxSize
 import Base.Room.Bedroom
+import DateNight.DNGlobals.speechFont
+import DateNight.DNGlobals
 
 case class curStory(
     var curStory: Story,
@@ -17,6 +19,12 @@ case class curStory(
   def copy(): curStory = { new curStory(curStory, startTime) }
   override def toString(): String =
     s"Current Story: ${curStory.getClass.getSimpleName.stripSuffix("$")}, Start Time: ${startTime}"
+}
+// for objects or people the player can interact with
+trait Interactable {
+  self: Actor =>
+
+  def canInteract(): Boolean
 }
 
 // for objects that can only take a certain number of charecters
@@ -187,7 +195,33 @@ trait Movement {
   var stepPercent: Float = 0
 }
 
-trait Person extends Actor with Movement {
+trait Speech {
+  var font = DNGlobals.speechFont
+  val speech = new SpeechBubble(font)
+  val thought = new ThoughtBubble(font)
+  var outLoud = true
+  var dialog: String = ""
+
+  def shouldSpeak(): Boolean = dialog.nonEmpty
+  def clearDialog() = dialog = ""
+  def setDialog(text: String, speaking: Boolean = true) = {
+    dialog = text
+    outLoud = speaking
+  }
+
+  def renderSpeech(
+      batch: SpriteBatch,
+      x: Float,
+      y: Float
+  ): Unit = {
+    if (shouldSpeak()) {
+      if (outLoud) speech.draw(batch, dialog, x, y)
+      else thought.draw(batch, dialog, x, y)
+    }
+  }
+}
+
+trait Person extends Actor with Movement with Speech {
   var wakeTime: Double = 0
   var bedTime = GameManager.ending
   def timeForBed(): Boolean = {

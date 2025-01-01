@@ -84,6 +84,8 @@ trait Delay {
 }
 
 trait Story extends Subject[Story] with Listener {
+  var dialogFinished = false
+
   lazy val actors: HashSet[Actor]
   lazy val universalConditions: List[() => Boolean] =
     List(() => !active && (commonState.repeatable || !commonState.completed))

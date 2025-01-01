@@ -39,6 +39,8 @@ object DateNightControls extends ControlRoom {
     List(
       Exploring
     )
+
+  val playerInitiatedStories: List[Story] = List(DiscoverBench)
   val characters: List[Person] = List(Partner, Player)
   val objects: List[Actor] =
     List(PicnicBlanket, Bench, Shop, Restuarant, Theater)
@@ -179,6 +181,11 @@ class DateNight extends GameTemplate {
         )
       )
       .foreach((person, loc) => person.report(font, batch, loc))
+
+    characters.foreach(person =>
+      val (x, y) = (person.location + (0.75f, 0.75f)).toRealLocation()
+      person.renderSpeech(batch, x, y)
+    )
 
     batch.end()
   }
