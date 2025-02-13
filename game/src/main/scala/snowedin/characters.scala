@@ -157,11 +157,11 @@ object Father extends Person {
             true
           )
 
-      val realLoc = location.toRealLocation()
+      val adjLoc = (location - (0.25f, 0f)).toRealLocation()
       batch.draw(
         currentFrame,
-        realLoc._1,
-        realLoc._2,
+        adjLoc._1,
+        adjLoc._2,
         boxSize * 1.5f,
         boxSize * 3
       )
