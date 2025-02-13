@@ -278,7 +278,7 @@ object Table extends Actor with Spaces {
 
   // var texture = new Texture("table.png")
 
-  var texture = new Texture("boardgame.png")
+  // var texture = new Texture("Table/boardgame.png")
   // val frames = new utils.Array[TextureRegion]
   // TextureRegion.split(texture, 96, 72).foreach(_.foreach(frames.add(_)))
 
@@ -291,7 +291,7 @@ object Table extends Actor with Spaces {
     var currentFrame: TextureRegion =
       if (commonState.curStory == Vibe || !commonState.curStory.started)
         new TextureRegion(
-          Texture("table.png"),
+          Texture("Table/table.png"),
           pixelDimensions._1,
           pixelDimensions._2
         )
@@ -304,7 +304,7 @@ object Table extends Actor with Spaces {
             )
           case _ =>
             new TextureRegion(
-              Texture("table.png"),
+              Texture("Table/table.png"),
               pixelDimensions._1,
               pixelDimensions._2
             )

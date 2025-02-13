@@ -9,6 +9,15 @@ import com.badlogic.gdx.graphics.Color
 import Snowedin.SnowedInPositionConstants.boxSize
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.Texture
+import Base.Direction
+import java.util.Dictionary
+import com.badlogic.gdx.graphics.g2d.Animation
+import scala.collection.immutable.HashMap
+import com.badlogic.gdx.utils
+import Base.Room.Bedroom
+import Base.Globals
 
 object Daughter extends Person {
 
@@ -122,6 +131,85 @@ object Mother extends Person {
 }
 
 object Father extends Person {
+
+  val pixelDimensions = (16, 32)
+
+  def animate(batch: SpriteBatch, realTime: Float, tick: Int) = {
+    if (room != Bedroom) {
+      var currentFrame: TextureRegion =
+        if (movementStack.isEmpty)
+          facing match
+            case Direction.Up =>
+              new TextureRegion(
+                Texture("Father/idle_back.png"),
+                pixelDimensions._1,
+                pixelDimensions._2
+              )
+            case _ =>
+              new TextureRegion(
+                Texture("Father/idle.png"),
+                pixelDimensions._1,
+                pixelDimensions._2
+              )
+        else
+          animationTable(facing).getKeyFrame(
+            (tick - commonState.startTime).toFloat,
+            true
+          )
+
+      val realLoc = location.toRealLocation()
+      batch.draw(
+        currentFrame,
+        realLoc._1,
+        realLoc._2,
+        boxSize * 1.5f,
+        boxSize * 3
+      )
+    }
+  }
+
+  // Animations
+  val animationTable: HashMap[Direction.Dir, Animation[TextureRegion]] =
+    val walkSpeed = Globals.secsPerTick * 50f
+    HashMap(
+      Direction.Up -> {
+        var texture = new Texture("Father/walk_away.png")
+        val frames = new utils.Array[TextureRegion]
+        TextureRegion
+          .split(texture, Father.pixelDimensions._1, Father.pixelDimensions._2)
+          .foreach(_.foreach(frames.add(_)))
+
+        new Animation(walkSpeed, frames)
+      },
+      Direction.Down -> {
+        var texture = new Texture("Father/walk_forward.png")
+        val frames = new utils.Array[TextureRegion]
+        TextureRegion
+          .split(texture, Father.pixelDimensions._1, Father.pixelDimensions._2)
+          .foreach(_.foreach(frames.add(_)))
+
+        new Animation(walkSpeed, frames)
+      },
+      Direction.Left -> {
+        var texture = new Texture("Father/walk_away.png")
+        val frames = new utils.Array[TextureRegion]
+        TextureRegion
+          .split(texture, Father.pixelDimensions._1, Father.pixelDimensions._2)
+          .foreach(_.foreach(frames.add(_)))
+
+        new Animation(walkSpeed, frames)
+      },
+      Direction.Right -> {
+        var texture = new Texture("Father/walk_away.png")
+        val frames = new utils.Array[TextureRegion]
+        TextureRegion
+          .split(texture, Father.pixelDimensions._1, Father.pixelDimensions._2)
+          .foreach(_.foreach(frames.add(_)))
+
+        new Animation(walkSpeed, frames)
+      }
+    )
+
   val color = Color.RED
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()

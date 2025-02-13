@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.Texture
 object SnowedInControls extends ControlRoom {
   val stories: List[Story] =
     List(
+      EndlessWalking,
       GoToBed,
       WakingUp,
       Laundry,
@@ -269,6 +270,7 @@ class SnowedIn extends ApplicationAdapter {
       .foreach((person, loc) => person.report(font, batch, loc))
 
     Table.animate(batch, realTime, tick)
+    Father.animate(batch, realTime, tick)
 
     batch.end()
   }

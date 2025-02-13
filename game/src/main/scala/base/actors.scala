@@ -158,27 +158,30 @@ trait Actor extends Subject[Actor] with Listener with Renderable {
 }
 
 trait Movement {
-
+  var facing = Direction.Up
   var location: BoxCoords = Globals.bedloc
   var destination: BoxCoords = location
   lazy val speed: Float =
-    Globals.secsPerTick / 8f // (2 * GlobalVars.secsPerTick)
+    // Globals.secsPerTick / 8f
+    Globals.secsPerTick / 16f
 
   def move(dir: Direction.Dir, percent: Float) = {
+    facing = dir
     val mpercent = math.min(percent, 1f)
+
     dir match
       case Direction.Left  => moveLeft(mpercent)
       case Direction.Right => moveRight(mpercent)
       case Direction.Down  => moveDown(mpercent)
       case Direction.Up    => moveUp(mpercent)
   }
-  def moveLeft(percent: Float): Unit = location =
+  private def moveLeft(percent: Float): Unit = location =
     (location._1 - percent, location._2)
-  def moveRight(percent: Float): Unit = location =
+  private def moveRight(percent: Float): Unit = location =
     (location._1 + percent, location._2)
-  def moveDown(percent: Float): Unit = location =
+  private def moveDown(percent: Float): Unit = location =
     (location._1, location._2 - percent)
-  def moveUp(percent: Float): Unit = location =
+  private def moveUp(percent: Float): Unit = location =
     (location._1, location._2 + percent)
 
   var movementStack: List[Direction.Dir] = List()

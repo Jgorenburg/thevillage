@@ -13,6 +13,53 @@ import Base.Delay
 import Snowedin.SIRoom.*
 import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
+import Base.Direction
+
+object EndlessWalking extends Story {
+  var active: Boolean = false
+  lazy val actors: scala.collection.mutable.HashSet[Base.Actor] = HashSet(
+    Father
+  )
+  val startState = (false, -1, false, -1)
+
+  var commonState = startState.copy()
+  var conditions: List[() => Boolean] = List(() => true)
+  var importance: Base.Importance.Importance = Importance.Override
+
+  var up = true
+  def progress(tick: Int): Boolean = {
+    if (!arrived) {
+      arrived = Father.walk()
+    }
+    if (arrived) {
+      if (up) {
+        Father.destination = (4, 0)
+        Father.movementStack = List.fill(18)(Direction.Down)
+        up = false
+      } else {
+        Father.destination = (4, 18)
+        Father.movementStack = List.fill(18)(Direction.Up)
+        up = true
+      }
+      arrived = false
+    }
+    return false
+  }
+  def storySpecificEnding(tick: Int): Unit = {}
+
+  def storySpecificInterrupt(tick: Int): Unit = {}
+
+  def reset() = {
+    active = false
+    commonState = startState.copy()
+  }
+  def setStartLocations(): Unit =
+    Father.destination = (4, 18)
+    Father.movementStack = List.fill(18)(Direction.Up)
+    Father.location = (4, 0)
+
+  def storySpecificBeginning(tick: Int): Unit = { Father.room = Kitchen }
+}
 
 // Father only
 object Laundry extends Story {
