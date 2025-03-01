@@ -122,7 +122,7 @@ object FrontDoor extends Static {
 }
 
 object BedroomDoor extends Static {
-  val location = bedloc
+  val location = bottomLeft + (0, 3)
   var interactLoc = location + (0, 1)
   def render(shapeRenderer: ShapeRenderer): Unit = {
     val loc = location.toRealLocation()
