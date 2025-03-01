@@ -703,7 +703,7 @@ object Boardgame extends Story with Occupy with Pausable {
     return false
   }
 
-  var texture = new Texture("boardgame.png")
+  var texture = new Texture("Table/boardgame.png")
   val frames = new utils.Array[TextureRegion]
   TextureRegion
     .split(texture, Table.pixelDimensions._1, Table.pixelDimensions._2)

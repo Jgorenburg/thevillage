@@ -176,7 +176,6 @@ class SnowedIn extends ApplicationAdapter {
       List(40000, 30000, 30000, 2)
     )
 
-    texture = new Texture("table.png")
   }
 
   override def render(): Unit = {
