@@ -10,7 +10,7 @@ import Base.{
   Vibe,
   curStory
 }
-import Snowedin.{Father, Lunch, Mother, Nap, Read, SnowedInSprites, Watercolor}
+import Snowedin.{Couch, Father, Lunch, Sofachair, Mother, Nap, Read, SnowedInSprites, Watercolor}
 
 // Pure rendering logic only: nothing here touches GL or libGDX natives.
 
@@ -50,6 +50,20 @@ class DrawOrderSuite extends munit.FunSuite {
       order(Item("walker", 3, 4.25f), Item("table", 3, 5), Item("x", 3, 4.5f)),
       Seq("table", "x", "walker")
     )
+  }
+
+  test("seating is drawn under the person sitting on it") {
+    val seats = Seq(
+      Couch -> Couch.seat1Loc,
+      Couch -> Couch.seat2Loc,
+      Sofachair -> Sofachair.seatingLoc
+    )
+    seats.foreach { (furniture, seat) =>
+      assertEquals(
+        order(Item("sitter", 3, seat.y), Item("seat", 3, furniture.sortY)),
+        Seq("seat", "sitter")
+      )
+    }
   }
 }
 

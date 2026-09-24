@@ -78,6 +78,10 @@ object Couch extends Actor with Spaces {
   def render(batch: SpriteBatch): Unit =
     Draw.named(batch, "couch", location.x, location.y, 2, 5)
 
+  // The seats are inside the couch's footprint, so sort by its back edge to
+  // draw it before (underneath) whoever is sitting on it
+  override def sortY: Float = location.y + 5
+
   def renderDebug(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.setColor(0, 0, 0, 1)
 
@@ -188,6 +192,9 @@ object Sofachair extends Actor with Spaces {
   // The chair extends 2 tiles to the left of its location
   def render(batch: SpriteBatch): Unit =
     Draw.named(batch, "sofachair", location.x - 2, location.y, 2, 1.5f)
+
+  // Sort by the back edge so the sitter is drawn on top (see Couch)
+  override def sortY: Float = location.y + 1.5f
 
   def renderDebug(shapeRenderer: ShapeRenderer): Unit = {
 
