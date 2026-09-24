@@ -1,6 +1,6 @@
 package Snowedin
 
-import Base.{Actor, Story, Vibe, Person}
+import Base.{Actor, Story, Vibe, Person, Pose}
 import scala.collection.mutable.HashSet
 import Snowedin.Tools.Screwdriver
 import Snowedin.Tools.Tambourine
@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 object Daughter extends Person {
+  override def storyPose(story: Story): Pose = SnowedInSprites.poseFor(story)
 
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
@@ -34,6 +35,7 @@ object Daughter extends Person {
 }
 
 object Son extends Person {
+  override def storyPose(story: Story): Pose = SnowedInSprites.poseFor(story)
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
@@ -71,6 +73,7 @@ object Son extends Person {
 }
 
 object Mother extends Person {
+  override def storyPose(story: Story): Pose = SnowedInSprites.poseFor(story)
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
   }
@@ -122,6 +125,7 @@ object Mother extends Person {
 }
 
 object Father extends Person {
+  override def storyPose(story: Story): Pose = SnowedInSprites.poseFor(story)
   val color = Color.RED
   override def timeForBed(): Boolean = {
     Dinner.commonState.completed && super.timeForBed()
