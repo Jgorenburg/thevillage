@@ -91,21 +91,19 @@ object SIRoom {
 }
 
 object SnowedInPositionConstants extends PositionConstants {
-  def heightToWidth(h: Float) = h * 8.5f / 11
-  def widthToHeight(w: Float) = w * 11 / 8.5f
-  val size: Float = WIDTH / 2.8f
-  val boxSize = size / 17
+  // One grid box is one 16px tile in the virtual (world) resolution
+  val boxSize: Float = 16f
 
-  val HorizBoxes: Int = (size / boxSize).toInt
-  val VertBoxes: Int = (widthToHeight(size) / boxSize).toInt
-  // House will always be centered on the X axis and slightly high on the Y
-  val HouseBase: (Float, Float) =
-    ((WIDTH - size) / 2, (HEIGHT - widthToHeight(size)) / 2)
+  val HorizBoxes: Int = 17
+  val VertBoxes: Int = 22
+  // The house fills the world framebuffer, so it sits at the world origin.
+  // Placing it on screen is done when the framebuffer is drawn.
+  val HouseBase: (Float, Float) = (0f, 0f)
   def houseX: Float = HouseBase._1
   def houseY: Float = HouseBase._2
 
-  val HouseWidth: Float = size
-  val HouseHeight: Float = widthToHeight(size)
+  val HouseWidth: Float = HorizBoxes * boxSize
+  val HouseHeight: Float = VertBoxes * boxSize
   val bottomLeft: BoxCoords = new BoxCoords(0, 0)
   val bottomRight: BoxCoords = new BoxCoords(HorizBoxes, 0)
   val topLeft: BoxCoords = new BoxCoords(0, VertBoxes)

@@ -18,17 +18,20 @@ object Direction extends Enumeration {
 }
 
 trait PositionConstants {
-  lazy val WIDTH: Float = Gdx.graphics.getWidth().toFloat
-  lazy val HEIGHT: Float = Gdx.graphics.getHeight().toFloat
-  def heightToWidth(h: Float): Float
-  def widthToHeight(w: Float): Float
+  // Current window size in screen (logical) pixels. Only the UI uses these;
+  // the world is drawn at a fixed virtual resolution (see below).
+  def WIDTH: Float = Gdx.graphics.getWidth().toFloat
+  def HEIGHT: Float = Gdx.graphics.getHeight().toFloat
 
-  // Use width as a baseline
-  val size: Float
+  // Size of one grid box in virtual (world) pixels
   val boxSize: Float
 
   val HorizBoxes: Int
   val VertBoxes: Int
+
+  // The world is rendered into an offscreen buffer of exactly this size
+  def VirtualWidth: Int = (HorizBoxes * boxSize).toInt
+  def VirtualHeight: Int = (VertBoxes * boxSize).toInt
 }
 
 val stage: GameMap = GameMap(

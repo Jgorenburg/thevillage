@@ -63,7 +63,21 @@ trait Renderable {
   var location: BoxCoords
   var interactLoc: BoxCoords
   def rloc() = location.toRealLocation()
-  def render(shapeRenderer: ShapeRenderer): Unit
+
+  /** Draws the sprite for this thing. The batch is already begun and uses the
+    * world (virtual pixel) projection.
+    */
+  def render(batch: SpriteBatch): Unit
+
+  /** Draws the debug outline (the original shape rendering). Toggled with F1.
+    */
+  def renderDebug(shapeRenderer: ShapeRenderer): Unit
+
+  /** Coarse draw layer, see [[DrawLayer]]. */
+  def drawLayer: Int = DrawLayer.Sorted
+
+  /** Y used for depth sorting within a layer (higher y is drawn first). */
+  def sortY: Float = location.y
 }
 
 // for things that aren't interacted with, but still exist
@@ -246,7 +260,61 @@ trait Person extends Actor with Movement {
 
   val color: Color
 
-  def render(shapeRenderer: ShapeRenderer) = {
+  /** Prefix of this character's atlas regions, e.g. `father`. */
+  def spritePrefix: String =
+    getClass.getSimpleName.stripSuffix("$").toLowerCase
+
+  /** Pose to show while arrived at a story. Overridden per game. */
+  def storyPose(story: Story): Pose = Pose.Stand
+
+  /** Render-only state (facing, animation time); not used by the sim. */
+  val spriteState: PersonSpriteState = new PersonSpriteState()
+
+  /** Updates render-only animation state from how the character moved since the
+    * last frame. Call once per frame after the simulation step.
+    */
+  def updateSprite(delta: Float): Unit = {
+    val s = spriteState
+    val (x, y) = (location.x, location.y)
+    val observed =
+      if (s.lastLocation._1.isNaN) None
+      else Motion.direction(x - s.lastLocation._1, y - s.lastLocation._2)
+    // Prefer the planned step; fall back to the observed delta (the last
+    // step has already been popped when the character arrives)
+    s.moving = observed.map(d => movementStack.headOption.getOrElse(d))
+    s.moving.foreach(d => s.facing = d)
+    s.lastLocation = (x, y)
+
+    val name = PersonSprites.spriteName(this).name
+    if (name != s.currentName) {
+      s.currentName = name
+      s.stateTime = 0f
+    } else {
+      s.stateTime += delta
+    }
+  }
+
+  def render(batch: SpriteBatch): Unit = {
+    if (room == Bedroom) return
+    val choice = PersonSprites.spriteName(this)
+    val frame =
+      if (choice.animated)
+        Assets
+          .animation(choice.name, PersonSprites.WalkFrameDuration)
+          .getKeyFrame(spriteState.stateTime, true)
+      else Assets.region(choice.name)
+    Draw.tiles(
+      batch,
+      frame,
+      location.x,
+      location.y,
+      PersonSprites.WidthTiles,
+      PersonSprites.HeightTiles,
+      choice.flipX
+    )
+  }
+
+  def renderDebug(shapeRenderer: ShapeRenderer) = {
     if (room == Bedroom) return
     shapeRenderer.setColor(color)
     // Squares draw from bottom left but circles from the center,
@@ -268,9 +336,11 @@ trait Person extends Actor with Movement {
     def simpleName(obj: Any) = obj.getClass.getSimpleName.stripSuffix("$")
     font.draw(
       batch,
-      s"[#${color}]${simpleName(this)}:[BLACK]\n\tCurrent Story: ${simpleName(
+      (s"[#${color}]${simpleName(this)}:[BLACK]\n\tCurrent Story: ${simpleName(
           this.commonState.curStory
-        )}\n\tLocation: ${this.location}\n\tRoom: ${this.room}" + indivPortion,
+        )}\n\tLocation: ${this.location}\n\tRoom: ${this.room}" + indivPortion)
+        // The default font has no tab glyph (it drew a box)
+        .replace("\t", "    "),
       loc._1,
       loc._2
     )

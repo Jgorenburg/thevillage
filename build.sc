@@ -164,6 +164,9 @@ object game extends ScalaModule with ScalafmtModule {
 
   override def scalacOptions = ScalacOptions.compile
 
+  /** Game code lives in `src/main/scala`; tests in `src/test/scala`. */
+  override def sources = T.sources { millSourcePath / "src" / "main" / "scala" }
+
   // /** Resources for this module. Like the `sourceSets.main.resources.srcDirs = ["../assets"]` line
   //   * in the default Java & Gradle LibGDX template, this sets the resources to be the `assets`
   //   * folder in the project root.
@@ -184,10 +187,61 @@ object game extends ScalaModule with ScalafmtModule {
       Seq.empty
   }
 
-//   object test extends ScalaTests with TestModule.Munit with ScalafmtModule {
-//     override def ivyDeps = Agg(
-//       ivy"org.scalameta::munit::${versions.munit}"
-//     )
+  /** Writes solid-colour placeholder PNGs for every sprite region into
+    * `art/placeholders/`. Run with `./millw game.genPlaceholders`.
+    */
+  def genPlaceholders() = T.command {
+    mill.util.Jvm.runSubprocess(
+      mainClass = "AssetTools.GenPlaceholders",
+      classPath = assettools.runClasspath().map(_.path),
+      jvmArgs = Seq("-Djava.awt.headless=true"),
+      mainArgs = Seq((T.workspace / "art" / "placeholders").toString),
+      workingDir = T.workspace
+    )
+  }
 
-//     override def scalacOptions = ScalacOptions.test
+  /** Packs `art/placeholders/` (with `art/export/` overriding same-named
+    * files) into `assets/atlas/game.atlas`. Run with `./millw game.packAssets`.
+    */
+  def packAssets() = T.command {
+    mill.util.Jvm.runSubprocess(
+      mainClass = "AssetTools.PackAssets",
+      classPath = assettools.runClasspath().map(_.path),
+      jvmArgs = Seq("-Djava.awt.headless=true"),
+      mainArgs = Seq(
+        (T.workspace / "art" / "placeholders").toString,
+        (T.workspace / "art" / "export").toString,
+        (T.workspace / "assets" / "atlas").toString,
+        "game"
+      ),
+      workingDir = T.workspace
+    )
+  }
+
+  object test extends ScalaTests with TestModule.Munit with ScalafmtModule {
+    override def ivyDeps = Agg(
+      ivy"org.scalameta::munit::${versions.munit}"
+    )
+
+    override def sources = T.sources {
+      millSourcePath / os.up / "src" / "test" / "scala"
+    }
+
+    override def scalacOptions = ScalacOptions.test
+  }
+}
+
+/** Build-time asset tooling (placeholder generator + TexturePacker). Kept in
+  * its own module so gdx-tools never lands on the game's runtime classpath.
+  */
+object assettools extends ScalaModule with ScalafmtModule {
+  override def scalaVersion = versions.scala
+
+  override def moduleDeps = Seq(game)
+
+  override def ivyDeps = Agg(
+    ivy"${orgs.gdx}:gdx-tools:${versions.gdx}"
+  )
+
+  override def scalacOptions = ScalacOptions.compile
 }

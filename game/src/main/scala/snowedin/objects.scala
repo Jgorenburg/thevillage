@@ -10,12 +10,17 @@ import Base.Room.Bedroom
 import Snowedin.SnowedInPositionConstants.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import Base.BoxCoords
+import Base.Draw
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 object Worktable extends Actor {
   val location = topRight - (2, 5)
   var interactLoc = location + (-1, 1)
 
-  def render(shapeRenderer: ShapeRenderer): Unit = {
+  def render(batch: SpriteBatch): Unit =
+    Draw.named(batch, "worktable", location.x, location.y, 2, 4)
+
+  def renderDebug(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
@@ -70,7 +75,14 @@ object Couch extends Actor with Spaces {
   val location = topLeft + (4, -9)
   var interactLoc = location
 
-  def render(shapeRenderer: ShapeRenderer): Unit = {
+  def render(batch: SpriteBatch): Unit =
+    Draw.named(batch, "couch", location.x, location.y, 2, 5)
+
+  // The seats are inside the couch's footprint, so sort by its back edge to
+  // draw it before (underneath) whoever is sitting on it
+  override def sortY: Float = location.y + 5
+
+  def renderDebug(shapeRenderer: ShapeRenderer): Unit = {
     shapeRenderer.setColor(0, 0, 0, 1)
 
     // Draw the box
@@ -176,7 +188,15 @@ object Sofachair extends Actor with Spaces {
   var interactLoc = location
   val seatingLoc = topLeft + (2f, -3.5f)
   def getSeatingLoc() = seatingLoc
-  def render(shapeRenderer: ShapeRenderer): Unit = {
+
+  // The chair extends 2 tiles to the left of its location
+  def render(batch: SpriteBatch): Unit =
+    Draw.named(batch, "sofachair", location.x - 2, location.y, 2, 1.5f)
+
+  // Sort by the back edge so the sitter is drawn on top (see Couch)
+  override def sortY: Float = location.y + 1.5f
+
+  def renderDebug(shapeRenderer: ShapeRenderer): Unit = {
 
     val vertices: Array[Float] =
       Array(
@@ -265,7 +285,9 @@ object Table extends Actor with Spaces {
   def getLoc2() = bottomLeft + (10, 9)
   def getLoc3() = bottomLeft + (10, 4)
   def getLoc4() = bottomLeft + (7, 4)
-  def render(shapeRenderer: ShapeRenderer) = {
+  def render(batch: SpriteBatch): Unit =
+    Draw.named(batch, "table", location.x, location.y, 6, 4)
+  def renderDebug(shapeRenderer: ShapeRenderer) = {
     shapeRenderer.rect(rloc()._1, rloc()._2, 6 * boxSize, 4 * boxSize)
   }
 
@@ -328,7 +350,9 @@ object Table extends Actor with Spaces {
 object Easle extends Actor with Spaces {
   val location = topLeft + (6, -2)
   var interactLoc = location
-  def render(shapeRenderer: ShapeRenderer) = {
+  def render(batch: SpriteBatch): Unit =
+    Draw.named(batch, "easel", location.x, location.y, 1, 1)
+  def renderDebug(shapeRenderer: ShapeRenderer) = {
     shapeRenderer.rect(rloc()._1, rloc()._2, boxSize, boxSize)
   }
   val maxCapacity = 1
@@ -371,7 +395,19 @@ object Easle extends Actor with Spaces {
 object Stove extends Actor {
   val location = bottomLeft + (6, 1)
   var interactLoc = location + (1, 2)
-  def render(shapeRenderer: ShapeRenderer) = {
+
+  /** `fire` during KitchenFire, `cooking` while a meal is on (or was left
+    * unattended), else `idle`.
+    */
+  def stateName: String = SnowedInSprites.stoveState(
+    KitchenFire.active,
+    (CookLunch.active && CookLunch.started) ||
+      (CookDinner.active && CookDinner.started),
+    unattended
+  )
+  def render(batch: SpriteBatch): Unit =
+    Draw.animated(batch, s"stove_$stateName", location.x, location.y, 3, 2)
+  def renderDebug(shapeRenderer: ShapeRenderer) = {
     shapeRenderer.rect(rloc()._1, rloc()._2, 3 * boxSize, 2 * boxSize)
   }
   lazy val myEvents: Array[Any] = Array(CookLunch, CookDinner)
@@ -409,7 +445,25 @@ object Stove extends Actor {
 object Dishwasher extends Actor {
   val location = bottomRight + (-3, 3)
   var interactLoc = location + (-1, 1)
-  def render(shapeRenderer: ShapeRenderer) = {
+
+  /** `running` from StartDishwasher's end until RunDishwasher's end, `open`
+    * while someone is loading or unloading it, else `idle`.
+    */
+  def stateName: String = SnowedInSprites.dishwasherState(
+    running,
+    (StartDishwasher.active && StartDishwasher.started) ||
+      (UnloadDishwasher.active && UnloadDishwasher.started)
+  )
+  def render(batch: SpriteBatch): Unit =
+    Draw.animated(
+      batch,
+      s"dishwasher_$stateName",
+      location.x,
+      location.y,
+      2,
+      3
+    )
+  def renderDebug(shapeRenderer: ShapeRenderer) = {
     shapeRenderer.rect(rloc()._1, rloc()._2, 2 * boxSize, 3 * boxSize)
   }
 
